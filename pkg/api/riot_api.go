@@ -130,6 +130,14 @@ func (c RiotAPIClient) GetLeague(leagueID string) (*model.LeagueList, error) {
 	return leagues, nil
 }
 
+func (c RiotAPIClient) GetStatus() (*model.Status, error) {
+	var status *model.Status
+	if err := c.getInto("/lol/status/v3/shard-data", &status); err != nil {
+		return nil, err
+	}
+	return status, nil
+}
+
 func (c RiotAPIClient) getSummonerBy(by identification, value string) (*model.Summoner, error) {
 	var endpoint string
 	switch by {
