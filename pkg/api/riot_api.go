@@ -138,6 +138,14 @@ func (c RiotAPIClient) GetStatus() (*model.Status, error) {
 	return status, nil
 }
 
+func (c RiotAPIClient) GetMatch(id string) (*model.Match, error) {
+	var match *model.Match
+	if err := c.getInto(fmt.Sprintf("/lol/match/v4/matches/%s", id), &match); err != nil {
+		return nil, err
+	}
+	return match, nil
+}
+
 func (c RiotAPIClient) getSummonerBy(by identification, value string) (*model.Summoner, error) {
 	var endpoint string
 	switch by {
