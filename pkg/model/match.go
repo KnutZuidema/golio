@@ -280,3 +280,21 @@ type LegacyMastery struct {
 	MasteryID int `json:"masteryId"`
 	Rank      int `json:"rank"`
 }
+
+type Matchlist struct {
+	Matches    []MatchReference `json:"matches"`
+	TotalGames int              `json:"totalGames"`
+	StartIndex int              `json:"startIndex"`
+	EndIndex   int              `json:"endIndex"`
+}
+
+type MatchReference struct {
+	Lane       string `json:"lane"`
+	GameID     int    `json:"gameId"`
+	Champion   int    `json:"champion"`
+	PlatformID string `json:"platformId"`
+	Season     int    `json:"season"`
+	Queue      int    `json:"queue"`
+	Role       string `json:"role"`
+	Timestamp  int    `json:"timestamp"`
+}
