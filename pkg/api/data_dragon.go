@@ -42,27 +42,27 @@ func (c DataDragonClient) GetProfileIcons() (map[string]model.ProfileIcon, error
 }
 
 func (c DataDragonClient) GetItems() (map[string]model.Item, error) {
-	var icons map[string]model.Item
-	if err := c.getInto(dataDragonDataURLFormat, "/item.json", &icons); err != nil {
+	var items map[string]model.Item
+	if err := c.getInto(dataDragonDataURLFormat, "/item.json", &items); err != nil {
 		return nil, err
 	}
-	return icons, nil
+	return items, nil
 }
 
 func (c DataDragonClient) GetMasteries() (map[string]model.Mastery, error) {
-	var icons map[string]model.Mastery
-	if err := c.getInto(dataDragonDataURLFormat, "/mastery.json", &icons); err != nil {
+	var masteries map[string]model.Mastery
+	if err := c.getInto(dataDragonDataURLFormat, "/mastery.json", &masteries); err != nil {
 		return nil, err
 	}
-	return icons, nil
+	return masteries, nil
 }
 
 func (c DataDragonClient) GetSummonerSpells() (map[string]model.SummonerSpell, error) {
-	var icons map[string]model.SummonerSpell
-	if err := c.getInto(dataDragonDataURLFormat, "/summoner.json", &icons); err != nil {
+	var spells map[string]model.SummonerSpell
+	if err := c.getInto(dataDragonDataURLFormat, "/summoner.json", &spells); err != nil {
 		return nil, err
 	}
-	return icons, nil
+	return spells, nil
 }
 
 func (c DataDragonClient) getInto(format dataDragonURL, endpoint string, target interface{}) error {
