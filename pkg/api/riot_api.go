@@ -163,31 +163,44 @@ func (c RiotAPIClient) GetMatchesByAccount(accountID string, beginIndex, endInde
 	return matches, nil
 }
 
-func (c RiotAPIClient) GetMatchesByAccountStream(accountID string) (<-chan model.MatchReference, <-chan error) {
-	cMatches, cErr := make(chan model.MatchReference, 100), make(chan error)
+func (c RiotAPIClient) GetMatchesByAccountStream(accountID string) <-chan struct {
+	*model.MatchReference
+	error
+} {
+	cMatches := make(chan struct {
+		*model.MatchReference
+		error
+	}, 100)
 	go func() {
 		start := 0
 		for {
 			matches, err := c.GetMatchesByAccount(accountID, start, start+100)
 			if err != nil {
-				cErr <- err
-				close(cMatches)
-				close(cErr)
+				cMatches <- struct {
+					*model.MatchReference
+					error
+				}{error: err}
 				return
 			}
 			for _, match := range matches.Matches {
-				cMatches <- match
+				m := new(model.MatchReference)
+				*m = match
+				cMatches <- struct {
+					*model.MatchReference
+					error
+				}{MatchReference: m}
 			}
 			if len(matches.Matches) < 100 {
-				cErr <- io.EOF
-				close(cMatches)
-				close(cErr)
+				cMatches <- struct {
+					*model.MatchReference
+					error
+				}{error: io.EOF}
 				return
 			}
 			start += 100
 		}
 	}()
-	return cMatches, cErr
+	return cMatches
 }
 
 func (c RiotAPIClient) getSummonerBy(by identification, value string) (*model.Summoner, error) {
