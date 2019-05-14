@@ -53,7 +53,11 @@ func (c *DataDragonClient) init(region string) error {
 		Version  string `json:"v"`
 		Language string `json:"l"`
 	}
-	if err := c.getInto(dataDragonBaseURL, fmt.Sprintf("/realms/%s.json", region), &res); err != nil {
+	response, err := c.doRequest(dataDragonBaseURL, fmt.Sprintf("/realms/%s.json", region))
+	if err != nil {
+		return err
+	}
+	if err := json.NewDecoder(response.Body).Decode(&res); err != nil {
 		return err
 	}
 	c.Version = res.Version
