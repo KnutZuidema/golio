@@ -51,7 +51,7 @@ func (c RiotAPIClient) GetChampionMastery(summonerID string, championID int) (*m
 		fmt.Sprintf("/lol/champion-mastery/v4/champion-masteries/by-summoner/%s/by-champion/%d",
 			summonerID,
 			championID),
-		mastery,
+		&mastery,
 	); err != nil {
 		return nil, err
 	}
