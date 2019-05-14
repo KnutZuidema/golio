@@ -1,7 +1,5 @@
 package api
 
-import "time"
-
 type identification string
 type region string
 type queue string
@@ -97,7 +95,6 @@ const (
 	endpointSummonerBase                                  = "/lol/summoner/v4"
 	endpointGetSummonerBySummonerID                       = endpointSummonerBase + "/summoners/%s"
 	endpointGetSummonerBy                                 = endpointSummonerBase + "/summoners/by-%s/%s"
-	initialBackOffDelay                    time.Duration  = 1
 )
 
 var (

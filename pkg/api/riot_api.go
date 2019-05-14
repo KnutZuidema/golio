@@ -4,13 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/KnutZuidema/riot-api-wrapper/pkg/model"
 	"io"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/KnutZuidema/riot-api-wrapper/pkg/model"
 )
 
 type RiotAPIClient struct {
@@ -239,6 +238,15 @@ func (c RiotAPIClient) doRequest(method, endpoint, body string) (*http.Response,
 	response, err := c.client.Do(request)
 	if err != nil {
 		return nil, err
+	}
+	if response.StatusCode == http.StatusTooManyRequests {
+		retry := response.Header.Get("Retry-After")
+		seconds, err := strconv.Atoi(retry)
+		if err != nil {
+			return nil, err
+		}
+		time.Sleep(time.Duration(seconds))
+		return c.doRequest(method, endpoint, body)
 	}
 	if response.StatusCode < 200 || response.StatusCode > 299 {
 		return nil, fmt.Errorf("error response: %v", response.Status)
