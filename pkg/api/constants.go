@@ -1,11 +1,12 @@
 package api
 
+import "time"
+
 type identification string
 type region string
 type queue string
 type tier string
 type division string
-type champion int
 type dataDragonURL string
 type languageCode string
 
@@ -71,6 +72,96 @@ const (
 	dataDragonDataURLFormat                               = dataDragonBaseURL + "/cdn/%s/data/%s"
 	dataDragonImageURLFormat                              = dataDragonBaseURL + "/cdn/%s/img"
 	dataDragonImageURLFormatWithoutVersion                = dataDragonBaseURL + "/cdn/img"
-	baseURL                                string         = "api.riotgames.com"
+	apiURLFormat                           string         = "%s://%s.%s%s"
+	baseURL                                               = "api.riotgames.com"
+	scheme                                                = "https"
 	apiTokenHeaderKey                                     = "X-Riot-Token"
+	endpointChampionMasteryBase                           = "/lol/champion-mastery/v4"
+	endpointGetChampionMasteries                          = endpointChampionMasteryBase + "/champion-masteries/by-summoner/%s"
+	endpointGetChampionMastery                            = endpointChampionMasteryBase + "/champion-masteries/by-summoner/%s/by-champion/%d"
+	endpointGetChampionMasteryTotalScore                  = endpointChampionMasteryBase + "/scores/by-summoner/%s"
+	endpointPlatformBase                                  = "/lol/platform/v3"
+	endpointGetFreeChampionRotation                       = endpointPlatformBase + "/champion-rotations"
+	endpointLeagueBase                                    = "/lol/league/v4"
+	endpointGetChallengerLeague                           = endpointLeagueBase + "/challengerleagues/by-queue/%s"
+	endpointGetGrandmasterLeague                          = endpointLeagueBase + "/grandmasterleagues/by-queue/%s"
+	endpointGetMasterLeague                               = endpointLeagueBase + "/masterleagues/by-queue/%s"
+	endpointGetLeaguesBySummoner                          = endpointLeagueBase + "/entries/by-summoner/%s"
+	endpointGetLeagues                                    = endpointLeagueBase + "/entries/%s/%s/%s"
+	endpointGetLeague                                     = endpointLeagueBase + "/leagues/%s"
+	endpointStatusBase                                    = "/lol/status/v3"
+	endpointGetStatus                                     = endpointStatusBase + "/shard-data"
+	endpointMatchBase                                     = "/lol/match/v4"
+	endpointGetMatch                                      = endpointMatchBase + "/matches/%d"
+	endpointGetMatchesByAccount                           = endpointMatchBase + "/matchlists/by-account/%s?beginIndex=%d&endIndex=%d"
+	endpointSummonerBase                                  = "/lol/summoner/v4"
+	endpointGetSummonerBySummonerID                       = endpointSummonerBase + "/summoners/%s"
+	endpointGetSummonerBy                                 = endpointSummonerBase + "/summoners/by-%s/%s"
+	initialBackOffDelay                    time.Duration  = 1
+)
+
+var (
+	LanguageCodes = []languageCode{
+		LanguageCodeCzechRepublic,
+		LanguageCodeGreece,
+		LanguageCodePoland,
+		LanguageCodeRomania,
+		LanguageCodeHungary,
+		LanguageCodeUnitedKingdom,
+		LanguageCodeGermany,
+		LanguageCodeSpain,
+		LanguageCodeItaly,
+		LanguageCodeFrance,
+		LanguageCodeJapan,
+		LanguageCodeKorea,
+		LanguageCodeMexico,
+		LanguageCodeArgentina,
+		LanguageCodeBrazil,
+		LanguageCodeUnitedStates,
+		LanguageCodeAustralia,
+		LanguageCodeRussia,
+		LanguageCodeTurkey,
+		LanguageCodeMalaysia,
+		LanguageCodeRepublicOfThePhilippines,
+		LanguageCodeSingapore,
+		LanguageCodeThailand,
+		LanguageCodeVietNam,
+		LanguageCodeIndonesia,
+		LanguageCodeMalaysiaChinese,
+		LanguageCodeChina,
+		LanguageCodeTaiwan,
+	}
+	Queues = []queue{
+		QueueRankedSolo,
+		QueueRankedFlex,
+		QueueRankedTwistedTreeline,
+	}
+	Tiers = []tier{
+		TierIron,
+		TierBronze,
+		TierSilver,
+		TierGold,
+		TierPlatinum,
+		TierDiamond,
+	}
+	Divisions = []division{
+		DivisionOne,
+		DivisionTwo,
+		DivisionThree,
+		DivisionFour,
+	}
+	Regions = []region{
+		RegionBrasil,
+		RegionEuropeNorthEast,
+		RegionEuropeWest,
+		RegionJapan,
+		RegionKorea,
+		RegionLatinAmericaNorth,
+		RegionLatinAmericaSouth,
+		RegionNorthAmerica,
+		RegionOceania,
+		RegionTurkey,
+		RegionRussia,
+		RegionPBE,
+	}
 )

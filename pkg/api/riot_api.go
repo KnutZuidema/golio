@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/KnutZuidema/riot-api-wrapper/pkg/model"
 )
@@ -41,7 +42,7 @@ func (c RiotAPIClient) GetSummonerBySummonerID(summonerID string) (*model.Summon
 func (c RiotAPIClient) GetChampionMasteries(summonerID string) ([]*model.ChampionMastery, error) {
 	var masteries []*model.ChampionMastery
 	if err := c.getInto(
-		fmt.Sprintf("/lol/champion-mastery/v4/champion-masteries/by-summoner/%s", summonerID),
+		fmt.Sprintf(endpointGetChampionMasteries, summonerID),
 		&masteries,
 	); err != nil {
 		return nil, err
@@ -52,9 +53,7 @@ func (c RiotAPIClient) GetChampionMasteries(summonerID string) ([]*model.Champio
 func (c RiotAPIClient) GetChampionMastery(summonerID string, championID int) (*model.ChampionMastery, error) {
 	var mastery *model.ChampionMastery
 	if err := c.getInto(
-		fmt.Sprintf("/lol/champion-mastery/v4/champion-masteries/by-summoner/%s/by-champion/%d",
-			summonerID,
-			championID),
+		fmt.Sprintf(endpointGetChampionMastery, summonerID, championID),
 		&mastery,
 	); err != nil {
 		return nil, err
@@ -63,7 +62,7 @@ func (c RiotAPIClient) GetChampionMastery(summonerID string, championID int) (*m
 }
 
 func (c RiotAPIClient) GetChampionMasteryTotalScore(summonerID string) (int, error) {
-	response, err := c.get(fmt.Sprintf("/lol/champion-mastery/v4/scores/by-summoner/%s", summonerID))
+	response, err := c.get(fmt.Sprintf(endpointGetChampionMasteryTotalScore, summonerID))
 	if err != nil {
 		return 0, err
 	}
@@ -81,7 +80,7 @@ func (c RiotAPIClient) GetChampionMasteryTotalScore(summonerID string) (int, err
 
 func (c RiotAPIClient) GetFreeChampionRotation() (*model.ChampionInfo, error) {
 	var info *model.ChampionInfo
-	if err := c.getInto("/lol/platform/v3/champion-rotations", &info); err != nil {
+	if err := c.getInto(endpointGetFreeChampionRotation, &info); err != nil {
 		return nil, err
 	}
 	return info, nil
@@ -89,7 +88,7 @@ func (c RiotAPIClient) GetFreeChampionRotation() (*model.ChampionInfo, error) {
 
 func (c RiotAPIClient) GetChallengerLeague(queue queue) (*model.LeagueList, error) {
 	var list *model.LeagueList
-	if err := c.getInto(fmt.Sprintf("/lol/league/v4/challengerleagues/by-queue/%s", queue), &list); err != nil {
+	if err := c.getInto(fmt.Sprintf(endpointGetChallengerLeague, queue), &list); err != nil {
 		return nil, err
 	}
 	return list, nil
@@ -97,7 +96,7 @@ func (c RiotAPIClient) GetChallengerLeague(queue queue) (*model.LeagueList, erro
 
 func (c RiotAPIClient) GetGrandmasterLeague(queue queue) (*model.LeagueList, error) {
 	var list *model.LeagueList
-	if err := c.getInto(fmt.Sprintf("/lol/league/v4/grandmasterleagues/by-queue/%s", queue), &list); err != nil {
+	if err := c.getInto(fmt.Sprintf(endpointGetGrandmasterLeague, queue), &list); err != nil {
 		return nil, err
 	}
 	return list, nil
@@ -105,15 +104,15 @@ func (c RiotAPIClient) GetGrandmasterLeague(queue queue) (*model.LeagueList, err
 
 func (c RiotAPIClient) GetMasterLeague(queue queue) (*model.LeagueList, error) {
 	var list *model.LeagueList
-	if err := c.getInto(fmt.Sprintf("/lol/league/v4/masterleagues/by-queue/%s", queue), &list); err != nil {
+	if err := c.getInto(fmt.Sprintf(endpointGetMasterLeague, queue), &list); err != nil {
 		return nil, err
 	}
 	return list, nil
 }
 
-func (c RiotAPIClient) GetSummonerLeagues(summonerID string) ([]*model.LeagueEntry, error) {
+func (c RiotAPIClient) GetLeaguesBySummoner(summonerID string) ([]*model.LeagueEntry, error) {
 	var leagues []*model.LeagueEntry
-	if err := c.getInto(fmt.Sprintf("/lol/league/v4/entries/by-summoner/%s", summonerID), &leagues); err != nil {
+	if err := c.getInto(fmt.Sprintf(endpointGetLeaguesBySummoner, summonerID), &leagues); err != nil {
 		return nil, err
 	}
 	return leagues, nil
@@ -121,7 +120,7 @@ func (c RiotAPIClient) GetSummonerLeagues(summonerID string) ([]*model.LeagueEnt
 
 func (c RiotAPIClient) GetLeagues(queue queue, tier tier, division division) ([]*model.LeagueEntry, error) {
 	var leagues []*model.LeagueEntry
-	if err := c.getInto(fmt.Sprintf("/lol/league/v4/entries/%s/%s/%s", queue, tier, division), &leagues); err != nil {
+	if err := c.getInto(fmt.Sprintf(endpointGetLeagues, queue, tier, division), &leagues); err != nil {
 		return nil, err
 	}
 	return leagues, nil
@@ -129,7 +128,7 @@ func (c RiotAPIClient) GetLeagues(queue queue, tier tier, division division) ([]
 
 func (c RiotAPIClient) GetLeague(leagueID string) (*model.LeagueList, error) {
 	var leagues *model.LeagueList
-	if err := c.getInto(fmt.Sprintf("/lol/league/v4/leagues/%s", leagueID), &leagues); err != nil {
+	if err := c.getInto(fmt.Sprintf(endpointGetLeague, leagueID), &leagues); err != nil {
 		return nil, err
 	}
 	return leagues, nil
@@ -137,15 +136,15 @@ func (c RiotAPIClient) GetLeague(leagueID string) (*model.LeagueList, error) {
 
 func (c RiotAPIClient) GetStatus() (*model.Status, error) {
 	var status *model.Status
-	if err := c.getInto("/lol/status/v3/shard-data", &status); err != nil {
+	if err := c.getInto(endpointGetStatus, &status); err != nil {
 		return nil, err
 	}
 	return status, nil
 }
 
-func (c RiotAPIClient) GetMatch(id string) (*model.Match, error) {
+func (c RiotAPIClient) GetMatch(id int) (*model.Match, error) {
 	var match *model.Match
-	if err := c.getInto(fmt.Sprintf("/lol/match/v4/matches/%s", id), &match); err != nil {
+	if err := c.getInto(fmt.Sprintf(endpointGetMatch, id), &match); err != nil {
 		return nil, err
 	}
 	return match, nil
@@ -154,8 +153,7 @@ func (c RiotAPIClient) GetMatch(id string) (*model.Match, error) {
 func (c RiotAPIClient) GetMatchesByAccount(accountID string, beginIndex, endIndex int) (*model.Matchlist, error) {
 	var matches *model.Matchlist
 	if err := c.getInto(
-		fmt.Sprintf("/lol/match/v4/matchlists/by-account/%s?beginIndex=%d&endIndex=%d",
-			accountID, beginIndex, endIndex),
+		fmt.Sprintf(endpointGetMatchesByAccount, accountID, beginIndex, endIndex),
 		&matches,
 	); err != nil {
 		return nil, err
@@ -207,9 +205,9 @@ func (c RiotAPIClient) getSummonerBy(by identification, value string) (*model.Su
 	var endpoint string
 	switch by {
 	case identificationSummonerID:
-		endpoint = fmt.Sprintf("/lol/summoner/v4/summoners/%s", value)
+		endpoint = fmt.Sprintf(endpointGetSummonerBySummonerID, value)
 	default:
-		endpoint = fmt.Sprintf("/lol/summoner/v4/summoners/by-%s/%s", by, value)
+		endpoint = fmt.Sprintf(endpointGetSummonerBy, by, value)
 	}
 	var summoner *model.Summoner
 	if err := c.getInto(endpoint, &summoner); err != nil {
@@ -249,7 +247,7 @@ func (c RiotAPIClient) doRequest(method, endpoint, body string) (*http.Response,
 }
 
 func (c RiotAPIClient) newRequest(method, endpoint, body string) (*http.Request, error) {
-	request, err := http.NewRequest(method, fmt.Sprintf("https://%s.%s%s", c.region, baseURL, endpoint),
+	request, err := http.NewRequest(method, fmt.Sprintf(apiURLFormat, scheme, c.region, baseURL, endpoint),
 		strings.NewReader(body))
 	if err != nil {
 		return nil, err
