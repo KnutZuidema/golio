@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/KnutZuidema/riot-api-wrapper/pkg/model"
 )
@@ -142,12 +144,19 @@ func (c DataDragonClient) doRequest(format dataDragonURL, endpoint string) (*htt
 }
 
 func (c DataDragonClient) newRequest(format dataDragonURL, endpoint string) (*http.Request, error) {
+	var version string
+	if (strings.Contains(endpoint, "rune") || strings.Contains(endpoint, "mastery")) &&
+		versionGreaterThan(c.Version, latestRuneAndMasteryVersion) {
+		version = latestRuneAndMasteryVersion
+	} else {
+		version = c.Version
+	}
 	var url string
 	switch format {
 	case dataDragonDataURLFormat:
-		url = fmt.Sprintf(string(format), c.DataDragonVersion, c.DataDragonLanguage)
+		url = fmt.Sprintf(string(format), version, c.Language)
 	case dataDragonImageURLFormat:
-		url = fmt.Sprintf(string(format), c.DataDragonVersion)
+		url = fmt.Sprintf(string(format), version)
 	default:
 		url = string(format)
 	}
@@ -157,4 +166,23 @@ func (c DataDragonClient) newRequest(format dataDragonURL, endpoint string) (*ht
 		return nil, err
 	}
 	return request, nil
+}
+
+func versionGreaterThan(v1, v2 string) bool {
+	v1Split := strings.Split(v1, ".")
+	v2Split := strings.Split(v2, ".")
+	for i := 0; i < len(v1Split) && i < len(v2Split); i++ {
+		int1, err := strconv.Atoi(v1Split[i])
+		if err != nil {
+			return false
+		}
+		int2, err := strconv.Atoi(v2Split[i])
+		if err != nil {
+			return false
+		}
+		if int1 > int2 {
+			return true
+		}
+	}
+	return false
 }
