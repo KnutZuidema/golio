@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"../model"
+	"github.com/KnutZuidema/riot-api-wrapper/pkg/model"
 )
 
 type DataDragonClient struct {

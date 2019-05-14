@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"../model"
+	"github.com/KnutZuidema/riot-api-wrapper/pkg/model"
 )
 
 type RiotAPIClient struct {
