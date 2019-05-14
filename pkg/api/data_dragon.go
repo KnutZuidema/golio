@@ -8,10 +8,55 @@ import (
 	"github.com/KnutZuidema/riot-api-wrapper/pkg/model"
 )
 
+const (
+	latestRuneAndMasteryVersion = "7.23.1"
+	fallbackVersion             = "9.10.1"
+	fallbackLanguage            = LanguageCodeUnitedStates
+)
+
+var (
+	regionToRealmRegion = map[region]string{
+		RegionEuropeWest:        "euw",
+		RegionEuropeNorthEast:   "eun",
+		RegionJapan:             "jp",
+		RegionKorea:             "kr",
+		RegionLatinAmericaNorth: "lan",
+		RegionLatinAmericaSouth: "las",
+		RegionNorthAmerica:      "na",
+		RegionOceania:           "oce",
+		RegionPBE:               "pbe",
+		RegionRussia:            "ru",
+		RegionTurkey:            "tr",
+		RegionBrasil:            "br",
+	}
+)
+
 type DataDragonClient struct {
-	DataDragonVersion  string
-	DataDragonLanguage string
-	client             *http.Client
+	Version  string
+	Language languageCode
+	client   *http.Client
+}
+
+func NewDataDragonClient(client *http.Client, region region) *DataDragonClient {
+	c := &DataDragonClient{client: client}
+	if err := c.init(regionToRealmRegion[region]); err != nil {
+		c.Version = fallbackVersion
+		c.Language = fallbackLanguage
+	}
+	return c
+}
+
+func (c *DataDragonClient) init(region string) error {
+	var res struct {
+		Version  string `json:"v"`
+		Language string `json:"l"`
+	}
+	if err := c.getInto(dataDragonBaseURL, fmt.Sprintf("/realms/%s.json", region), &res); err != nil {
+		return err
+	}
+	c.Version = res.Version
+	c.Language = languageCode(res.Language)
+	return nil
 }
 
 func (c DataDragonClient) GetChampions() (map[string]model.ChampionData, error) {
