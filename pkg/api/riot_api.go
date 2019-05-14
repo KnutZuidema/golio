@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -44,12 +45,12 @@ func (c RiotAPIClient) GetChampionMasteries(summonerID string) ([]*model.Champio
 	return masteries, nil
 }
 
-func (c RiotAPIClient) GetChampionMastery(summonerID string, champion champion) (*model.ChampionMastery, error) {
+func (c RiotAPIClient) GetChampionMastery(summonerID string, championID int) (*model.ChampionMastery, error) {
 	var mastery *model.ChampionMastery
 	if err := c.getInto(
 		fmt.Sprintf("/lol/champion-mastery/v4/champion-masteries/by-summoner/%s/by-champion/%d",
 			summonerID,
-			champion),
+			championID),
 		mastery,
 	); err != nil {
 		return nil, err
@@ -144,6 +145,45 @@ func (c RiotAPIClient) GetMatch(id string) (*model.Match, error) {
 		return nil, err
 	}
 	return match, nil
+}
+
+func (c RiotAPIClient) GetMatchesByAccount(accountID string, beginIndex, endIndex int) (*model.Matchlist, error) {
+	var matches *model.Matchlist
+	if err := c.getInto(
+		fmt.Sprintf("/lol/match/v4/matchlists/by-account/%s?beginIndex=%d&endIndex=%d",
+			accountID, beginIndex, endIndex),
+		&matches,
+	); err != nil {
+		return nil, err
+	}
+	return matches, nil
+}
+
+func (c RiotAPIClient) GetMatchesByAccountStream(accountID string) (<-chan model.MatchReference, <-chan error) {
+	cMatches, cErr := make(chan model.MatchReference, 100), make(chan error)
+	go func() {
+		start := 0
+		for {
+			matches, err := c.GetMatchesByAccount(accountID, start, start+100)
+			if err != nil {
+				cErr <- err
+				close(cMatches)
+				close(cErr)
+				return
+			}
+			for _, match := range matches.Matches {
+				cMatches <- match
+			}
+			if len(matches.Matches) < 100 {
+				cErr <- io.EOF
+				close(cMatches)
+				close(cErr)
+				return
+			}
+			start += 100
+		}
+	}()
+	return cMatches, cErr
 }
 
 func (c RiotAPIClient) getSummonerBy(by identification, value string) (*model.Summoner, error) {
