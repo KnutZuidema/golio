@@ -18,6 +18,10 @@ type RiotAPIClient struct {
 	client *http.Client
 }
 
+func NewRiotAPIClient(region region, apiKey string, client *http.Client) *RiotAPIClient {
+	return &RiotAPIClient{region: region, apiKey: apiKey, client: client}
+}
+
 func (c RiotAPIClient) GetSummonerByName(name string) (*model.Summoner, error) {
 	return c.getSummonerBy(identificationName, name)
 }
