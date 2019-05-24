@@ -1,5 +1,10 @@
 package api
 
+import (
+	"fmt"
+	"strings"
+)
+
 type identification string
 type region string
 type queue string
@@ -161,4 +166,38 @@ var (
 		RegionRussia,
 		RegionPBE,
 	}
+	debugRegionIndex = 0
 )
+
+func ParseRegion(r string) (region, error) {
+	m := map[string]region{
+		"brasil":              RegionBrasil,
+		"br":                  RegionBrasil,
+		"europe_ne":           RegionEuropeNorthEast,
+		"eune":                RegionEuropeNorthEast,
+		"europe_w":            RegionEuropeWest,
+		"euw":                 RegionEuropeWest,
+		"japan":               RegionJapan,
+		"jp":                  RegionJapan,
+		"korea":               RegionKorea,
+		"kr":                  RegionKorea,
+		"latin_america_north": RegionLatinAmericaNorth,
+		"lan":                 RegionLatinAmericaNorth,
+		"latin_america_south": RegionLatinAmericaSouth,
+		"las":                 RegionLatinAmericaSouth,
+		"north_america":       RegionNorthAmerica,
+		"na":                  RegionNorthAmerica,
+		"oceania":             RegionOceania,
+		"oce":                 RegionOceania,
+		"turkey":              RegionTurkey,
+		"tr":                  RegionTurkey,
+		"russia":              RegionRussia,
+		"ru":                  RegionRussia,
+		"pbe":                 RegionPBE,
+	}
+	reg, ok := m[strings.ToLower(r)]
+	if !ok {
+		return "", fmt.Errorf("could not parse value as region: %s", r)
+	}
+	return reg, nil
+}
