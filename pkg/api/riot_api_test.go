@@ -2,32 +2,53 @@ package api
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/require"
 	"io"
 	"net/http"
 	"strconv"
 	"testing"
 
-	"github.com/KnutZuidema/riot-api-wrapper/pkg/model"
+	"github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/require"
+
 	"github.com/stretchr/testify/assert"
+
+	"github.com/KnutZuidema/riot-api-wrapper/pkg/model"
 )
 
 const (
-	apiKey       = "RGAPI-b52c974c-1284-4dd9-82d6-f6c4d5f405d7"
-	summonerName = "InMM BlackScorp"
+	apiKey     = "RGAPI-70e73c6f-8ff5-4bee-8029-32968bdfd922"
+	testRegion = RegionEuropeWest
 )
 
 var (
-	client   = NewClient(RegionEuropeWest, apiKey, http.DefaultClient)
-	summoner *model.Summoner
+	client               *Client
+	summonerByRegion     = map[region]*model.Summoner{}
+	summonerNameByRegion = map[region]string{
+		RegionEuropeWest:        "SK Jenax",
+		RegionEuropeNorthEast:   "I am LeBron",
+		RegionTurkey:            "Reformed Hatred",
+		RegionRussia:            "The Great Donald",
+		RegionOceania:           "k1ngggggggg",
+		RegionNorthAmerica:      "tarzaned5",
+		RegionLatinAmericaSouth: "CodyStark",
+		RegionLatinAmericaNorth: "Shym",
+		RegionJapan:             "isurugi",
+		RegionBrasil:            "paiN 25789",
+		RegionKorea:             "Cuzz",
+	}
 )
 
 func init() {
-	var err error
-	summoner, err = client.GetSummonerByName(summonerName)
-	if err != nil {
-		panic(err)
+	client = NewClient(RegionEuropeWest, apiKey, http.DefaultClient, logrus.StandardLogger())
+	for reg, summoner := range summonerNameByRegion {
+		client.Region = reg
+		s, err := client.GetSummonerByName(summoner)
+		if err != nil {
+			panic(err)
+		}
+		summonerByRegion[reg] = s
 	}
+	client.Region = testRegion
 }
 
 func TestRiotAPIClient_GetSummonerByName(t *testing.T) {
@@ -35,19 +56,21 @@ func TestRiotAPIClient_GetSummonerByName(t *testing.T) {
 		name         string
 		summonerName string
 		wantErr      bool
+		want         *model.Summoner
 	}{
 		{
 			name:         "get summoner",
-			summonerName: summonerName,
+			summonerName: summonerNameByRegion[testRegion],
+			want:         summonerByRegion[testRegion],
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
-			summoner, err = client.GetSummonerByName(tt.summonerName)
+			got, err := client.GetSummonerByName(tt.summonerName)
 			assert.Equal(t, err != nil, tt.wantErr, fmt.Sprintf("error is not %v: %v", tt.wantErr, err))
 			if !tt.wantErr {
-				assert.NotNil(t, summoner)
+				assert.Equal(t, got, tt.want, "responses does not match")
 			}
 		})
 	}
@@ -62,8 +85,8 @@ func TestRiotAPIClient_GetSummonerByAccount(t *testing.T) {
 	}{
 		{
 			name:      "get summoner",
-			accountID: summoner.AccountID,
-			want:      summoner,
+			accountID: summonerByRegion[testRegion].AccountID,
+			want:      summonerByRegion[testRegion],
 		},
 	}
 	for _, tt := range tests {
@@ -86,8 +109,8 @@ func TestRiotAPIClient_GetSummonerByPUUID(t *testing.T) {
 	}{
 		{
 			name:  "get summoner",
-			puuid: summoner.PUUID,
-			want:  summoner,
+			puuid: summonerByRegion[testRegion].PUUID,
+			want:  summonerByRegion[testRegion],
 		},
 	}
 	for _, tt := range tests {
@@ -110,8 +133,8 @@ func TestRiotAPIClient_GetSummonerBySummonerID(t *testing.T) {
 	}{
 		{
 			name:       "get summoner",
-			summonerID: summoner.ID,
-			want:       summoner,
+			summonerID: summonerByRegion[testRegion].ID,
+			want:       summonerByRegion[testRegion],
 		},
 	}
 	for _, tt := range tests {
@@ -133,7 +156,7 @@ func TestRiotAPIClient_GetChampionMasteries(t *testing.T) {
 	}{
 		{
 			name:       "get champion masteries",
-			summonerID: summoner.ID,
+			summonerID: summonerByRegion[testRegion].ID,
 		},
 	}
 	for _, tt := range tests {
@@ -148,7 +171,7 @@ func TestRiotAPIClient_GetChampionMasteries(t *testing.T) {
 }
 
 func TestRiotAPIClient_GetChampionMastery(t *testing.T) {
-	champion, err := client.GetChampion("Anivia")
+	champion, err := client.GetChampion("Ashe")
 	require.Nil(t, err)
 	championID, err := strconv.Atoi(champion.Key)
 	require.Nil(t, err)
@@ -160,7 +183,7 @@ func TestRiotAPIClient_GetChampionMastery(t *testing.T) {
 	}{
 		{
 			name:       "get champion mastery",
-			summonerID: summoner.ID,
+			summonerID: summonerByRegion[testRegion].ID,
 			championID: championID,
 		},
 	}
@@ -183,7 +206,7 @@ func TestRiotAPIClient_GetChampionMasteryTotalScore(t *testing.T) {
 	}{
 		{
 			name:       "get total mastery score",
-			summonerID: summoner.ID,
+			summonerID: summonerByRegion[testRegion].ID,
 		},
 	}
 	for _, tt := range tests {
@@ -315,7 +338,7 @@ func TestRiotAPIClient_GetSummonerLeagues(t *testing.T) {
 	}{
 		{
 			name:       "get solo queue",
-			summonerID: summoner.ID,
+			summonerID: summonerByRegion[testRegion].ID,
 		},
 	}
 	for _, tt := range tests {
@@ -330,25 +353,19 @@ func TestRiotAPIClient_GetSummonerLeagues(t *testing.T) {
 }
 
 func TestRiotAPIClient_GetLeagues(t *testing.T) {
-	type test struct {
+	tests := []struct {
 		name     string
 		wantErr  bool
 		queue    queue
 		tier     tier
 		division division
-	}
-	tests := []test{}
-	for _, q := range Queues {
-		for _, t := range Tiers {
-			for _, d := range Divisions {
-				tests = append(tests, test{
-					name:     fmt.Sprintf("get leagues %s %s %s", q, t, d),
-					queue:    q,
-					tier:     t,
-					division: d,
-				})
-			}
-		}
+	}{
+		{
+			name:     "get leagues",
+			queue:    QueueRankedSolo,
+			tier:     TierGold,
+			division: DivisionThree,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -415,7 +432,7 @@ func TestRiotAPIClient_GetMatchesByAccount(t *testing.T) {
 	}{
 		{
 			name:      "get matches by account",
-			accountID: summoner.AccountID,
+			accountID: summonerByRegion[testRegion].AccountID,
 		},
 	}
 	for _, tt := range tests {
@@ -437,7 +454,7 @@ func TestRiotAPIClient_GetMatchesByAccountStream(t *testing.T) {
 	}{
 		{
 			name:      "get matches by account stream",
-			accountID: summoner.AccountID,
+			accountID: summonerByRegion[testRegion].AccountID,
 		},
 	}
 	for _, tt := range tests {
@@ -449,14 +466,13 @@ func TestRiotAPIClient_GetMatchesByAccountStream(t *testing.T) {
 					break
 				}
 				assert.NotNil(t, res.MatchReference)
-				fmt.Printf("Match: %#v\n", res.MatchReference)
 			}
 		})
 	}
 }
 
 func TestRiotAPIClient_GetMatch(t *testing.T) {
-	matches, err := client.GetMatchesByAccount(summoner.AccountID, 0, 1)
+	matches, err := client.GetMatchesByAccount(summonerByRegion[testRegion].AccountID, 0, 1)
 	require.Nil(t, err)
 	require.Equal(t, len(matches.Matches), 1)
 	matchID := matches.Matches[0].GameID
