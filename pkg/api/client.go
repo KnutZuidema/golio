@@ -2,6 +2,8 @@ package api
 
 import (
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type Client struct {
@@ -9,9 +11,9 @@ type Client struct {
 	*DataDragonClient
 }
 
-func NewClient(region region, apiKey string, client *http.Client) *Client {
+func NewClient(region region, apiKey string, client *http.Client, logger log.FieldLogger) *Client {
 	return &Client{
-		RiotAPIClient:    NewRiotAPIClient(region, apiKey, client),
-		DataDragonClient: NewDataDragonClient(client, region),
+		RiotAPIClient:    NewRiotAPIClient(region, apiKey, client, logger),
+		DataDragonClient: NewDataDragonClient(client, region, logger),
 	}
 }

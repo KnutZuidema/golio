@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/KnutZuidema/riot-api-wrapper/pkg/model"
 )
 
@@ -34,13 +36,17 @@ var (
 )
 
 type DataDragonClient struct {
+	logger   log.FieldLogger
 	Version  string
 	Language languageCode
 	client   *http.Client
 }
 
-func NewDataDragonClient(client *http.Client, region region) *DataDragonClient {
-	c := &DataDragonClient{client: client}
+func NewDataDragonClient(client *http.Client, region region, logger log.FieldLogger) *DataDragonClient {
+	c := &DataDragonClient{
+		client: client,
+		logger: logger.WithField("client", "data dragon"),
+	}
 	if err := c.init(regionToRealmRegion[region]); err != nil {
 		c.Version = fallbackVersion
 		c.Language = fallbackLanguage
