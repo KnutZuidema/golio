@@ -81,7 +81,7 @@ const (
 	apiTokenHeaderKey                                     = "X-Riot-Token"
 	endpointChampionMasteryBase                           = "/lol/champion-mastery/v4"
 	endpointGetChampionMasteries                          = endpointChampionMasteryBase + "/champion-masteries/by-summoner/%s"
-	endpointGetChampionMastery                            = endpointChampionMasteryBase + "/champion-masteries/by-summoner/%s/by-champion/%d"
+	endpointGetChampionMastery                            = endpointChampionMasteryBase + "/champion-masteries/by-summoner/%s/by-champion/%s"
 	endpointGetChampionMasteryTotalScore                  = endpointChampionMasteryBase + "/scores/by-summoner/%s"
 	endpointPlatformBase                                  = "/lol/platform/v3"
 	endpointGetFreeChampionRotation                       = endpointPlatformBase + "/champion-rotations"

@@ -63,7 +63,7 @@ func (c RiotAPIClient) GetChampionMasteries(summonerID string) ([]*model.Champio
 	return masteries, nil
 }
 
-func (c RiotAPIClient) GetChampionMastery(summonerID string, championID int) (*model.ChampionMastery, error) {
+func (c RiotAPIClient) GetChampionMastery(summonerID string, championID string) (*model.ChampionMastery, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChampionMastery",
 		"region": c.Region,

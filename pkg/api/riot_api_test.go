@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strconv"
 	"testing"
 
 	"github.com/sirupsen/logrus"
@@ -173,18 +172,16 @@ func TestRiotAPIClient_GetChampionMasteries(t *testing.T) {
 func TestRiotAPIClient_GetChampionMastery(t *testing.T) {
 	champion, err := client.GetChampion("Ashe")
 	require.Nil(t, err)
-	championID, err := strconv.Atoi(champion.Key)
-	require.Nil(t, err)
 	tests := []struct {
 		name       string
 		summonerID string
-		championID int
+		championID string
 		wantErr    bool
 	}{
 		{
 			name:       "get champion mastery",
 			summonerID: summonerByRegion[testRegion].ID,
-			championID: championID,
+			championID: champion.Key,
 		},
 	}
 	for _, tt := range tests {
