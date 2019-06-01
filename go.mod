@@ -1,4 +1,4 @@
-module github.com/KnutZuidema/riot-api-wrapper
+module github.com/KnutZuidema/golio
 
 go 1.12
 

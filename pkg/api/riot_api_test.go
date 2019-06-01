@@ -11,7 +11,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/KnutZuidema/riot-api-wrapper/pkg/model"
+	"github.com/KnutZuidema/golio/pkg/model"
 )
 
 const (

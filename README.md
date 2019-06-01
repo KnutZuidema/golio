@@ -15,7 +15,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/KnutZuidema/riot-api-wrapper/pkg/api"
+	"github.com/KnutZuidema/golio/pkg/api"
 )
 
 func main() {

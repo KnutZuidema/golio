@@ -9,7 +9,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/KnutZuidema/riot-api-wrapper/pkg/model"
+	"github.com/KnutZuidema/golio/pkg/model"
 )
 
 const (
