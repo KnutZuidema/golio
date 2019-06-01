@@ -1,4 +1,4 @@
-package api
+package golio
 
 import (
 	"net/http"

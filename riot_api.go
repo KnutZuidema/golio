@@ -1,4 +1,4 @@
-package api
+package golio
 
 import (
 	"bytes"
@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/KnutZuidema/golio/model"
 
-	"github.com/KnutZuidema/golio/pkg/model"
+	log "github.com/sirupsen/logrus"
 )
 
 type RiotAPIClient struct {

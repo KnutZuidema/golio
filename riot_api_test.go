@@ -1,4 +1,4 @@
-package api
+package golio
 
 import (
 	"fmt"
@@ -7,15 +7,14 @@ import (
 	"testing"
 
 	"github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/stretchr/testify/assert"
-
-	"github.com/KnutZuidema/golio/pkg/model"
+	"github.com/KnutZuidema/golio/model"
 )
 
 const (
-	apiKey     = "RGAPI-70e73c6f-8ff5-4bee-8029-32968bdfd922"
+	apiKey     = "API KEY"
 	testRegion = RegionEuropeWest
 )
 

@@ -1,4 +1,4 @@
-package api
+package golio
 
 import (
 	"encoding/json"
@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/KnutZuidema/golio/model"
 
-	"github.com/KnutZuidema/golio/pkg/model"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
