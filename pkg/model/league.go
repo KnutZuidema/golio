@@ -1,11 +1,27 @@
 package model
 
+import (
+	"sort"
+)
+
 type LeagueList struct {
-	LeagueID string        `json:"leagueId"`
-	Tier     string        `json:"tier"`
-	Entries  []LeagueEntry `json:"entries"`
-	Queue    string        `json:"queue"`
-	Name     string        `json:"name"`
+	LeagueID      string        `json:"leagueId"`
+	Tier          string        `json:"tier"`
+	Entries       []LeagueEntry `json:"entries"`
+	Queue         string        `json:"queue"`
+	Name          string        `json:"name"`
+	sortedEntries []LeagueEntry
+}
+
+func (l *LeagueList) GetRank(i int) LeagueEntry {
+	if l.sortedEntries == nil || len(l.sortedEntries) != len(l.Entries) {
+		l.sortedEntries = make([]LeagueEntry, len(l.Entries))
+		copy(l.sortedEntries, l.Entries)
+		sort.Slice(l.sortedEntries, func(i, j int) bool {
+			return l.sortedEntries[i].LeaguePoints > l.sortedEntries[j].LeaguePoints
+		})
+	}
+	return l.sortedEntries[i]
 }
 
 type LeagueEntry struct {
