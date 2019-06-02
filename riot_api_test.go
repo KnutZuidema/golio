@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/sirupsen/logrus"
@@ -14,11 +15,11 @@ import (
 )
 
 const (
-	apiKey     = "API KEY"
 	testRegion = RegionEuropeWest
 )
 
 var (
+	apiKey               string
 	client               *Client
 	summonerByRegion     = map[region]*model.Summoner{}
 	summonerNameByRegion = map[region]string{
@@ -37,6 +38,7 @@ var (
 )
 
 func init() {
+	apiKey = os.Getenv("API_KEY")
 	client = NewClient(RegionEuropeWest, apiKey, http.DefaultClient, logrus.StandardLogger())
 	for reg, summoner := range summonerNameByRegion {
 		client.Region = reg
