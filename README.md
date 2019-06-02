@@ -1,5 +1,7 @@
 [![Documentation](https://godoc.org/github.com/KnutZuidema/golio?status.svg)](https://godoc.org/github.com/KnutZuidema/golio)
 [![Build Status](https://travis-ci.com/KnutZuidema/golio.svg?branch=master)](https://travis-ci.com/KnutZuidema/golio)
+[![Go Report Card](https://goreportcard.com/badge/github.com/KnutZuidema/golio)](https://goreportcard.com/report/github.com/KnutZuidema/golio)
+
 # Golio
 
 Golio is a wrapper for the Riot API and the Data Dragon service.
