@@ -460,8 +460,7 @@ func TestRiotAPIClient_GetMatchesByAccountStream(t *testing.T) {
 			got := client.GetMatchesByAccountStream(tt.accountID)
 			for res := range got {
 				if res.Error != nil {
-					require.True(t, tt.wantErr)
-					require.Equal(t, res.Error, io.EOF)
+					require.Equal(t, res.Error != io.EOF, tt.wantErr)
 					break
 				}
 				assert.NotNil(t, res.MatchReference)
