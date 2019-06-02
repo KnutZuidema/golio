@@ -283,7 +283,6 @@ func (c RiotAPIClient) GetMatchesByAccountStream(accountID string) <-chan MatchS
 			for _, match := range matches.Matches {
 				m := new(model.MatchReference)
 				*m = match
-				logger.Infof("streaming match %v", match.GameID)
 				cMatches <- MatchStreamValue{MatchReference: m}
 			}
 			if len(matches.Matches) < 100 {
