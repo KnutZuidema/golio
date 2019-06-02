@@ -12,9 +12,9 @@ type SummonerSpell struct {
 	Cost         []float64 `json:"cost"`
 	CostBurn     string    `json:"costBurn"`
 	Vars         []struct {
-		Link        string `json:"link"`
-		Coefficient int    `json:"coeff"`
-		Key         string `json:"key"`
+		Link        string      `json:"link"`
+		Coefficient interface{} `json:"coeff"`
+		Key         string      `json:"key"`
 	} `json:"vars"`
 	Key           string    `json:"key"`
 	SummonerLevel int       `json:"summonerLevel"`
