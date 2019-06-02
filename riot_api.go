@@ -353,6 +353,13 @@ func (c RiotAPIClient) doRequest(method, endpoint, body string) (*http.Response,
 		logger.Error(err)
 		return nil, err
 	}
+	if response.StatusCode == http.StatusServiceUnavailable {
+		time.Sleep(time.Second)
+		response, err = c.client.Do(request)
+		if err != nil {
+			return nil, err
+		}
+	}
 	if response.StatusCode == http.StatusTooManyRequests {
 		retry := response.Header.Get("Retry-After")
 		seconds, err := strconv.Atoi(retry)
