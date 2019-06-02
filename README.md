@@ -20,7 +20,7 @@ import (
 )
 
 func main() {
-	client := api.NewClient(api.RegionEuropeWest, "API KEY",
+	client := golio.NewClient(golio.RegionEuropeWest, "API KEY",
 		http.DefaultClient, log.StandardLogger())
 	summoner, _ := client.GetSummonerByName("SK Jenax")
 	fmt.Printf("%s is a level %d summoner\n", summoner.Name, summoner.SummonerLevel)
