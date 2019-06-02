@@ -35,6 +35,7 @@ var (
 	}
 )
 
+// DataDragonClient provides access to all data provided by the Data Dragon service
 type DataDragonClient struct {
 	logger   log.FieldLogger
 	Version  string
@@ -42,6 +43,7 @@ type DataDragonClient struct {
 	client   *http.Client
 }
 
+// NewDataDragonClient returns a new client for the Data Dragon service.
 func NewDataDragonClient(client *http.Client, region region, logger log.FieldLogger) *DataDragonClient {
 	c := &DataDragonClient{
 		client: client,
@@ -71,17 +73,19 @@ func (c *DataDragonClient) init(region string) error {
 	return nil
 }
 
+// GetChampions returns all existing champions
 func (c DataDragonClient) GetChampions() (map[string]model.ChampionData, error) {
 	var champions map[string]model.ChampionData
-	if err := c.getInto(dataDragonDataURLFormat, "/champion.json", &champions); err != nil {
+	if err := c.getInto("/champion.json", &champions); err != nil {
 		return nil, err
 	}
 	return champions, nil
 }
 
+// GetChampion returns information about the champion with the given name
 func (c DataDragonClient) GetChampion(name string) (*model.ChampionDataExtended, error) {
 	var data map[string]*model.ChampionDataExtended
-	if err := c.getInto(dataDragonDataURLFormat, fmt.Sprintf("/champion/%s.json", name), &data); err != nil {
+	if err := c.getInto(fmt.Sprintf("/champion/%s.json", name), &data); err != nil {
 		return nil, err
 	}
 	if data, ok := data[name]; ok {
@@ -90,45 +94,50 @@ func (c DataDragonClient) GetChampion(name string) (*model.ChampionDataExtended,
 	return nil, fmt.Errorf("response does not contain requested champion data")
 }
 
+// GetProfileIcons returns all existing profile icons
 func (c DataDragonClient) GetProfileIcons() (map[string]model.ProfileIcon, error) {
 	var icons map[string]model.ProfileIcon
-	if err := c.getInto(dataDragonDataURLFormat, "/profileicon.json", &icons); err != nil {
+	if err := c.getInto("/profileicon.json", &icons); err != nil {
 		return nil, err
 	}
 	return icons, nil
 }
 
+// GetItems returns all existing items
 func (c DataDragonClient) GetItems() (map[string]model.Item, error) {
 	var items map[string]model.Item
-	if err := c.getInto(dataDragonDataURLFormat, "/item.json", &items); err != nil {
+	if err := c.getInto("/item.json", &items); err != nil {
 		return nil, err
 	}
 	return items, nil
 }
 
+// GetMasteries returns all existing masteries. Masteries were removed in patch 7.23.1. If any version higher than that
+// is specified the last available version will be used instead.
 func (c DataDragonClient) GetMasteries() (map[string]model.Mastery, error) {
 	var masteries map[string]model.Mastery
-	if err := c.getInto(dataDragonDataURLFormat, "/mastery.json", &masteries); err != nil {
+	if err := c.getInto("/mastery.json", &masteries); err != nil {
 		return nil, err
 	}
 	return masteries, nil
 }
 
+// GetSummonerSpells returns all existing summoner spells
 func (c DataDragonClient) GetSummonerSpells() (map[string]model.SummonerSpell, error) {
 	var spells map[string]model.SummonerSpell
-	if err := c.getInto(dataDragonDataURLFormat, "/summoner.json", &spells); err != nil {
+	if err := c.getInto("/summoner.json", &spells); err != nil {
 		return nil, err
 	}
 	return spells, nil
 }
 
-func (c DataDragonClient) getInto(format dataDragonURL, endpoint string, target interface{}) error {
-	response, err := c.doRequest(format, endpoint)
+func (c DataDragonClient) getInto(endpoint string, target interface{}) error {
+	response, err := c.doRequest(dataDragonDataURLFormat, endpoint)
 	if err != nil {
 		return err
 	}
 	var ddResponse model.DataDragonResponse
-	if err := json.NewDecoder(response.Body).Decode(&ddResponse); err != nil {
+	if err = json.NewDecoder(response.Body).Decode(&ddResponse); err != nil {
 		return err
 	}
 	data, err := json.Marshal(ddResponse.Data)

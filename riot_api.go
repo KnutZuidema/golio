@@ -15,6 +15,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// RiotAPIClient provides access to all Riot API endpoints
 type RiotAPIClient struct {
 	logger log.FieldLogger
 	Region region
@@ -22,6 +23,7 @@ type RiotAPIClient struct {
 	client *http.Client
 }
 
+// NewRiotAPIClient returns a new api client for the Riot API
 func NewRiotAPIClient(region region, apiKey string, client *http.Client, logger log.FieldLogger) *RiotAPIClient {
 	return &RiotAPIClient{
 		Region: region,
@@ -31,22 +33,27 @@ func NewRiotAPIClient(region region, apiKey string, client *http.Client, logger 
 	}
 }
 
+// GetSummonerByName returns the summoner with the given summoner name
 func (c RiotAPIClient) GetSummonerByName(name string) (*model.Summoner, error) {
 	return c.getSummonerBy(identificationName, name)
 }
 
+// GetSummonerByAccount returns the summoner with the given account ID
 func (c RiotAPIClient) GetSummonerByAccount(id string) (*model.Summoner, error) {
 	return c.getSummonerBy(identificationAccountID, id)
 }
 
+// GetSummonerByPUUID returns the summoner with the given PUUID
 func (c RiotAPIClient) GetSummonerByPUUID(puuid string) (*model.Summoner, error) {
 	return c.getSummonerBy(identificationPUUID, puuid)
 }
 
+// GetSummonerBySummonerID returns the summoner with the given ID
 func (c RiotAPIClient) GetSummonerBySummonerID(summonerID string) (*model.Summoner, error) {
 	return c.getSummonerBy(identificationSummonerID, summonerID)
 }
 
+// GetChampionMasteries returns information about masteries for the summoner with the given ID
 func (c RiotAPIClient) GetChampionMasteries(summonerID string) ([]*model.ChampionMastery, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChampionMasteries",
@@ -63,6 +70,8 @@ func (c RiotAPIClient) GetChampionMasteries(summonerID string) ([]*model.Champio
 	return masteries, nil
 }
 
+// GetChampionMastery returns information about the mastery of the champion with the given ID the summoner with the
+// given ID has
 func (c RiotAPIClient) GetChampionMastery(summonerID string, championID string) (*model.ChampionMastery, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChampionMastery",
@@ -79,6 +88,8 @@ func (c RiotAPIClient) GetChampionMastery(summonerID string, championID string) 
 	return mastery, nil
 }
 
+// GetChampionMasteryTotalScore returns the accumulated mastery score of all champions played by the summoner with the
+// given ID
 func (c RiotAPIClient) GetChampionMasteryTotalScore(summonerID string) (int, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChampionMasteryTotalScore",
@@ -95,7 +106,7 @@ func (c RiotAPIClient) GetChampionMasteryTotalScore(summonerID string) (int, err
 		logger.Error(err)
 		return 0, err
 	}
-	score, err := strconv.Atoi(string(buffer.Bytes()))
+	score, err := strconv.Atoi(buffer.String())
 	if err != nil {
 		logger.Error(err)
 		return 0, err
@@ -103,6 +114,7 @@ func (c RiotAPIClient) GetChampionMasteryTotalScore(summonerID string) (int, err
 	return score, nil
 }
 
+// GetFreeChampionRotation returns information about the current free champion rotation
 func (c RiotAPIClient) GetFreeChampionRotation() (*model.ChampionInfo, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetFreeChampionRotation",
@@ -116,6 +128,7 @@ func (c RiotAPIClient) GetFreeChampionRotation() (*model.ChampionInfo, error) {
 	return info, nil
 }
 
+// GetChallengerLeague returns the current Challenger league for the region
 func (c RiotAPIClient) GetChallengerLeague(queue queue) (*model.LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChallengerLeague",
@@ -129,6 +142,7 @@ func (c RiotAPIClient) GetChallengerLeague(queue queue) (*model.LeagueList, erro
 	return list, nil
 }
 
+// GetGrandmasterLeague returns the current Grandmaster league for the region
 func (c RiotAPIClient) GetGrandmasterLeague(queue queue) (*model.LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetGrandmasterLeague",
@@ -142,6 +156,7 @@ func (c RiotAPIClient) GetGrandmasterLeague(queue queue) (*model.LeagueList, err
 	return list, nil
 }
 
+// GetMasterLeague returns the current Master league for the region
 func (c RiotAPIClient) GetMasterLeague(queue queue) (*model.LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMasterLeague",
@@ -155,6 +170,7 @@ func (c RiotAPIClient) GetMasterLeague(queue queue) (*model.LeagueList, error) {
 	return list, nil
 }
 
+// GetLeaguesBySummoner returns all leagues a summoner with the given ID is in
 func (c RiotAPIClient) GetLeaguesBySummoner(summonerID string) ([]*model.LeagueEntry, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLeaguesBySummoner",
@@ -168,6 +184,7 @@ func (c RiotAPIClient) GetLeaguesBySummoner(summonerID string) ([]*model.LeagueE
 	return leagues, nil
 }
 
+// GetLeagues returns all players with a a league specified by its queue, tier and division
 func (c RiotAPIClient) GetLeagues(queue queue, tier tier, division division) ([]*model.LeagueEntry, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLeagues",
@@ -181,6 +198,7 @@ func (c RiotAPIClient) GetLeagues(queue queue, tier tier, division division) ([]
 	return leagues, nil
 }
 
+// GetLeague returns a ranked league with the specified ID
 func (c RiotAPIClient) GetLeague(leagueID string) (*model.LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLeague",
@@ -194,6 +212,7 @@ func (c RiotAPIClient) GetLeague(leagueID string) (*model.LeagueList, error) {
 	return leagues, nil
 }
 
+// GetStatus returns the current status of the services for the region
 func (c RiotAPIClient) GetStatus() (*model.Status, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetStatus",
@@ -207,6 +226,7 @@ func (c RiotAPIClient) GetStatus() (*model.Status, error) {
 	return status, nil
 }
 
+// GetMatch returns a match specified by its ID
 func (c RiotAPIClient) GetMatch(id int) (*model.Match, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMatch",
@@ -220,6 +240,7 @@ func (c RiotAPIClient) GetMatch(id int) (*model.Match, error) {
 	return match, nil
 }
 
+// GetMatchesByAccount returns a specified range of matches played on the account
 func (c RiotAPIClient) GetMatchesByAccount(accountID string, beginIndex, endIndex int) (*model.Matchlist, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMatchesByAccount",
@@ -236,44 +257,37 @@ func (c RiotAPIClient) GetMatchesByAccount(accountID string, beginIndex, endInde
 	return matches, nil
 }
 
-func (c RiotAPIClient) GetMatchesByAccountStream(accountID string) <-chan struct {
+//MatchStreamValue value returned by GetMatchesByAccountStream, containing either a reference to a match or an error
+type MatchStreamValue struct {
 	*model.MatchReference
-	error
-} {
+	Error error
+}
+
+// GetMatchesByAccountStream returns all matches played on this account as a stream, requesting new until there are no
+// more new games
+func (c RiotAPIClient) GetMatchesByAccountStream(accountID string) <-chan MatchStreamValue {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMatchesByAccountStream",
 		"region": c.Region,
 	})
-	cMatches := make(chan struct {
-		*model.MatchReference
-		error
-	}, 100)
+	cMatches := make(chan MatchStreamValue, 100)
 	go func() {
 		start := 0
 		for {
 			matches, err := c.GetMatchesByAccount(accountID, start, start+100)
 			if err != nil {
 				logger.Error(err)
-				cMatches <- struct {
-					*model.MatchReference
-					error
-				}{error: err}
+				cMatches <- MatchStreamValue{Error: err}
 				return
 			}
 			for _, match := range matches.Matches {
 				m := new(model.MatchReference)
 				*m = match
 				logger.Infof("streaming match %v", match.GameID)
-				cMatches <- struct {
-					*model.MatchReference
-					error
-				}{MatchReference: m}
+				cMatches <- MatchStreamValue{MatchReference: m}
 			}
 			if len(matches.Matches) < 100 {
-				cMatches <- struct {
-					*model.MatchReference
-					error
-				}{error: io.EOF}
+				cMatches <- MatchStreamValue{Error: io.EOF}
 				return
 			}
 			start += 100
