@@ -1,5 +1,6 @@
 package model
 
+// Match contains information about a match
 type Match struct {
 	// Please refer to the Game Constants documentation.
 	SeasonID int `json:"seasonId"`
@@ -24,20 +25,23 @@ type Match struct {
 	Participants []Participant `json:"participants"`
 	// Match duration in seconds.
 	GameDuration int `json:"gameDuration"`
-	// Designates the timestamp when champion select ended and the loading screen appeared, NOT when the game timer was at 0:00.
+	// Designates the timestamp when champion select ended and the loading screen appeared, NOT when the game timer was
+	// at 0:00.
 	GameCreation int `json:"gameCreation"`
 }
 
+// ParticipantIdentity contains a reference to a player for a participant in a game
 type ParticipantIdentity struct {
 	// Player information.
 	Player        Player `json:"player"`
 	ParticipantID int    `json:"participantId"`
 }
 
+// Player represents a player
 type Player struct {
 	CurrentPlatformID string `json:"currentPlatformId"`
 	SummonerName      string `json:"summonerName"`
-	MatchHistoryUri   string `json:"matchHistoryUri"`
+	MatchHistoryURI   string `json:"matchHistoryUri"`
 	// Original platformId.
 	PlatformID string `json:"platformId"`
 	// Player's current accountID (Encrypted)
@@ -49,13 +53,14 @@ type Player struct {
 	AccountID string `json:"accountId"`
 }
 
+// TeamStats represents the stats of a team for a single game
 type TeamStats struct {
 	// Flag indicating whether or not the team scored the first Dragon kill.
 	FirstDragon bool `json:"firstDragon"`
 	// Flag indicating whether or not the team destroyed the first inhibitor.
 	FirstInhibitor bool `json:"firstInhibitor"`
 	// If match queueID has a draft, contains banned champion data, otherwise empty.
-	Bans []TeamBans `json:"bans"`
+	Bans []TeamBan `json:"bans"`
 	// Number of times the team killed Baron.
 	BaronKills int `json:"baronKills"`
 	// Flag indicating whether or not the team scored the first Rift Herald kill.
@@ -78,19 +83,22 @@ type TeamStats struct {
 	TowerKills int `json:"towerKills"`
 	// For Dominion matches, specifies the points the team had at game end.
 	DominionVictoryScore int `json:"dominionVictoryScore"`
-	// string indicating whether or not the team won. There are only two values visibile in public match history. (Legal values: Fail, Win)
+	// string indicating whether or not the team won. There are only two values visibile in public match history.
+	// (Legal values: Fail, Win)
 	Win string `json:"win"`
 	// Number of times the team killed Dragon.
 	DragonKills int `json:"dragonKills"`
 }
 
-type TeamBans struct {
+// TeamBan is a champion banned by a team
+type TeamBan struct {
 	// Turn during which the champion was banned.
 	PickTurn int `json:"pickTurn"`
 	// Banned championId.
 	ChampionID int `json:"championId"`
 }
 
+// Participant represents a participant in a game
 type Participant struct {
 	// Participant statistics.
 	Stats         ParticipantStats `json:"stats"`
@@ -105,13 +113,16 @@ type Participant struct {
 	Spell2ID int `json:"spell2Id"`
 	// List of legacy Mastery information. Not included for matches played with Runes Reforged.
 	Masteries []LegacyMastery `json:"masteries"`
-	// Highest ranked tier achieved for the previous season in a specific subset of queueIds, if any, otherwise null. Used to display border in game loading screen. Please refer to the Ranked Info documentation. (Legal values: CHALLENGER, MASTER, DIAMOND, PLATINUM, GOLD, SILVER, BRONZE, UNRANKED)
+	// Highest ranked tier achieved for the previous season in a specific subset of queueIds, if any, otherwise null.
+	// Used to display border in game loading screen. Please refer to the Ranked Info documentation.
+	// (Legal values: CHALLENGER, MASTER, DIAMOND, PLATINUM, GOLD, SILVER, BRONZE, UNRANKED)
 	HighestAchievedSeasonTier string `json:"highestAchievedSeasonTier"`
 	// First Summoner Spell id.
 	Spell1ID   int `json:"spell1Id"`
 	ChampionID int `json:"championId"`
 }
 
+// ParticipantStats contains stats of a participant in a game
 type ParticipantStats struct {
 	FirstBloodAssist            bool `json:"firstBloodAssist"`
 	VisionScore                 int  `json:"visionScore"`
@@ -249,13 +260,16 @@ type ParticipantStats struct {
 	TimeCCingOthers         int `json:"timeCCingOthers"`
 }
 
+// Rune represents an old rune
 type Rune struct {
 	RuneID int `json:"runeId"`
 	Rank   int `json:"rank"`
 }
 
+// ParticipantTimeline contains timeline values for a participant in a game
 type ParticipantTimeline struct {
-	// Participant's calculated lane. MID and BOT are legacy values. (Legal values: MID, MIDDLE, TOP, JUNGLE, BOT, BOTTOM)
+	// Participant's calculated lane. MID and BOT are legacy values.
+	// (Legal values: MID, MIDDLE, TOP, JUNGLE, BOT, BOTTOM)
 	Lane          string `json:"lane"`
 	ParticipantID int    `json:"participantId"`
 	// Creep score difference versus the calculated lane opponent(s) for a specified period.
@@ -276,11 +290,13 @@ type ParticipantTimeline struct {
 	DamageTakenPerMinDeltas map[string]float64 `json:"damageTakenPerMinDeltas"`
 }
 
+// LegacyMastery represents the old masteries
 type LegacyMastery struct {
 	MasteryID int `json:"masteryId"`
 	Rank      int `json:"rank"`
 }
 
+// Matchlist contains information about all games played by a single summoner
 type Matchlist struct {
 	Matches    []MatchReference `json:"matches"`
 	TotalGames int              `json:"totalGames"`
@@ -288,6 +304,7 @@ type Matchlist struct {
 	EndIndex   int              `json:"endIndex"`
 }
 
+// MatchReference contains information about a game by a single summoner
 type MatchReference struct {
 	Lane       string `json:"lane"`
 	GameID     int    `json:"gameId"`

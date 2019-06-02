@@ -4,6 +4,7 @@ import (
 	"sort"
 )
 
+// LeagueList represents a league containing all player entries in it
 type LeagueList struct {
 	LeagueID      string        `json:"leagueId"`
 	Tier          string        `json:"tier"`
@@ -13,6 +14,7 @@ type LeagueList struct {
 	sortedEntries []LeagueEntry
 }
 
+// GetRank returns the entry at the given rank, sorted by league points
 func (l *LeagueList) GetRank(i int) LeagueEntry {
 	if l.sortedEntries == nil || len(l.sortedEntries) != len(l.Entries) {
 		l.sortedEntries = make([]LeagueEntry, len(l.Entries))
@@ -24,6 +26,7 @@ func (l *LeagueList) GetRank(i int) LeagueEntry {
 	return l.sortedEntries[i]
 }
 
+// LeagueEntry represents a summoners ranked position in a league
 type LeagueEntry struct {
 	Queue        string     `json:"queueType"`
 	SummonerName string     `json:"summonerName"`
@@ -39,6 +42,7 @@ type LeagueEntry struct {
 	LeaguePoints int        `json:"leaguePoints"`
 }
 
+// MiniSeries represents a mini series when playing to ascend to the next ranked tier
 type MiniSeries struct {
 	Progress string `json:"progress"`
 	Losses   int    `json:"losses"`

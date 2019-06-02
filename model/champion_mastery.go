@@ -1,5 +1,6 @@
 package model
 
+// ChampionMastery represents the mastery of a champion in the mastery system for a summoner
 type ChampionMastery struct {
 	ChestGranted                 bool   `json:"chestGranted"`
 	ChampionLevel                int    `json:"championLevel"`

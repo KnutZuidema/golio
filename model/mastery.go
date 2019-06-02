@@ -1,5 +1,6 @@
 package model
 
+// Mastery represents an old mastery
 type Mastery struct {
 	ID           int       `json:"id"`
 	Name         string    `json:"name"`

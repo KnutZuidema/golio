@@ -1,5 +1,6 @@
 package model
 
+// ChampionData contains information about a champion
 type ChampionData struct {
 	Version string            `json:"version"`
 	ID      string            `json:"id"`
@@ -14,6 +15,7 @@ type ChampionData struct {
 	Stats   ChampionDataStats `json:"stats"`
 }
 
+// ChampionDataExtended contains additional data about a champion
 type ChampionDataExtended struct {
 	ChampionData
 	Skins            []SkinData            `json:"skins"`
@@ -25,6 +27,7 @@ type ChampionDataExtended struct {
 	RecommendedItems []RecommendedItemData `json:"recommended"`
 }
 
+//SkinData contains information about a skin for a champion
 type SkinData struct {
 	ID      string `json:"id"`
 	Num     int    `json:"num"`
@@ -32,6 +35,7 @@ type SkinData struct {
 	Chromas bool   `json:"chromas"`
 }
 
+// SpellData contains information about a champions spell
 type SpellData struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
@@ -61,12 +65,14 @@ type SpellData struct {
 	Resource  string    `json:"resource"`
 }
 
+// PassiveData contains information about a champions passive ability
 type PassiveData struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Image       ImageData `json:"image"`
 }
 
+// RecommendedItemData a build recommended for a champion
 type RecommendedItemData struct {
 	Champion      string               `json:"champion"`
 	Title         string               `json:"title"`
@@ -79,6 +85,7 @@ type RecommendedItemData struct {
 	Blocks        []RecommendedItemSet `json:"blocks"`
 }
 
+// RecommendedItemSet is a set of items used in a recommended build
 type RecommendedItemSet struct {
 	Type                string            `json:"type"`
 	RecMath             bool              `json:"recMath"`
@@ -90,12 +97,14 @@ type RecommendedItemSet struct {
 	Items               []RecommendedItem `json:"items"`
 }
 
+// RecommendedItem represents an item in a recommended set
 type RecommendedItem struct {
 	ID        string `json:"id"`
 	Count     int    `json:"count"`
 	HideCount bool   `json:"hideCount"`
 }
 
+// ChampionDataInfo contains information about the playstyle of a champion
 type ChampionDataInfo struct {
 	Attack     int `json:"attack"`
 	Defense    int `json:"defense"`
@@ -103,6 +112,7 @@ type ChampionDataInfo struct {
 	Difficulty int `json:"difficulty"`
 }
 
+// ImageData contains information about an image
 type ImageData struct {
 	Full   string `json:"full"`
 	Sprite string `json:"sprite"`
@@ -113,6 +123,7 @@ type ImageData struct {
 	H      int    `json:"h"`
 }
 
+// ChampionDataStats contains information about the stats of a champion
 type ChampionDataStats struct {
 	HealthPoints                    float64 `json:"hp"`
 	HealthPointsPerLevel            float64 `json:"hpperlevel"`

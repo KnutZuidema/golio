@@ -1,5 +1,6 @@
 package model
 
+// Item represents an item
 type Item struct {
 	Name string `json:"name"`
 	Rune struct {
@@ -32,6 +33,7 @@ type Item struct {
 	Maps             map[string]bool `json:"maps"`
 }
 
+// ItemStats contains information about the stats of an item
 type ItemStats struct {
 	FlatHPPoolMod                       int `json:"FlatHPPoolMod"`
 	RFlatHPModPerLevel                  int `json:"rFlatHPModPerLevel"`

@@ -1,5 +1,6 @@
 package model
 
+// Summoner represents a summoner with several related IDs
 type Summoner struct {
 	ProfileIconID int    `json:"profileIconId"`
 	Name          string `json:"name"`
