@@ -3,7 +3,6 @@ language: go
 go:
   - "1.x"
   - "1.12"
-  - "1.11"
 
 env:
   - GO111MODULE=on
