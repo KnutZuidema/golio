@@ -16,4 +16,4 @@ before_script:
 
 script:
   - go test ./...
-  - golangci-lint run --enable-all
+  - golangci-lint run
