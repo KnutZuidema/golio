@@ -354,9 +354,11 @@ func (c RiotAPIClient) doRequest(method, endpoint, body string) (*http.Response,
 		return nil, err
 	}
 	if response.StatusCode == http.StatusServiceUnavailable {
+		logger.Info("service unavailable, retrying")
 		time.Sleep(time.Second)
 		response, err = c.client.Do(request)
 		if err != nil {
+			logger.Error(err)
 			return nil, err
 		}
 	}
