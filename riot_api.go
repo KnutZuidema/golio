@@ -295,6 +295,35 @@ func (c RiotAPIClient) GetMatchesByAccountStream(accountID string) <-chan MatchS
 	return cMatches
 }
 
+// GetCurrentGame returns a currently running game for a summoner
+func (c RiotAPIClient) GetCurrentGame(summonerID string) (*model.CurrentGameInfo, error) {
+	logger := c.logger.WithFields(log.Fields{
+		"method":     "GetCurrentGame",
+		"region":     c.Region,
+		"summonerID": summonerID,
+	})
+	var games model.CurrentGameInfo
+	if err := c.getInto(fmt.Sprintf(endpointGetCurrentGame, summonerID), &games); err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	return &games, nil
+}
+
+// GetFeaturedGames returns the currently featured games
+func (c RiotAPIClient) GetFeaturedGames() (*model.FeaturedGames, error) {
+	logger := c.logger.WithFields(log.Fields{
+		"method": "GetFeaturedGames",
+		"region": c.Region,
+	})
+	var games model.FeaturedGames
+	if err := c.getInto(endpointGetFeaturedGames, &games); err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	return &games, nil
+}
+
 func (c RiotAPIClient) getSummonerBy(by identification, value string) (*model.Summoner, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "getSummonerBy",

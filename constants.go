@@ -120,6 +120,9 @@ const (
 	endpointSummonerBase                 = "/lol/summoner/v4"
 	endpointGetSummonerBySummonerID      = endpointSummonerBase + "/summoners/%s"
 	endpointGetSummonerBy                = endpointSummonerBase + "/summoners/by-%s/%s"
+	endpointSpectatorBase                = "/lol/spectator/v4"
+	endpointGetCurrentGame               = endpointSpectatorBase + "/active-games/by-summoner/%s"
+	endpointGetFeaturedGames             = endpointSpectatorBase + "/featured-games"
 )
 
 var (
