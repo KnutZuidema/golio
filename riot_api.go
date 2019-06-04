@@ -404,7 +404,14 @@ func (c RiotAPIClient) doRequest(method, endpoint, body string) (*http.Response,
 	}
 	if response.StatusCode < 200 || response.StatusCode > 299 {
 		logger.Errorf("error response: %v", response.Status)
-		return nil, fmt.Errorf("error response: %v", response.Status)
+		err, ok := StatusToError[response.StatusCode]
+		if !ok {
+			err = Error{
+				Message:    "unknown error reason",
+				StatusCode: response.StatusCode,
+			}
+		}
+		return nil, err
 	}
 	return response, nil
 }
