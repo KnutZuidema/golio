@@ -494,3 +494,49 @@ func TestRiotAPIClient_GetMatch(t *testing.T) {
 		})
 	}
 }
+
+func TestRiotAPIClient_GetFeaturedGames(t *testing.T) {
+	tests := []struct {
+		name    string
+		wantErr bool
+	}{
+		{
+			name: "get games",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := client.GetFeaturedGames()
+			require.Equal(t, tt.wantErr, err != nil)
+			assert.NotNil(t, got)
+		})
+	}
+}
+
+func TestRiotAPIClient_GetCurrentGame(t *testing.T) {
+	tests := []struct {
+		name       string
+		summonerID string
+		wantErr    bool
+	}{
+		{
+			name:       "get game",
+			summonerID: summonerByRegion[testRegion].ID,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := client.GetCurrentGame(tt.summonerID)
+			if !tt.wantErr && err != nil {
+				// if the summoner is not currently in a game a 404 error is returned by the API
+				require.Equal(t, err, ErrNotFound)
+				return
+			} else if tt.wantErr {
+				require.NotNil(t, err)
+				return
+			}
+			require.Nil(t, err)
+			assert.NotNil(t, got)
+		})
+	}
+}
