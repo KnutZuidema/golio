@@ -4,6 +4,7 @@ import (
 	"net/http"
 )
 
+// Error is a custom error type used by the API to signal http error responses
 type Error struct {
 	Message    string
 	StatusCode int
@@ -13,6 +14,7 @@ func (e Error) Error() string {
 	return e.Message
 }
 
+// All regularly returned errors by the Riot API
 var (
 	ErrBadRequest = Error{
 		Message:    "bad request",
