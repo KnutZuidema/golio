@@ -1,5 +1,6 @@
 package model
 
+// CurrentGameParticipant represents a player in an ongoing game
 type CurrentGameParticipant struct {
 	ProfileIconID            int                       `json:"profileIconId"`
 	ChampionID               int                       `json:"championId"`

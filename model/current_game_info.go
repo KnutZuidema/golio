@@ -1,5 +1,6 @@
 package model
 
+// CurrentGameInfo contains information about an ongoing game
 type CurrentGameInfo struct {
 	GameID            int                      `json:"gameId"`
 	GameStartTime     int                      `json:"gameStartTime"`

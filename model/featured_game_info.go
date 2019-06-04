@@ -1,5 +1,6 @@
 package model
 
+// FeaturedGameInfo contains information about a featured game
 type FeaturedGameInfo struct {
 	GameID            int              `json:"gameId"`
 	GameStartTime     int              `json:"gameStartTime"`
