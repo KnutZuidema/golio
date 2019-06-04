@@ -72,7 +72,7 @@ func (c RiotAPIClient) GetChampionMasteries(summonerID string) ([]*model.Champio
 
 // GetChampionMastery returns information about the mastery of the champion with the given ID the summoner with the
 // given ID has
-func (c RiotAPIClient) GetChampionMastery(summonerID string, championID string) (*model.ChampionMastery, error) {
+func (c RiotAPIClient) GetChampionMastery(summonerID, championID string) (*model.ChampionMastery, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChampionMastery",
 		"region": c.Region,
@@ -257,7 +257,7 @@ func (c RiotAPIClient) GetMatchesByAccount(accountID string, beginIndex, endInde
 	return matches, nil
 }
 
-//MatchStreamValue value returned by GetMatchesByAccountStream, containing either a reference to a match or an error
+// MatchStreamValue value returned by GetMatchesByAccountStream, containing either a reference to a match or an error
 type MatchStreamValue struct {
 	*model.MatchReference
 	Error error

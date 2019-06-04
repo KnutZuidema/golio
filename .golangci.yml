@@ -161,21 +161,51 @@ linters-settings:
     # To check which checks are enabled run `GL_DEBUG=gocritic golangci-lint run`
     # By default list of stable checks is used.
     enabled-checks:
+      - appendCombine
+      - assignOp
+      - boolExprSimplify
+      - builtinShadow
+      - captLocal
+      - caseOrder
+      - commentFormatting
+      - commentedOutCode
+      - commentedOutImport
+      - defaultCaseOrder
+      - docStub
+      - dupBranchBody
+      - dupCase
+      - elseif
+      - emptyFallthrough
+      - emptyStringTest
+      - flagName
+      - hexLiteral
+      - hugeParam
+      - ifElseChain
+      - importShadow
+      - initClause
+      - nilValReturn
+      - octalLiteral
+      - paramTypeCombine
+      - regexpMust
+      - singleCaseSwitch
+      - sloppyLen
+      - switchTrue
+      - typeAssertChain
+      - typeSwitchVar
+      - typeUnparen
+      - unlabelStmt
+      - unlambda
+      - unnecessaryBlock
+      - unslice
+      - valSwap
+      - yodaStyleExpr
 
     # Which checks should be disabled; can't be combined with 'enabled-checks'; default is empty
     disabled-checks:
-      - regexpMust
 
     # Enable multiple checks by tags, run `GL_DEBUG=gocritic golangci-lint` run to see all tags and checks.
     # Empty list by default. See https://github.com/go-critic/go-critic#usage -> section "Tags".
     enabled-tags:
-      - performance
-
-    settings: # settings passed to gocritic
-      captLocal: # must be valid enabled check name
-        paramsOnly: true
-      rangeValCopy:
-        sizeThreshold: 32
 
 linters:
   enable:
@@ -192,6 +222,7 @@ linters:
     - lll
     - unparam
     - nakedret
+    - gocritic
   enable-all: false
   disable:
   disable-all: false
