@@ -126,7 +126,7 @@ const (
 )
 
 var (
-	//LanguageCodes is a list of all possible language codes
+	// LanguageCodes is a list of all possible language codes
 	LanguageCodes = []languageCode{
 		LanguageCodeCzechRepublic,
 		LanguageCodeGreece,
@@ -165,7 +165,7 @@ var (
 		QueueRankedTwistedTreeline,
 	}
 
-	//Tiers is a list of all available tiers
+	// Tiers is a list of all available tiers
 	Tiers = []tier{
 		TierIron,
 		TierBronze,
@@ -175,7 +175,7 @@ var (
 		TierDiamond,
 	}
 
-	//Divisions is a list of all available divisions
+	// Divisions is a list of all available divisions
 	Divisions = []division{
 		DivisionOne,
 		DivisionTwo,
@@ -183,7 +183,7 @@ var (
 		DivisionFour,
 	}
 
-	//Regions is a list of all available regions
+	// Regions is a list of all available regions
 	Regions = []region{
 		RegionBrasil,
 		RegionEuropeNorthEast,
