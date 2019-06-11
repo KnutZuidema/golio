@@ -40,11 +40,11 @@ type DataDragonClient struct {
 	logger   log.FieldLogger
 	Version  string
 	Language languageCode
-	client   *http.Client
+	client   Doer
 }
 
 // NewDataDragonClient returns a new client for the Data Dragon service.
-func NewDataDragonClient(client *http.Client, region region, logger log.FieldLogger) *DataDragonClient {
+func NewDataDragonClient(client Doer, region region, logger log.FieldLogger) *DataDragonClient {
 	c := &DataDragonClient{
 		client: client,
 		logger: logger.WithField("client", "data dragon"),
