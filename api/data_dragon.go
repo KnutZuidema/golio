@@ -143,10 +143,8 @@ func (c DataDragonClient) getInto(endpoint string, target interface{}) error {
 	if err = json.NewDecoder(response.Body).Decode(&ddResponse); err != nil {
 		return err
 	}
-	data, err := json.Marshal(ddResponse.Data)
-	if err != nil {
-		return err
-	}
+	// this can not return an error. the error would have been returned during the above decode already
+	data, _ := json.Marshal(ddResponse.Data)
 	return json.Unmarshal(data, &target)
 }
 

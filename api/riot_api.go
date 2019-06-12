@@ -7,7 +7,6 @@ import (
 	"io"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/KnutZuidema/golio/model"
@@ -95,19 +94,8 @@ func (c RiotAPIClient) GetChampionMasteryTotalScore(summonerID string) (int, err
 		"method": "GetChampionMasteryTotalScore",
 		"Region": c.Region,
 	})
-	response, err := c.get(fmt.Sprintf(endpointGetChampionMasteryTotalScore, summonerID))
-	if err != nil {
-		logger.Error(err)
-		return 0, err
-	}
-	var buffer bytes.Buffer
-	_, err = buffer.ReadFrom(response.Body)
-	if err != nil {
-		logger.Error(err)
-		return 0, err
-	}
-	score, err := strconv.Atoi(buffer.String())
-	if err != nil {
+	var score int
+	if err := c.getInto(fmt.Sprintf(endpointGetChampionMasteryTotalScore, summonerID), &score); err != nil {
 		logger.Error(err)
 		return 0, err
 	}
@@ -324,6 +312,91 @@ func (c RiotAPIClient) GetFeaturedGames() (*model.FeaturedGames, error) {
 	return &games, nil
 }
 
+// CreateTournamentCodes creates a specified amount of codes for a tournament.
+// For more information about the parameters see the documentation for TournamentCodeParameters.
+// Set the useStub flag to true to use the stub endpoints for mocking an implementation
+func (c RiotAPIClient) CreateTournamentCodes(tournamentID, count int, parameters *model.TournamentCodeParameters,
+	useStub bool) ([]string, error) {
+	logger := c.logger.WithFields(log.Fields{
+		"method": "CreateTournamentCodes",
+		"Region": c.Region,
+		"stub":   useStub,
+	})
+	endpoint := endpointCreateTournamentCodes
+	if useStub {
+		endpoint = endpointCreateStubTournamentCodes
+	}
+	var codes []string
+	if err := c.postInto(fmt.Sprintf(endpoint, count, tournamentID), parameters, &codes); err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	return codes, nil
+}
+
+// GetLobbyEvents returns the lobby events for a lobby specified by the tournament code
+// Set the useStub flag to true to use the stub endpoints for mocking an implementation
+func (c RiotAPIClient) GetLobbyEvents(code string, useStub bool) (*model.LobbyEventList, error) {
+	logger := c.logger.WithFields(log.Fields{
+		"method": "GetLobbyEvents",
+		"Region": c.Region,
+		"stub":   useStub,
+	})
+	endpoint := endpointGetLobbyEvents
+	if useStub {
+		endpoint = endpointGetStubLobbyEvents
+	}
+	var events model.LobbyEventList
+	if err := c.getInto(fmt.Sprintf(endpoint, code), &events); err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	return &events, nil
+}
+
+// CreateTournamentProvider creates a tournament provider and returns the ID.
+// For more information about the parameters see the documentation for ProviderRegistrationParameters.
+// Set the useStub flag to true to use the stub endpoints for mocking an implementation
+func (c RiotAPIClient) CreateTournamentProvider(parameters *model.ProviderRegistrationParameters,
+	useStub bool) (int, error) {
+	logger := c.logger.WithFields(log.Fields{
+		"method": "CreateTournamentProvider",
+		"Region": c.Region,
+		"stub":   useStub,
+	})
+	endpoint := endpointCreateTournamentProvider
+	if useStub {
+		endpoint = endpointCreateStubTournamentProvider
+	}
+	var id int
+	if err := c.postInto(endpoint, parameters, &id); err != nil {
+		logger.Error(err)
+		return 0, err
+	}
+	return id, nil
+}
+
+// CreateTournament creates a tournament and returns the ID.
+// For more information about the parameters see the documentation for TournamentRegistrationParameters.
+// Set the useStub flag to true to use the stub endpoints for mocking an implementation
+func (c RiotAPIClient) CreateTournament(parameters *model.TournamentRegistrationParameters, useStub bool) (int, error) {
+	logger := c.logger.WithFields(log.Fields{
+		"method": "CreateTournament",
+		"Region": c.Region,
+		"stub":   useStub,
+	})
+	endpoint := endpointCreateTournament
+	if useStub {
+		endpoint = endpointCreateStubTournament
+	}
+	var id int
+	if err := c.postInto(endpoint, parameters, &id); err != nil {
+		logger.Error(err)
+		return 0, err
+	}
+	return id, nil
+}
+
 func (c RiotAPIClient) getSummonerBy(by identification, value string) (*model.Summoner, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "getSummonerBy",
@@ -362,11 +435,43 @@ func (c RiotAPIClient) getInto(endpoint string, target interface{}) error {
 	return nil
 }
 
-func (c RiotAPIClient) get(endpoint string) (*http.Response, error) {
-	return c.doRequest("GET", endpoint, "")
+func (c RiotAPIClient) postInto(endpoint string, body, target interface{}) error {
+	logger := c.logger.WithFields(log.Fields{
+		"method":   "postInto",
+		"Region":   c.Region,
+		"endpoint": endpoint,
+	})
+	response, err := c.post(endpoint, body)
+	if err != nil {
+		logger.Error(err)
+		return err
+	}
+	if err := json.NewDecoder(response.Body).Decode(target); err != nil {
+		logger.Error(err)
+		return err
+	}
+	return nil
 }
 
-func (c RiotAPIClient) doRequest(method, endpoint, body string) (*http.Response, error) {
+func (c RiotAPIClient) get(endpoint string) (*http.Response, error) {
+	return c.doRequest("GET", endpoint, nil)
+}
+
+func (c RiotAPIClient) post(endpoint string, body interface{}) (*http.Response, error) {
+	logger := c.logger.WithFields(log.Fields{
+		"method":   "post",
+		"Region":   c.Region,
+		"endpoint": endpoint,
+	})
+	buf := &bytes.Buffer{}
+	if err := json.NewEncoder(buf).Encode(body); err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	return c.doRequest("POST", endpoint, buf)
+}
+
+func (c RiotAPIClient) doRequest(method, endpoint string, body io.Reader) (*http.Response, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method":   "doRequest",
 		"Region":   c.Region,
@@ -416,13 +521,12 @@ func (c RiotAPIClient) doRequest(method, endpoint, body string) (*http.Response,
 	return response, nil
 }
 
-func (c RiotAPIClient) newRequest(method, endpoint, body string) (*http.Request, error) {
+func (c RiotAPIClient) newRequest(method, endpoint string, body io.Reader) (*http.Request, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "newRequest",
 		"Region": c.Region,
 	})
-	request, err := http.NewRequest(method, fmt.Sprintf(apiURLFormat, scheme, c.Region, baseURL, endpoint),
-		strings.NewReader(body))
+	request, err := http.NewRequest(method, fmt.Sprintf(apiURLFormat, scheme, c.Region, baseURL, endpoint), body)
 	if err != nil {
 		logger.Error(err)
 		return nil, err

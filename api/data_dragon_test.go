@@ -71,6 +71,11 @@ func TestDataDragonClient_GetChampion(t *testing.T) {
 			want: &model.ChampionDataExtended{},
 		},
 		{
+			name:    "invalid data dragon response",
+			doer:    mock.NewJSONMockDoer(struct{}{}, 200),
+			wantErr: fmt.Errorf("response does not contain requested champion data"),
+		},
+		{
 			name:    "known error",
 			doer:    mock.NewStatusMockDoer(http.StatusForbidden),
 			wantErr: ErrForbidden,
@@ -253,12 +258,14 @@ func TestDataDragonClient_doRequest(t *testing.T) {
 		name     string
 		endpoint string
 		doer     Doer
+		format   dataDragonURL
 		wantErr  bool
 	}{
 		{
 			name:     "invalid url",
 			endpoint: "a\nb c@asd*asd)",
 			doer:     mock.NewStatusMockDoer(200),
+			format:   dataDragonDataURLFormat,
 			wantErr:  true,
 		},
 		{
@@ -268,14 +275,100 @@ func TestDataDragonClient_doRequest(t *testing.T) {
 					return nil, fmt.Errorf("error")
 				},
 			},
+			format:  dataDragonImageURLFormat,
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewDataDragonClient(tt.doer, RegionEuropeWest, log.StandardLogger())
-			_, err := c.doRequest(dataDragonDataURLFormat, tt.endpoint)
+			_, err := c.doRequest(tt.format, tt.endpoint)
 			assert.Equal(t, err != nil, tt.wantErr)
+		})
+	}
+}
+
+func TestDataDragonClient_init(t *testing.T) {
+	tests := []struct {
+		name    string
+		doer    Doer
+		wantErr bool
+	}{
+		{
+			name: "error on decode",
+			doer: &mock.Doer{
+				Custom: func(r *http.Request) (*http.Response, error) {
+					return &http.Response{
+						Body: errorReadCloser{},
+					}, nil
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := NewDataDragonClient(tt.doer, RegionOceania, log.StandardLogger())
+			if err := c.init(RegionOceania); (err != nil) != tt.wantErr {
+				t.Errorf("DataDragonClient.init() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestDataDragonClient_getInto(t *testing.T) {
+	tests := []struct {
+		name    string
+		target  interface{}
+		wantErr bool
+	}{
+		{
+			name:    "fail decode",
+			target:  failJSONDecoding{},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := NewDataDragonClient(mock.NewJSONMockDoer(0, 200), RegionOceania, log.StandardLogger())
+			err := c.getInto("endpoint", tt.target)
+			assert.Equal(t, tt.wantErr, err != nil)
+		})
+	}
+}
+
+func Test_versionGreaterThan(t *testing.T) {
+	type args struct {
+		v1 string
+		v2 string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "invalid second arg",
+			args: args{
+				v1: "1",
+				v2: "a",
+			},
+			want: false,
+		},
+		{
+			name: "second greater",
+			args: args{
+				v1: "1",
+				v2: "2",
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := versionGreaterThan(tt.args.v1, tt.args.v2); got != tt.want {
+				t.Errorf("versionGreaterThan() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
@@ -284,4 +377,14 @@ func dataDragonResponseDoer(object interface{}) Doer {
 	return mock.NewJSONMockDoer(model.DataDragonResponse{
 		Data: object,
 	}, 200)
+}
+
+type errorReadCloser struct{}
+
+func (e errorReadCloser) Read(p []byte) (n int, err error) {
+	return 0, fmt.Errorf("error")
+}
+
+func (e errorReadCloser) Close() error {
+	return fmt.Errorf("error")
 }
