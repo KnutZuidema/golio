@@ -20,11 +20,11 @@ type RiotAPIClient struct {
 	logger log.FieldLogger
 	Region region
 	apiKey string
-	client *http.Client
+	client Doer
 }
 
 // NewRiotAPIClient returns a new api client for the Riot API
-func NewRiotAPIClient(region region, apiKey string, client *http.Client, logger log.FieldLogger) *RiotAPIClient {
+func NewRiotAPIClient(region region, apiKey string, client Doer, logger log.FieldLogger) *RiotAPIClient {
 	return &RiotAPIClient{
 		Region: region,
 		apiKey: apiKey,
