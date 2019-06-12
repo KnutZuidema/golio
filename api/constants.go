@@ -124,6 +124,16 @@ const (
 	endpointSpectatorBase                = "/lol/spectator/v4"
 	endpointGetCurrentGame               = endpointSpectatorBase + "/active-games/by-summoner/%s"
 	endpointGetFeaturedGames             = endpointSpectatorBase + "/featured-games"
+	endpointTournamentStubBase           = "/lol/tournament-stub/v4"
+	endpointCreateStubTournamentCodes    = endpointTournamentStubBase + "/codes?count=%d&tournamentId=%d"
+	endpointGetStubLobbyEvents           = endpointTournamentStubBase + "/lobby-events/by-code/%s"
+	endpointCreateStubTournamentProvider = endpointTournamentStubBase + "/providers"
+	endpointCreateStubTournament         = endpointTournamentStubBase + "/tournaments"
+	endpointTournamentBase               = "/lol/tournament/v4"
+	endpointCreateTournamentCodes        = endpointTournamentBase + "/codes?count=%d&tournamentId=%d"
+	endpointGetLobbyEvents               = endpointTournamentBase + "/lobby-events/by-code/%s"
+	endpointCreateTournamentProvider     = endpointTournamentBase + "/providers"
+	endpointCreateTournament             = endpointTournamentBase + "/tournaments"
 )
 
 var (
