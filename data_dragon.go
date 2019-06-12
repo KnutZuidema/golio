@@ -65,6 +65,9 @@ func (c *DataDragonClient) init(region string) error {
 	if err != nil {
 		return err
 	}
+	if response.Body == nil {
+		return fmt.Errorf("no response body")
+	}
 	if err := json.NewDecoder(response.Body).Decode(&res); err != nil {
 		return err
 	}
@@ -157,7 +160,15 @@ func (c DataDragonClient) doRequest(format dataDragonURL, endpoint string) (*htt
 		return nil, err
 	}
 	if response.StatusCode < 200 || response.StatusCode > 299 {
-		return nil, fmt.Errorf("error response: %v", response.Status)
+		var err error
+		err, ok := StatusToError[response.StatusCode]
+		if !ok {
+			err = Error{
+				Message:    "unknown error reason",
+				StatusCode: response.StatusCode,
+			}
+		}
+		return nil, err
 	}
 	return response, nil
 }
