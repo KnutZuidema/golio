@@ -1,4 +1,4 @@
-package golio
+package api
 
 import (
 	"bytes"
@@ -18,13 +18,13 @@ import (
 // RiotAPIClient provides access to all Riot API endpoints
 type RiotAPIClient struct {
 	logger log.FieldLogger
-	Region region
+	Region Region
 	apiKey string
 	client Doer
 }
 
 // NewRiotAPIClient returns a new api client for the Riot API
-func NewRiotAPIClient(region region, apiKey string, client Doer, logger log.FieldLogger) *RiotAPIClient {
+func NewRiotAPIClient(region Region, apiKey string, client Doer, logger log.FieldLogger) *RiotAPIClient {
 	return &RiotAPIClient{
 		Region: region,
 		apiKey: apiKey,
@@ -57,7 +57,7 @@ func (c RiotAPIClient) GetSummonerBySummonerID(summonerID string) (*model.Summon
 func (c RiotAPIClient) GetChampionMasteries(summonerID string) ([]*model.ChampionMastery, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChampionMasteries",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	var masteries []*model.ChampionMastery
 	if err := c.getInto(
@@ -75,7 +75,7 @@ func (c RiotAPIClient) GetChampionMasteries(summonerID string) ([]*model.Champio
 func (c RiotAPIClient) GetChampionMastery(summonerID, championID string) (*model.ChampionMastery, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChampionMastery",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	var mastery *model.ChampionMastery
 	if err := c.getInto(
@@ -93,7 +93,7 @@ func (c RiotAPIClient) GetChampionMastery(summonerID, championID string) (*model
 func (c RiotAPIClient) GetChampionMasteryTotalScore(summonerID string) (int, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChampionMasteryTotalScore",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	response, err := c.get(fmt.Sprintf(endpointGetChampionMasteryTotalScore, summonerID))
 	if err != nil {
@@ -118,7 +118,7 @@ func (c RiotAPIClient) GetChampionMasteryTotalScore(summonerID string) (int, err
 func (c RiotAPIClient) GetFreeChampionRotation() (*model.ChampionInfo, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetFreeChampionRotation",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	var info *model.ChampionInfo
 	if err := c.getInto(endpointGetFreeChampionRotation, &info); err != nil {
@@ -128,11 +128,11 @@ func (c RiotAPIClient) GetFreeChampionRotation() (*model.ChampionInfo, error) {
 	return info, nil
 }
 
-// GetChallengerLeague returns the current Challenger league for the region
+// GetChallengerLeague returns the current Challenger league for the Region
 func (c RiotAPIClient) GetChallengerLeague(queue queue) (*model.LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChallengerLeague",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	var list *model.LeagueList
 	if err := c.getInto(fmt.Sprintf(endpointGetChallengerLeague, queue), &list); err != nil {
@@ -142,11 +142,11 @@ func (c RiotAPIClient) GetChallengerLeague(queue queue) (*model.LeagueList, erro
 	return list, nil
 }
 
-// GetGrandmasterLeague returns the current Grandmaster league for the region
+// GetGrandmasterLeague returns the current Grandmaster league for the Region
 func (c RiotAPIClient) GetGrandmasterLeague(queue queue) (*model.LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetGrandmasterLeague",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	var list *model.LeagueList
 	if err := c.getInto(fmt.Sprintf(endpointGetGrandmasterLeague, queue), &list); err != nil {
@@ -156,11 +156,11 @@ func (c RiotAPIClient) GetGrandmasterLeague(queue queue) (*model.LeagueList, err
 	return list, nil
 }
 
-// GetMasterLeague returns the current Master league for the region
+// GetMasterLeague returns the current Master league for the Region
 func (c RiotAPIClient) GetMasterLeague(queue queue) (*model.LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMasterLeague",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	var list *model.LeagueList
 	if err := c.getInto(fmt.Sprintf(endpointGetMasterLeague, queue), &list); err != nil {
@@ -174,7 +174,7 @@ func (c RiotAPIClient) GetMasterLeague(queue queue) (*model.LeagueList, error) {
 func (c RiotAPIClient) GetLeaguesBySummoner(summonerID string) ([]*model.LeagueEntry, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLeaguesBySummoner",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	var leagues []*model.LeagueEntry
 	if err := c.getInto(fmt.Sprintf(endpointGetLeaguesBySummoner, summonerID), &leagues); err != nil {
@@ -188,7 +188,7 @@ func (c RiotAPIClient) GetLeaguesBySummoner(summonerID string) ([]*model.LeagueE
 func (c RiotAPIClient) GetLeagues(queue queue, tier tier, division division) ([]*model.LeagueEntry, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLeagues",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	var leagues []*model.LeagueEntry
 	if err := c.getInto(fmt.Sprintf(endpointGetLeagues, queue, tier, division), &leagues); err != nil {
@@ -202,7 +202,7 @@ func (c RiotAPIClient) GetLeagues(queue queue, tier tier, division division) ([]
 func (c RiotAPIClient) GetLeague(leagueID string) (*model.LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLeague",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	var leagues *model.LeagueList
 	if err := c.getInto(fmt.Sprintf(endpointGetLeague, leagueID), &leagues); err != nil {
@@ -212,11 +212,11 @@ func (c RiotAPIClient) GetLeague(leagueID string) (*model.LeagueList, error) {
 	return leagues, nil
 }
 
-// GetStatus returns the current status of the services for the region
+// GetStatus returns the current status of the services for the Region
 func (c RiotAPIClient) GetStatus() (*model.Status, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetStatus",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	var status *model.Status
 	if err := c.getInto(endpointGetStatus, &status); err != nil {
@@ -230,7 +230,7 @@ func (c RiotAPIClient) GetStatus() (*model.Status, error) {
 func (c RiotAPIClient) GetMatch(id int) (*model.Match, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMatch",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	var match *model.Match
 	if err := c.getInto(fmt.Sprintf(endpointGetMatch, id), &match); err != nil {
@@ -244,7 +244,7 @@ func (c RiotAPIClient) GetMatch(id int) (*model.Match, error) {
 func (c RiotAPIClient) GetMatchesByAccount(accountID string, beginIndex, endIndex int) (*model.Matchlist, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMatchesByAccount",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	var matches *model.Matchlist
 	if err := c.getInto(
@@ -268,7 +268,7 @@ type MatchStreamValue struct {
 func (c RiotAPIClient) GetMatchesByAccountStream(accountID string) <-chan MatchStreamValue {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMatchesByAccountStream",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	cMatches := make(chan MatchStreamValue, 100)
 	go func() {
@@ -299,7 +299,7 @@ func (c RiotAPIClient) GetMatchesByAccountStream(accountID string) <-chan MatchS
 func (c RiotAPIClient) GetCurrentGame(summonerID string) (*model.CurrentGameInfo, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method":     "GetCurrentGame",
-		"region":     c.Region,
+		"Region":     c.Region,
 		"summonerID": summonerID,
 	})
 	var games model.CurrentGameInfo
@@ -314,7 +314,7 @@ func (c RiotAPIClient) GetCurrentGame(summonerID string) (*model.CurrentGameInfo
 func (c RiotAPIClient) GetFeaturedGames() (*model.FeaturedGames, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetFeaturedGames",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	var games model.FeaturedGames
 	if err := c.getInto(endpointGetFeaturedGames, &games); err != nil {
@@ -327,7 +327,7 @@ func (c RiotAPIClient) GetFeaturedGames() (*model.FeaturedGames, error) {
 func (c RiotAPIClient) getSummonerBy(by identification, value string) (*model.Summoner, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "getSummonerBy",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	var endpoint string
 	switch by {
@@ -347,7 +347,7 @@ func (c RiotAPIClient) getSummonerBy(by identification, value string) (*model.Su
 func (c RiotAPIClient) getInto(endpoint string, target interface{}) error {
 	logger := c.logger.WithFields(log.Fields{
 		"method":   "getInto",
-		"region":   c.Region,
+		"Region":   c.Region,
 		"endpoint": endpoint,
 	})
 	response, err := c.get(endpoint)
@@ -369,7 +369,7 @@ func (c RiotAPIClient) get(endpoint string) (*http.Response, error) {
 func (c RiotAPIClient) doRequest(method, endpoint, body string) (*http.Response, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method":   "doRequest",
-		"region":   c.Region,
+		"Region":   c.Region,
 		"endpoint": endpoint,
 	})
 	request, err := c.newRequest(method, endpoint, body)
@@ -419,7 +419,7 @@ func (c RiotAPIClient) doRequest(method, endpoint, body string) (*http.Response,
 func (c RiotAPIClient) newRequest(method, endpoint, body string) (*http.Request, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "newRequest",
-		"region": c.Region,
+		"Region": c.Region,
 	})
 	request, err := http.NewRequest(method, fmt.Sprintf(apiURLFormat, scheme, c.Region, baseURL, endpoint),
 		strings.NewReader(body))
