@@ -362,11 +362,43 @@ func (c RiotAPIClient) getInto(endpoint string, target interface{}) error {
 	return nil
 }
 
-func (c RiotAPIClient) get(endpoint string) (*http.Response, error) {
-	return c.doRequest("GET", endpoint, "")
+func (c RiotAPIClient) postInto(endpoint string, body, target interface{}) error {
+	logger := c.logger.WithFields(log.Fields{
+		"method":   "postInto",
+		"Region":   c.Region,
+		"endpoint": endpoint,
+	})
+	response, err := c.post(endpoint, body)
+	if err != nil {
+		logger.Error(err)
+		return err
+	}
+	if err := json.NewDecoder(response.Body).Decode(target); err != nil {
+		logger.Error(err)
+		return err
+	}
+	return nil
 }
 
-func (c RiotAPIClient) doRequest(method, endpoint, body string) (*http.Response, error) {
+func (c RiotAPIClient) get(endpoint string) (*http.Response, error) {
+	return c.doRequest("GET", endpoint, nil)
+}
+
+func (c RiotAPIClient) post(endpoint string, body interface{}) (*http.Response, error) {
+	logger := c.logger.WithFields(log.Fields{
+		"method":   "post",
+		"Region":   c.Region,
+		"endpoint": endpoint,
+	})
+	buf := &bytes.Buffer{}
+	if err := json.NewEncoder(buf).Encode(body); err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	return c.doRequest("POST", endpoint, buf)
+}
+
+func (c RiotAPIClient) doRequest(method, endpoint string, body io.Reader) (*http.Response, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method":   "doRequest",
 		"Region":   c.Region,
@@ -416,13 +448,12 @@ func (c RiotAPIClient) doRequest(method, endpoint, body string) (*http.Response,
 	return response, nil
 }
 
-func (c RiotAPIClient) newRequest(method, endpoint, body string) (*http.Request, error) {
+func (c RiotAPIClient) newRequest(method, endpoint string, body io.Reader) (*http.Request, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "newRequest",
 		"Region": c.Region,
 	})
-	request, err := http.NewRequest(method, fmt.Sprintf(apiURLFormat, scheme, c.Region, baseURL, endpoint),
-		strings.NewReader(body))
+	request, err := http.NewRequest(method, fmt.Sprintf(apiURLFormat, scheme, c.Region, baseURL, endpoint), body)
 	if err != nil {
 		logger.Error(err)
 		return nil, err
