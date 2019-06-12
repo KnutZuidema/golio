@@ -1,7 +1,8 @@
-package golio
+package api
 
+// Region represents a server region
+type Region string
 type identification string
-type region string
 type queue string
 type tier string
 type division string
@@ -74,7 +75,7 @@ const (
 
 // All existing regions
 const (
-	RegionBrasil            region = "br1"
+	RegionBrasil            Region = "br1"
 	RegionEuropeNorthEast          = "eun1"
 	RegionEuropeWest               = "euw1"
 	RegionJapan                    = "jp1"
@@ -184,7 +185,7 @@ var (
 	}
 
 	// Regions is a list of all available regions
-	Regions = []region{
+	Regions = []Region{
 		RegionBrasil,
 		RegionEuropeNorthEast,
 		RegionEuropeWest,

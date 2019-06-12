@@ -7,9 +7,11 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
+
+	"github.com/KnutZuidema/golio/api"
 )
 
 func TestNewClient(t *testing.T) {
-	client := NewClient(RegionEuropeWest, os.Getenv("API_KEY"), http.DefaultClient, logrus.StandardLogger())
+	client := NewClient(api.RegionEuropeWest, os.Getenv("API_KEY"), http.DefaultClient, logrus.StandardLogger())
 	require.NotNil(t, client)
 }
