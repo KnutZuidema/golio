@@ -884,6 +884,7 @@ func TestRiotAPIClient_GetMatchesByAccount(t *testing.T) {
 
 func TestRiotAPIClient_GetMatchesByAccountStream(t *testing.T) {
 	t.Parallel()
+	count := 0
 	tests := []struct {
 		name    string
 		doer    Doer
@@ -891,11 +892,17 @@ func TestRiotAPIClient_GetMatchesByAccountStream(t *testing.T) {
 	}{
 		{
 			name: "get response",
-			doer: mock.NewJSONMockDoer(model.Matchlist{
-				Matches: []model.MatchReference{
-					{},
+			doer: &mock.Doer{
+				Custom: func(r *http.Request) (*http.Response, error) {
+					if count == 0 {
+						count++
+						return mock.NewJSONMockDoer(model.Matchlist{
+							Matches: make([]model.MatchReference, 100),
+						}, 200).Do(r)
+					}
+					return mock.NewJSONMockDoer(model.Matchlist{}, 200).Do(r)
 				},
-			}, 200),
+			},
 		},
 		{
 			name: "unknown error status",
@@ -1104,12 +1111,228 @@ func TestRiotAPIClient_GetCurrentGame(t *testing.T) {
 	}
 }
 
+func TestRiotAPIClient_CreateTournamentCodes(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		want    []string
+		doer    Doer
+		wantErr error
+	}{
+		{
+			name: "get response",
+			want: []string{},
+			doer: mock.NewJSONMockDoer([]string{}, 200),
+		},
+		{
+			name: "unknown error status",
+			wantErr: Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+			doer: mock.NewStatusMockDoer(999),
+		},
+		{
+			name:    "not found",
+			wantErr: ErrNotFound,
+			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
+		},
+		{
+			name: "rate limited",
+			want: []string{},
+			doer: rateLimitDoer([]string{}),
+		},
+		{
+			name: "unavailable once",
+			want: []string{},
+			doer: unavailableOnceDoer([]string{}),
+		},
+		{
+			name:    "unavailable twice",
+			wantErr: ErrServiceUnavailable,
+			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := client.CreateTournamentCodes(0, 0, &model.TournamentCodeParameters{}, true)
+			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
+			if tt.wantErr == nil {
+				assert.Equal(t, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRiotAPIClient_GetLobbyEvents(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		want    *model.LobbyEventList
+		doer    Doer
+		wantErr error
+	}{
+		{
+			name: "get response",
+			want: &model.LobbyEventList{},
+			doer: mock.NewJSONMockDoer(model.LobbyEventList{}, 200),
+		},
+		{
+			name: "unknown error status",
+			wantErr: Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+			doer: mock.NewStatusMockDoer(999),
+		},
+		{
+			name:    "not found",
+			wantErr: ErrNotFound,
+			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
+		},
+		{
+			name: "rate limited",
+			want: &model.LobbyEventList{},
+			doer: rateLimitDoer(model.LobbyEventList{}),
+		},
+		{
+			name: "unavailable once",
+			want: &model.LobbyEventList{},
+			doer: unavailableOnceDoer(model.LobbyEventList{}),
+		},
+		{
+			name:    "unavailable twice",
+			wantErr: ErrServiceUnavailable,
+			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := client.GetLobbyEvents("code", true)
+			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
+			if tt.wantErr == nil {
+				assert.Equal(t, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRiotAPIClient_CreateTournamentProvider(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		want    int
+		doer    Doer
+		wantErr error
+	}{
+		{
+			name: "get response",
+			want: 1,
+			doer: mock.NewJSONMockDoer(1, 200),
+		},
+		{
+			name: "unknown error status",
+			wantErr: Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+			doer: mock.NewStatusMockDoer(999),
+		},
+		{
+			name:    "not found",
+			wantErr: ErrNotFound,
+			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
+		},
+		{
+			name: "rate limited",
+			want: 1,
+			doer: rateLimitDoer(1),
+		},
+		{
+			name: "unavailable once",
+			want: 1,
+			doer: unavailableOnceDoer(1),
+		},
+		{
+			name:    "unavailable twice",
+			wantErr: ErrServiceUnavailable,
+			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := client.CreateTournamentProvider(&model.ProviderRegistrationParameters{}, true)
+			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
+			if tt.wantErr == nil {
+				assert.Equal(t, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRiotAPIClient_CreateTournament(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		want    int
+		doer    Doer
+		wantErr error
+	}{
+		{
+			name: "get response",
+			want: 1,
+			doer: mock.NewJSONMockDoer(1, 200),
+		},
+		{
+			name: "unknown error status",
+			wantErr: Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+			doer: mock.NewStatusMockDoer(999),
+		},
+		{
+			name:    "not found",
+			wantErr: ErrNotFound,
+			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
+		},
+		{
+			name: "rate limited",
+			want: 1,
+			doer: rateLimitDoer(1),
+		},
+		{
+			name: "unavailable once",
+			want: 1,
+			doer: unavailableOnceDoer(1),
+		},
+		{
+			name:    "unavailable twice",
+			wantErr: ErrServiceUnavailable,
+			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := client.CreateTournament(&model.TournamentRegistrationParameters{}, true)
+			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
+			if tt.wantErr == nil {
+				assert.Equal(t, got, tt.want)
+			}
+		})
+	}
+}
+
 func TestRiotAPIClient_doRequest(t *testing.T) {
 	t.Parallel()
 	type args struct {
 		method   string
 		endpoint string
-		body     string
+		body     io.Reader
 	}
 	tests := []struct {
 		name    string
@@ -1137,12 +1360,91 @@ func TestRiotAPIClient_doRequest(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "fail second try",
+			args: args{
+				method: "GET",
+			},
+			doer:    failOnSecondDoer(),
+			wantErr: true,
+		},
+		{
+			name: "invalid retry header",
+			args: args{
+				method: "GET",
+			},
+			doer:    invalidHeaderDoer(),
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewRiotAPIClient(RegionEuropeNorthEast, "", tt.doer, logrus.StandardLogger())
 			_, err := c.doRequest(tt.args.method, tt.args.endpoint, tt.args.body)
 			assert.Equal(t, err != nil, tt.wantErr)
+		})
+	}
+}
+
+func TestRiotAPIClient_getInto(t *testing.T) {
+	tests := []struct {
+		name    string
+		target  interface{}
+		wantErr bool
+	}{
+		{
+			name:    "fail decode",
+			target:  failJSONDecoding{},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := NewRiotAPIClient(RegionOceania, "API_KEY", mock.NewJSONMockDoer(0, 200), logrus.StandardLogger())
+			err := c.getInto("endpoint", tt.target)
+			assert.Equal(t, tt.wantErr, err != nil)
+		})
+	}
+}
+
+func TestRiotAPIClient_postInto(t *testing.T) {
+	tests := []struct {
+		name    string
+		target  interface{}
+		wantErr bool
+	}{
+		{
+			name:    "fail decode",
+			target:  failJSONDecoding{},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := NewRiotAPIClient(RegionOceania, "API_KEY", mock.NewJSONMockDoer(0, 200), logrus.StandardLogger())
+			err := c.postInto("endpoint", struct{}{}, tt.target)
+			assert.Equal(t, tt.wantErr, err != nil)
+		})
+	}
+}
+
+func TestRiotAPIClient_post(t *testing.T) {
+	tests := []struct {
+		name    string
+		target  interface{}
+		wantErr bool
+	}{
+		{
+			name:    "fail encode",
+			target:  failJSONEncoding{},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := NewRiotAPIClient(RegionOceania, "API_KEY", mock.NewStatusMockDoer(200), logrus.StandardLogger())
+			_, err := c.post("endpoint", tt.target)
+			assert.Equal(t, tt.wantErr, err != nil)
 		})
 	}
 }
@@ -1173,4 +1475,35 @@ func unavailableOnceDoer(object interface{}) Doer {
 			return mock.NewStatusMockDoer(http.StatusServiceUnavailable).Do(r)
 		},
 	}
+}
+
+func failOnSecondDoer() Doer {
+	count := 0
+	return &mock.Doer{
+		Custom: func(r *http.Request) (*http.Response, error) {
+			if count == 0 {
+				count++
+				return mock.NewStatusMockDoer(http.StatusServiceUnavailable).Do(r)
+			}
+			return nil, fmt.Errorf("error")
+		},
+	}
+}
+
+func invalidHeaderDoer() Doer {
+	return mock.NewHeaderMockDoer(http.StatusTooManyRequests, http.Header{
+		"Retry-After": []string{"abc"},
+	})
+}
+
+type failJSONEncoding struct{}
+
+func (f failJSONEncoding) MarshalJSON() ([]byte, error) {
+	return nil, fmt.Errorf("error")
+}
+
+type failJSONDecoding struct{}
+
+func (f failJSONDecoding) UnmarshalJSON([]byte) error {
+	return fmt.Errorf("error")
 }
