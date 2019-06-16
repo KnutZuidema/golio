@@ -1327,6 +1327,107 @@ func TestRiotAPIClient_CreateTournament(t *testing.T) {
 	}
 }
 
+func TestRiotAPIClient_GetTournament(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		want    *model.Tournament
+		doer    Doer
+		wantErr error
+	}{
+		{
+			name: "get response",
+			want: &model.Tournament{},
+			doer: mock.NewJSONMockDoer(model.Tournament{}, 200),
+		},
+		{
+			name: "unknown error status",
+			wantErr: Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+			doer: mock.NewStatusMockDoer(999),
+		},
+		{
+			name:    "not found",
+			wantErr: ErrNotFound,
+			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
+		},
+		{
+			name: "rate limited",
+			want: &model.Tournament{},
+			doer: rateLimitDoer(model.Tournament{}),
+		},
+		{
+			name: "unavailable once",
+			want: &model.Tournament{},
+			doer: unavailableOnceDoer(model.Tournament{}),
+		},
+		{
+			name:    "unavailable twice",
+			wantErr: ErrServiceUnavailable,
+			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := client.GetTournament("code")
+			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
+			if tt.wantErr == nil {
+				assert.Equal(t, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRiotAPIClient_UpdateTournament(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		doer    Doer
+		wantErr error
+	}{
+		{
+			name: "get response",
+			doer: mock.NewStatusMockDoer(200),
+		},
+		{
+			name: "unknown error status",
+			wantErr: Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+			doer: mock.NewStatusMockDoer(999),
+		},
+		{
+			name:    "not found",
+			wantErr: ErrNotFound,
+			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
+		},
+		{
+			name: "rate limited",
+			doer: rateLimitDoer(1),
+		},
+		{
+			name: "unavailable once",
+			doer: unavailableOnceDoer(1),
+		},
+		{
+			name:    "unavailable twice",
+			wantErr: ErrServiceUnavailable,
+			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			err := client.UpdateTournament("code", model.TournamentUpdateParameters{})
+			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
+		})
+	}
+}
+
 func TestRiotAPIClient_doRequest(t *testing.T) {
 	t.Parallel()
 	type args struct {
@@ -1444,6 +1545,27 @@ func TestRiotAPIClient_post(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewRiotAPIClient(RegionOceania, "API_KEY", mock.NewStatusMockDoer(200), logrus.StandardLogger())
 			_, err := c.post("endpoint", tt.target)
+			assert.Equal(t, tt.wantErr, err != nil)
+		})
+	}
+}
+
+func TestRiotAPIClient_put(t *testing.T) {
+	tests := []struct {
+		name    string
+		target  interface{}
+		wantErr bool
+	}{
+		{
+			name:    "fail encode",
+			target:  failJSONEncoding{},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := NewRiotAPIClient(RegionOceania, "API_KEY", mock.NewStatusMockDoer(200), logrus.StandardLogger())
+			_, err := c.put("endpoint", tt.target)
 			assert.Equal(t, tt.wantErr, err != nil)
 		})
 	}
