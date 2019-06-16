@@ -136,6 +136,7 @@ const (
 	endpointCreateTournament             = endpointTournamentBase + "/tournaments"
 	endpointGetTournament                = endpointTournamentBase + "/codes/%s"
 	endpointUpdateTournament             = endpointTournamentBase + "/codes/%s"
+	endpointGetThirdPartyCode            = endpointPlatformBase + "/third-party-code/by-summoner/%s"
 )
 
 var (
