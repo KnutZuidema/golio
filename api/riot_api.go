@@ -424,6 +424,20 @@ func (c RiotAPIClient) UpdateTournament(code string, parameters model.Tournament
 	return nil
 }
 
+// GetThirdPartyCode returns the third party code for the given summoner id
+func (c RiotAPIClient) GetThirdPartyCode(id string) (string, error) {
+	logger := c.logger.WithFields(log.Fields{
+		"method": "GetThirdPartyCode",
+		"Region": c.Region,
+	})
+	var code string
+	if err := c.getInto(fmt.Sprintf(endpointGetThirdPartyCode, id), &code); err != nil {
+		logger.Error(err)
+		return "", err
+	}
+	return code, nil
+}
+
 func (c RiotAPIClient) getSummonerBy(by identification, value string) (*model.Summoner, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "getSummonerBy",
