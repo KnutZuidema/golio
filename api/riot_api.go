@@ -453,6 +453,20 @@ func (c RiotAPIClient) postInto(endpoint string, body, target interface{}) error
 	return nil
 }
 
+func (c RiotAPIClient) put(endpoint string, body interface{}) (*http.Response, error) {
+	logger := c.logger.WithFields(log.Fields{
+		"method":   "put",
+		"Region":   c.Region,
+		"endpoint": endpoint,
+	})
+	buf := &bytes.Buffer{}
+	if err := json.NewEncoder(buf).Encode(body); err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	return c.doRequest("PUT", endpoint, buf)
+}
+
 func (c RiotAPIClient) get(endpoint string) (*http.Response, error) {
 	return c.doRequest("GET", endpoint, nil)
 }
