@@ -1,6 +1,8 @@
 package mock
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"testing"
 	"time"
@@ -37,6 +39,22 @@ func TestNewJSONMockDoer(t *testing.T) {
 	}
 }
 
+func ExampleNewJSONMockDoer() {
+	type object struct {
+		Attr int
+	}
+	input := object{
+		Attr: 2,
+	}
+	doer := NewJSONMockDoer(input, 200)
+	request, _ := http.NewRequest("GET", "https://example.com", nil)
+	response, _ := doer.Do(request)
+	var output object
+	_ = json.NewDecoder(response.Body).Decode(&output)
+	fmt.Printf("status code: %d, body: %+v\n", response.StatusCode, output)
+	// Output: status code: 200, body: {Attr:2}
+}
+
 func TestNewStatusMockDoer(t *testing.T) {
 	type args struct {
 		code int
@@ -59,6 +77,14 @@ func TestNewStatusMockDoer(t *testing.T) {
 			}
 		})
 	}
+}
+
+func ExampleNewStatusMockDoer() {
+	doer := NewStatusMockDoer(200)
+	request, _ := http.NewRequest("GET", "http://example.com", nil)
+	response, _ := doer.Do(request)
+	fmt.Printf("status code: %d", response.StatusCode)
+	// Output: status code: 200
 }
 
 func TestNewHeaderMockDoer(t *testing.T) {
@@ -87,6 +113,14 @@ func TestNewHeaderMockDoer(t *testing.T) {
 			}
 		})
 	}
+}
+
+func ExampleNewHeaderMockDoer() {
+	doer := NewHeaderMockDoer(200, http.Header{"Content-Type": []string{"application/json"}})
+	request, _ := http.NewRequest("GET", "http://example.com", nil)
+	response, _ := doer.Do(request)
+	fmt.Printf("status code: %d, content-type: %v", response.StatusCode, response.Header.Get("Content-Type"))
+	// Output: status code: 200, content-type: application/json
 }
 
 func TestDoer_Do(t *testing.T) {
