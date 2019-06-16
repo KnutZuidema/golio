@@ -134,6 +134,8 @@ const (
 	endpointGetLobbyEvents               = endpointTournamentBase + "/lobby-events/by-code/%s"
 	endpointCreateTournamentProvider     = endpointTournamentBase + "/providers"
 	endpointCreateTournament             = endpointTournamentBase + "/tournaments"
+	endpointGetTournament                = endpointTournamentBase + "/codes/%s"
+	endpointUpdateTournament             = endpointTournamentBase + "/codes/%s"
 )
 
 var (
