@@ -397,6 +397,33 @@ func (c RiotAPIClient) CreateTournament(parameters *model.TournamentRegistration
 	return id, nil
 }
 
+// GetTournament returns an existing tournament
+func (c RiotAPIClient) GetTournament(code string) (*model.Tournament, error) {
+	logger := c.logger.WithFields(log.Fields{
+		"method": "GetTournament",
+		"Region": c.Region,
+	})
+	var tournament model.Tournament
+	if err := c.getInto(fmt.Sprintf(endpointGetTournament, code), &tournament); err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	return &tournament, nil
+}
+
+// UpdateTournament updates an existing tournament
+func (c RiotAPIClient) UpdateTournament(code string, parameters model.TournamentUpdateParameters) error {
+	logger := c.logger.WithFields(log.Fields{
+		"method": "UpdateTournament",
+		"Region": c.Region,
+	})
+	if _, err := c.put(fmt.Sprintf(endpointUpdateTournament, code), parameters); err != nil {
+		logger.Error(err)
+		return err
+	}
+	return nil
+}
+
 func (c RiotAPIClient) getSummonerBy(by identification, value string) (*model.Summoner, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "getSummonerBy",
