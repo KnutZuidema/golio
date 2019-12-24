@@ -283,6 +283,53 @@ func (c RiotAPIClient) GetMatchesByAccountStream(accountID string) <-chan MatchS
 	return cMatches
 }
 
+// GetMatchTimeline returns the timeline for the given match
+// NOTE: timelines are not available for every match
+func (c RiotAPIClient) GetMatchTimeline(matchID int) (*model.MatchTimeline, error) {
+	logger := c.logger.WithFields(log.Fields{
+		"method":  "GetMatchTimeline",
+		"region":  c.Region,
+		"matchID": matchID,
+	})
+	var timeline model.MatchTimeline
+	if err := c.getInto(fmt.Sprintf(endpointGetMatchTimeline, matchID), &timeline); err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	return &timeline, nil
+}
+
+// GetMatchIDsByTournamentCode returns all match ids for the given tournament
+func (c RiotAPIClient) GetMatchIDsByTournamentCode(tournamentCode string) ([]int, error) {
+	logger := c.logger.WithFields(log.Fields{
+		"method":         "GetMatchIDsByTournamentCode",
+		"region":         c.Region,
+		"tournamentCode": tournamentCode,
+	})
+	var ids []int
+	if err := c.getInto(fmt.Sprintf(endpointGetMatchIDsByTournamentCode, tournamentCode), &ids); err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	return ids, nil
+}
+
+// GetMatchForTournament returns the match data for the given match in the given tournament
+func (c RiotAPIClient) GetMatchForTournament(matchID int, tournamentCode string) (*model.Match, error) {
+	logger := c.logger.WithFields(log.Fields{
+		"method":         "GetMatchForTournament",
+		"region":         c.Region,
+		"matchID":        matchID,
+		"tournamentCode": tournamentCode,
+	})
+	var match model.Match
+	if err := c.getInto(fmt.Sprintf(endpointGetMatchForTournament, matchID, tournamentCode), &match); err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	return &match, nil
+}
+
 // GetCurrentGame returns a currently running game for a summoner
 func (c RiotAPIClient) GetCurrentGame(summonerID string) (*model.CurrentGameInfo, error) {
 	logger := c.logger.WithFields(log.Fields{

@@ -612,6 +612,60 @@ func TestRiotAPIClient_GetMasterLeague(t *testing.T) {
 	}
 }
 
+func TestRiotAPIClient_GetLeaguesBySummoner(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		want    []*model.LeagueEntry
+		doer    Doer
+		wantErr error
+	}{
+		{
+			name: "get response",
+			want: []*model.LeagueEntry{},
+			doer: mock.NewJSONMockDoer([]*model.LeagueEntry{}, 200),
+		},
+		{
+			name: "unknown error status",
+			wantErr: Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+			doer: mock.NewStatusMockDoer(999),
+		},
+		{
+			name:    "not found",
+			wantErr: ErrNotFound,
+			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
+		},
+		{
+			name: "rate limited",
+			want: []*model.LeagueEntry{},
+			doer: rateLimitDoer([]*model.LeagueEntry{}),
+		},
+		{
+			name: "unavailable once",
+			want: []*model.LeagueEntry{},
+			doer: unavailableOnceDoer([]*model.LeagueEntry{}),
+		},
+		{
+			name:    "unavailable twice",
+			wantErr: ErrServiceUnavailable,
+			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := client.GetLeaguesBySummoner("id")
+			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
+			if tt.wantErr == nil {
+				assert.Equal(t, got, tt.want)
+			}
+		})
+	}
+}
+
 func TestRiotAPIClient_GetSummonerLeagues(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -995,6 +1049,168 @@ func TestRiotAPIClient_GetMatch(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetMatch(1)
+			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
+			if tt.wantErr == nil {
+				assert.Equal(t, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRiotAPIClient_GetMatchTimeline(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		want    *model.MatchTimeline
+		doer    Doer
+		wantErr error
+	}{
+		{
+			name: "get response",
+			want: &model.MatchTimeline{},
+			doer: mock.NewJSONMockDoer(model.MatchTimeline{}, 200),
+		},
+		{
+			name: "unknown error status",
+			wantErr: Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+			doer: mock.NewStatusMockDoer(999),
+		},
+		{
+			name:    "not found",
+			wantErr: ErrNotFound,
+			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
+		},
+		{
+			name: "rate limited",
+			want: &model.MatchTimeline{},
+			doer: rateLimitDoer(model.MatchTimeline{}),
+		},
+		{
+			name: "unavailable once",
+			want: &model.MatchTimeline{},
+			doer: unavailableOnceDoer(model.MatchTimeline{}),
+		},
+		{
+			name:    "unavailable twice",
+			wantErr: ErrServiceUnavailable,
+			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := client.GetMatchTimeline(0)
+			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
+			if tt.wantErr == nil {
+				assert.Equal(t, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRiotAPIClient_GetMatchIDsByTournamentCode(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		want    []int
+		doer    Doer
+		wantErr error
+	}{
+		{
+			name: "get response",
+			want: []int{},
+			doer: mock.NewJSONMockDoer([]int{}, 200),
+		},
+		{
+			name: "unknown error status",
+			wantErr: Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+			doer: mock.NewStatusMockDoer(999),
+		},
+		{
+			name:    "not found",
+			wantErr: ErrNotFound,
+			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
+		},
+		{
+			name: "rate limited",
+			want: []int{},
+			doer: rateLimitDoer([]int{}),
+		},
+		{
+			name: "unavailable once",
+			want: []int{},
+			doer: unavailableOnceDoer([]int{}),
+		},
+		{
+			name:    "unavailable twice",
+			wantErr: ErrServiceUnavailable,
+			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := client.GetMatchIDsByTournamentCode("tournamentCode")
+			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
+			if tt.wantErr == nil {
+				assert.Equal(t, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRiotAPIClient_GetMatchForTournament(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		want    *model.Match
+		doer    Doer
+		wantErr error
+	}{
+		{
+			name: "get response",
+			want: &model.Match{},
+			doer: mock.NewJSONMockDoer(model.Match{}, 200),
+		},
+		{
+			name: "unknown error status",
+			wantErr: Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+			doer: mock.NewStatusMockDoer(999),
+		},
+		{
+			name:    "not found",
+			wantErr: ErrNotFound,
+			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
+		},
+		{
+			name: "rate limited",
+			want: &model.Match{},
+			doer: rateLimitDoer(model.Match{}),
+		},
+		{
+			name: "unavailable once",
+			want: &model.Match{},
+			doer: unavailableOnceDoer(model.Match{}),
+		},
+		{
+			name:    "unavailable twice",
+			wantErr: ErrServiceUnavailable,
+			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := client.GetMatchForTournament(0, "tournamentCode")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
