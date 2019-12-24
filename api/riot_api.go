@@ -417,7 +417,7 @@ func (c RiotAPIClient) UpdateTournament(code string, parameters model.Tournament
 		"method": "UpdateTournament",
 		"Region": c.Region,
 	})
-	if _, err := c.put(fmt.Sprintf(endpointUpdateTournament, code), parameters); err != nil {
+	if err := c.put(fmt.Sprintf(endpointUpdateTournament, code), parameters); err != nil {
 		logger.Error(err)
 		return err
 	}
@@ -494,7 +494,7 @@ func (c RiotAPIClient) postInto(endpoint string, body, target interface{}) error
 	return nil
 }
 
-func (c RiotAPIClient) put(endpoint string, body interface{}) (*http.Response, error) {
+func (c RiotAPIClient) put(endpoint string, body interface{}) error {
 	logger := c.logger.WithFields(log.Fields{
 		"method":   "put",
 		"Region":   c.Region,
@@ -503,9 +503,10 @@ func (c RiotAPIClient) put(endpoint string, body interface{}) (*http.Response, e
 	buf := &bytes.Buffer{}
 	if err := json.NewEncoder(buf).Encode(body); err != nil {
 		logger.Error(err)
-		return nil, err
+		return err
 	}
-	return c.doRequest("PUT", endpoint, buf)
+	_, err := c.doRequest("PUT", endpoint, buf)
+	return err
 }
 
 func (c RiotAPIClient) get(endpoint string) (*http.Response, error) {

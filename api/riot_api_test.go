@@ -23,7 +23,7 @@ func TestRiotAPIClient_GetSummonerByName(t *testing.T) {
 		wantErr error
 	}{
 		{
-			name: "get repsonse",
+			name: "get response",
 			want: &model.Summoner{},
 			doer: mock.NewJSONMockDoer(&model.Summoner{}, 200),
 		},
@@ -1619,7 +1619,7 @@ func TestRiotAPIClient_put(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewRiotAPIClient(RegionOceania, "API_KEY", mock.NewStatusMockDoer(200), logrus.StandardLogger())
-			_, err := c.put("endpoint", tt.target)
+			err := c.put("endpoint", tt.target)
 			assert.Equal(t, tt.wantErr, err != nil)
 		})
 	}

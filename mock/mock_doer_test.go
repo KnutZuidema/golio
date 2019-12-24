@@ -18,7 +18,7 @@ func TestNewJSONMockDoer(t *testing.T) {
 		args args
 	}{
 		{
-			name: "contruct",
+			name: "construct",
 			args: args{
 				object: struct {
 					Attr int
@@ -64,7 +64,7 @@ func TestNewStatusMockDoer(t *testing.T) {
 		args args
 	}{
 		{
-			name: "contruct",
+			name: "construct",
 			args: args{
 				code: 200,
 			},
