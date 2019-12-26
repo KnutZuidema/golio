@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/KnutZuidema/golio/model"
 
@@ -37,17 +38,30 @@ var (
 
 // DataDragonClient provides access to all data provided by the Data Dragon service
 type DataDragonClient struct {
-	logger   log.FieldLogger
-	Version  string
-	Language languageCode
-	client   Doer
+	logger          log.FieldLogger
+	Version         string
+	Language        languageCode
+	client          Doer
+	championsMu     sync.RWMutex
+	championsByName map[string]model.ChampionDataExtended
+	profileIconsMu  sync.RWMutex
+	profileIcons    []model.ProfileIcon
+	itemsMu         sync.RWMutex
+	items           []model.Item
+	masteriesMu     sync.RWMutex
+	masteries       []model.Mastery
+	runesMu         sync.RWMutex
+	runes           []model.Item
+	summonersMu     sync.RWMutex
+	summoners       []model.SummonerSpell
 }
 
 // NewDataDragonClient returns a new client for the Data Dragon service.
 func NewDataDragonClient(client Doer, region Region, logger log.FieldLogger) *DataDragonClient {
 	c := &DataDragonClient{
-		client: client,
-		logger: logger.WithField("client", "data dragon"),
+		client:          client,
+		logger:          logger.WithField("client", "data dragon"),
+		championsByName: map[string]model.ChampionDataExtended{},
 	}
 	if err := c.init(regionToRealmRegion[region]); err != nil {
 		c.Version = fallbackVersion
@@ -77,64 +91,175 @@ func (c *DataDragonClient) init(region string) error {
 }
 
 // GetChampions returns all existing champions
-func (c DataDragonClient) GetChampions() (map[string]model.ChampionData, error) {
-	var champions map[string]model.ChampionData
-	if err := c.getInto("/champion.json", &champions); err != nil {
-		return nil, err
+func (c *DataDragonClient) GetChampions() ([]model.ChampionData, error) {
+	unlock, toggle := rwLockToggle(&c.championsMu)
+	defer unlock()
+	if len(c.championsByName) < 1 {
+		toggle()
+		var champions map[string]model.ChampionData
+		if err := c.getInto("/champion.json", &champions); err != nil {
+			return nil, err
+		}
+		for _, champion := range champions {
+			data := model.ChampionDataExtended{ChampionData: champion}
+			c.championsByName[champion.Name] = data
+		}
 	}
-	return champions, nil
+	res := make([]model.ChampionData, 0, len(c.championsByName))
+	for _, champion := range c.championsByName {
+		res = append(res, champion.ChampionData)
+	}
+	return res, nil
 }
 
 // GetChampion returns information about the champion with the given name
-func (c DataDragonClient) GetChampion(name string) (*model.ChampionDataExtended, error) {
-	var data map[string]*model.ChampionDataExtended
-	if err := c.getInto(fmt.Sprintf("/champion/%s.json", name), &data); err != nil {
-		return nil, err
+func (c *DataDragonClient) GetChampion(name string) (model.ChampionDataExtended, error) {
+	c.championsMu.RLock()
+	champion, ok := c.championsByName[name]
+	c.championsMu.RUnlock()
+	if !ok || champion.Lore == "" {
+		var data map[string]model.ChampionDataExtended
+		if err := c.getInto(fmt.Sprintf("/champion/%s.json", name), &data); err != nil {
+			return model.ChampionDataExtended{}, err
+		}
+		champion, ok = data[name]
+		if !ok {
+			return model.ChampionDataExtended{}, fmt.Errorf("no data for champion %s", name)
+		}
+		c.championsMu.Lock()
+		c.championsByName[name] = champion
+		c.championsMu.Unlock()
 	}
-	if data, ok := data[name]; ok {
-		return data, nil
-	}
-	return nil, fmt.Errorf("response does not contain requested champion data")
+	return champion, nil
 }
 
 // GetProfileIcons returns all existing profile icons
-func (c DataDragonClient) GetProfileIcons() (map[string]model.ProfileIcon, error) {
-	var icons map[string]model.ProfileIcon
-	if err := c.getInto("/profileicon.json", &icons); err != nil {
-		return nil, err
+func (c *DataDragonClient) GetProfileIcons() ([]model.ProfileIcon, error) {
+	unlock, toggle := rwLockToggle(&c.profileIconsMu)
+	defer unlock()
+	if len(c.profileIcons) < 1 {
+		toggle()
+		var res map[string]model.ProfileIcon
+		if err := c.getInto("/profileicon.json", &res); err != nil {
+			return nil, err
+		}
+		c.profileIcons = make([]model.ProfileIcon, 0, len(res))
+		for _, profileIcon := range res {
+			c.profileIcons = append(c.profileIcons, profileIcon)
+		}
 	}
-	return icons, nil
+	res := make([]model.ProfileIcon, len(c.profileIcons))
+	copy(res, c.profileIcons)
+	return res, nil
 }
 
 // GetItems returns all existing items
-func (c DataDragonClient) GetItems() (map[string]model.Item, error) {
-	var items map[string]model.Item
-	if err := c.getInto("/item.json", &items); err != nil {
-		return nil, err
+func (c *DataDragonClient) GetItems() ([]model.Item, error) {
+	unlock, toggle := rwLockToggle(&c.itemsMu)
+	defer unlock()
+	if len(c.items) < 1 {
+		toggle()
+		var res map[string]model.Item
+		if err := c.getInto("/item.json", &res); err != nil {
+			return nil, err
+		}
+		c.items = make([]model.Item, 0, len(res))
+		for id, item := range res {
+			item.ID = id
+			c.items = append(c.items, item)
+		}
 	}
-	return items, nil
+	res := make([]model.Item, len(c.items))
+	copy(res, c.items)
+	return res, nil
 }
 
 // GetMasteries returns all existing masteries. Masteries were removed in patch 7.23.1. If any version higher than that
 // is specified the last available version will be used instead.
-func (c DataDragonClient) GetMasteries() (map[string]model.Mastery, error) {
-	var masteries map[string]model.Mastery
-	if err := c.getInto("/mastery.json", &masteries); err != nil {
-		return nil, err
+func (c *DataDragonClient) GetMasteries() ([]model.Mastery, error) {
+	unlock, toggle := rwLockToggle(&c.masteriesMu)
+	defer unlock()
+	if len(c.masteries) < 1 {
+		toggle()
+		var res map[string]model.Mastery
+		if err := c.getInto("/mastery.json", &res); err != nil {
+			return nil, err
+		}
+		c.masteries = make([]model.Mastery, 0, len(res))
+		for _, mastery := range res {
+			c.masteries = append(c.masteries, mastery)
+		}
 	}
-	return masteries, nil
+	res := make([]model.Mastery, len(c.masteries))
+	copy(res, c.masteries)
+	return res, nil
+}
+
+// GetRunes returns all existing runes. Runes were removed in patch 7.23.1. If any version higher than that
+// is specified the last available version will be used instead.
+func (c *DataDragonClient) GetRunes() ([]model.Item, error) {
+	unlock, toggle := rwLockToggle(&c.runesMu)
+	defer unlock()
+	if len(c.runes) < 1 {
+		toggle()
+		var res map[string]model.Item
+		if err := c.getInto("/rune.json", &res); err != nil {
+			return nil, err
+		}
+		c.runes = make([]model.Item, 0, len(res))
+		for id, runeItem := range res {
+			runeItem.ID = id
+			c.runes = append(c.runes, runeItem)
+		}
+	}
+	res := make([]model.Item, len(c.runes))
+	copy(res, c.runes)
+	return res, nil
 }
 
 // GetSummonerSpells returns all existing summoner spells
-func (c DataDragonClient) GetSummonerSpells() (map[string]model.SummonerSpell, error) {
-	var spells map[string]model.SummonerSpell
-	if err := c.getInto("/summoner.json", &spells); err != nil {
-		return nil, err
+func (c *DataDragonClient) GetSummonerSpells() ([]model.SummonerSpell, error) {
+	unlock, toggle := rwLockToggle(&c.summonersMu)
+	defer unlock()
+	if len(c.summoners) < 1 {
+		toggle()
+		var res map[string]model.SummonerSpell
+		if err := c.getInto("/summoner.json", &res); err != nil {
+			return nil, err
+		}
+		c.summoners = make([]model.SummonerSpell, 0, len(res))
+		for _, summoner := range res {
+			c.summoners = append(c.summoners, summoner)
+		}
 	}
-	return spells, nil
+	res := make([]model.SummonerSpell, len(c.summoners))
+	copy(res, c.summoners)
+	return res, nil
 }
 
-func (c DataDragonClient) getInto(endpoint string, target interface{}) error {
+// ClearCaches resets all caches of the data dragon client
+func (c *DataDragonClient) ClearCaches() {
+	c.championsMu.Lock()
+	c.championsByName = map[string]model.ChampionDataExtended{}
+	c.championsMu.Unlock()
+	c.masteriesMu.Lock()
+	c.masteries = []model.Mastery{}
+	c.masteriesMu.Unlock()
+	c.profileIconsMu.Lock()
+	c.profileIcons = []model.ProfileIcon{}
+	c.profileIconsMu.Unlock()
+	c.itemsMu.Lock()
+	c.items = []model.Item{}
+	c.itemsMu.Unlock()
+	c.summonersMu.Lock()
+	c.summoners = []model.SummonerSpell{}
+	c.summonersMu.Unlock()
+	c.runesMu.Lock()
+	c.runes = []model.Item{}
+	c.runesMu.Unlock()
+}
+
+func (c *DataDragonClient) getInto(endpoint string, target interface{}) error {
 	response, err := c.doRequest(dataDragonDataURLFormat, endpoint)
 	if err != nil {
 		return err
@@ -148,7 +273,7 @@ func (c DataDragonClient) getInto(endpoint string, target interface{}) error {
 	return json.Unmarshal(data, &target)
 }
 
-func (c DataDragonClient) doRequest(format dataDragonURL, endpoint string) (*http.Response, error) {
+func (c *DataDragonClient) doRequest(format dataDragonURL, endpoint string) (*http.Response, error) {
 	request, err := c.newRequest(format, endpoint)
 	if err != nil {
 		return nil, err
@@ -171,7 +296,7 @@ func (c DataDragonClient) doRequest(format dataDragonURL, endpoint string) (*htt
 	return response, nil
 }
 
-func (c DataDragonClient) newRequest(format dataDragonURL, endpoint string) (*http.Request, error) {
+func (c *DataDragonClient) newRequest(format dataDragonURL, endpoint string) (*http.Request, error) {
 	var version string
 	if (strings.Contains(endpoint, "rune") || strings.Contains(endpoint, "mastery")) &&
 		versionGreaterThan(c.Version, latestRuneAndMasteryVersion) {
@@ -213,4 +338,25 @@ func versionGreaterThan(v1, v2 string) bool {
 		}
 	}
 	return false
+}
+
+// rwLockToggle locks the given mutex for reading and returns two functions
+// the first function returned should be used to unlock the mutex
+// the second function returned will unlock the read lock and instead lock the mutex for writing
+// the unlock function will always call the correct unlock method
+func rwLockToggle(mu *sync.RWMutex) (func(), func()) {
+	sw := true
+	mu.RLock()
+	return func() {
+			if sw {
+				mu.RUnlock()
+			} else {
+				mu.Unlock()
+			}
+		},
+		func() {
+			sw = false
+			mu.RUnlock()
+			mu.Lock()
+		}
 }
