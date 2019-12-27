@@ -2,6 +2,7 @@ package model
 
 // Item represents an item
 type Item struct {
+	ID   string `json:"id"`
 	Name string `json:"name"`
 	Rune struct {
 		IsRune bool   `json:"isrune"`
