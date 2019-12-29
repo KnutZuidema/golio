@@ -1,18 +1,18 @@
-language: go
-
-go:
-  - "1.x"
-  - "1.12"
-
-env:
-  - GO111MODULE=on
-
-install:
-  - go mod download
-
-script:
-  - docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint golangci-lint run
-  - go test -race -coverprofile=coverage.txt -covermode=atomic
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+stages:
+  - lint
+  - test
+jobs:
+  include:
+    - stage: lint
+      language: generic
+      script: docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint golangci-lint run
+    - stage: test
+      name: Unit Tests
+      language: go
+      go:
+        - "1.x"
+        - "1.12"
+      env: GO111MODULE=on
+      install: go mod download
+      script: go test -race -coverprofile=coverage.txt -covermode=atomic $(go list ./... | grep -v test)
+      after_success: bash <(curl -s https://codecov.io/bash)

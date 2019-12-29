@@ -22,13 +22,15 @@ func TestDataDragonClient_GetChampions(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    Doer
-		want    map[string]model.ChampionData
+		want    []model.ChampionData
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.ChampionData{}),
-			want: map[string]model.ChampionData{},
+			doer: dataDragonResponseDoer(map[string]model.ChampionData{
+				"champion": {},
+			}),
+			want: []model.ChampionData{{}},
 		},
 		{
 			name:    "known error",
@@ -51,6 +53,9 @@ func TestDataDragonClient_GetChampions(t *testing.T) {
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
 				assert.Equal(t, tt.want, got)
+				got, err := c.GetChampions()
+				assert.Nil(t, err)
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}
@@ -60,20 +65,20 @@ func TestDataDragonClient_GetChampion(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    Doer
-		want    *model.ChampionDataExtended
+		want    model.ChampionDataExtended
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]*model.ChampionDataExtended{
+			doer: dataDragonResponseDoer(map[string]model.ChampionDataExtended{
 				"champion": {},
 			}),
-			want: &model.ChampionDataExtended{},
+			want: model.ChampionDataExtended{},
 		},
 		{
 			name:    "invalid data dragon response",
 			doer:    mock.NewJSONMockDoer(struct{}{}, 200),
-			wantErr: fmt.Errorf("response does not contain requested champion data"),
+			wantErr: fmt.Errorf("no data for champion champion"),
 		},
 		{
 			name:    "known error",
@@ -96,6 +101,9 @@ func TestDataDragonClient_GetChampion(t *testing.T) {
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
 				assert.Equal(t, tt.want, got)
+				got, err := c.GetChampion("champion")
+				assert.Nil(t, err)
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}
@@ -105,13 +113,15 @@ func TestDataDragonClient_GetProfileIcons(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    Doer
-		want    map[string]model.ProfileIcon
+		want    []model.ProfileIcon
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.ProfileIcon{}),
-			want: map[string]model.ProfileIcon{},
+			doer: dataDragonResponseDoer(map[string]model.ProfileIcon{
+				"icon": {},
+			}),
+			want: []model.ProfileIcon{{}},
 		},
 		{
 			name:    "known error",
@@ -134,6 +144,9 @@ func TestDataDragonClient_GetProfileIcons(t *testing.T) {
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
 				assert.Equal(t, tt.want, got)
+				got, err := c.GetProfileIcons()
+				assert.Nil(t, err)
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}
@@ -143,13 +156,15 @@ func TestDataDragonClient_GetItems(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    Doer
-		want    map[string]model.Item
+		want    []model.Item
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.Item{}),
-			want: map[string]model.Item{},
+			doer: dataDragonResponseDoer(map[string]model.Item{
+				"item": {},
+			}),
+			want: []model.Item{{ID: "item"}},
 		},
 		{
 			name:    "known error",
@@ -172,6 +187,52 @@ func TestDataDragonClient_GetItems(t *testing.T) {
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
 				assert.Equal(t, tt.want, got)
+				got, err := c.GetItems()
+				assert.Nil(t, err)
+				assert.Equal(t, tt.want, got)
+			}
+		})
+	}
+}
+
+func TestDataDragonClient_GetRunes(t *testing.T) {
+	tests := []struct {
+		name    string
+		doer    Doer
+		want    []model.Item
+		wantErr error
+	}{
+		{
+			name: "get response",
+			doer: dataDragonResponseDoer(map[string]model.Item{
+				"rune": {},
+			}),
+			want: []model.Item{{ID: "rune"}},
+		},
+		{
+			name:    "known error",
+			doer:    mock.NewStatusMockDoer(http.StatusForbidden),
+			wantErr: ErrForbidden,
+		},
+		{
+			name: "unknown error",
+			doer: mock.NewStatusMockDoer(999),
+			wantErr: Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := NewDataDragonClient(tt.doer, RegionEuropeWest, log.StandardLogger())
+			got, err := c.GetRunes()
+			assert.Equal(t, tt.wantErr, err)
+			if tt.wantErr == nil {
+				assert.Equal(t, tt.want, got)
+				got, err := c.GetRunes()
+				assert.Nil(t, err)
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}
@@ -181,13 +242,15 @@ func TestDataDragonClient_GetMasteries(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    Doer
-		want    map[string]model.Mastery
+		want    []model.Mastery
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.Mastery{}),
-			want: map[string]model.Mastery{},
+			doer: dataDragonResponseDoer(map[string]model.Mastery{
+				"mastery": {},
+			}),
+			want: []model.Mastery{{}},
 		},
 		{
 			name:    "known error",
@@ -210,6 +273,9 @@ func TestDataDragonClient_GetMasteries(t *testing.T) {
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
 				assert.Equal(t, tt.want, got)
+				got, err := c.GetMasteries()
+				assert.Nil(t, err)
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}
@@ -219,13 +285,15 @@ func TestDataDragonClient_GetSummonerSpells(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    Doer
-		want    map[string]model.SummonerSpell
+		want    []model.SummonerSpell
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.SummonerSpell{}),
-			want: map[string]model.SummonerSpell{},
+			doer: dataDragonResponseDoer(map[string]model.SummonerSpell{
+				"summoner": {},
+			}),
+			want: []model.SummonerSpell{{}},
 		},
 		{
 			name:    "known error",
@@ -248,9 +316,17 @@ func TestDataDragonClient_GetSummonerSpells(t *testing.T) {
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
 				assert.Equal(t, tt.want, got)
+				got, err := c.GetSummonerSpells()
+				assert.Nil(t, err)
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}
+}
+
+func TestDataDragonClient_ClearCaches(t *testing.T) {
+	c := NewDataDragonClient(http.DefaultClient, RegionKorea, log.StandardLogger())
+	c.ClearCaches()
 }
 
 func TestDataDragonClient_doRequest(t *testing.T) {
