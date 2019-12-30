@@ -14,11 +14,13 @@ import (
 )
 
 func TestNewDataDragonClient(t *testing.T) {
+	t.Parallel()
 	ddClient := NewDataDragonClient(http.DefaultClient, RegionEuropeWest, log.StandardLogger())
 	require.NotNil(t, ddClient)
 }
 
 func TestDataDragonClient_GetChampions(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    Doer
@@ -62,6 +64,7 @@ func TestDataDragonClient_GetChampions(t *testing.T) {
 }
 
 func TestDataDragonClient_GetChampion(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    Doer
@@ -110,6 +113,7 @@ func TestDataDragonClient_GetChampion(t *testing.T) {
 }
 
 func TestDataDragonClient_GetProfileIcons(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    Doer
@@ -153,6 +157,7 @@ func TestDataDragonClient_GetProfileIcons(t *testing.T) {
 }
 
 func TestDataDragonClient_GetItems(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    Doer
@@ -196,6 +201,7 @@ func TestDataDragonClient_GetItems(t *testing.T) {
 }
 
 func TestDataDragonClient_GetRunes(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    Doer
@@ -239,6 +245,7 @@ func TestDataDragonClient_GetRunes(t *testing.T) {
 }
 
 func TestDataDragonClient_GetMasteries(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    Doer
@@ -282,6 +289,7 @@ func TestDataDragonClient_GetMasteries(t *testing.T) {
 }
 
 func TestDataDragonClient_GetSummonerSpells(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    Doer
@@ -325,11 +333,13 @@ func TestDataDragonClient_GetSummonerSpells(t *testing.T) {
 }
 
 func TestDataDragonClient_ClearCaches(t *testing.T) {
+	t.Parallel()
 	c := NewDataDragonClient(http.DefaultClient, RegionKorea, log.StandardLogger())
 	c.ClearCaches()
 }
 
 func TestDataDragonClient_doRequest(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name     string
 		endpoint string
@@ -365,6 +375,7 @@ func TestDataDragonClient_doRequest(t *testing.T) {
 }
 
 func TestDataDragonClient_init(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    Doer
@@ -393,6 +404,7 @@ func TestDataDragonClient_init(t *testing.T) {
 }
 
 func TestDataDragonClient_getInto(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		target  interface{}
@@ -414,6 +426,7 @@ func TestDataDragonClient_getInto(t *testing.T) {
 }
 
 func Test_versionGreaterThan(t *testing.T) {
+	t.Parallel()
 	type args struct {
 		v1 string
 		v2 string
