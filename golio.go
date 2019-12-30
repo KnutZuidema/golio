@@ -30,6 +30,7 @@ import (
 type Client struct {
 	*api.RiotAPIClient
 	*api.DataDragonClient
+	*api.StaticDataClient
 }
 
 // NewClient returns a new client for both the Riot API and the Data Dragon service
@@ -37,5 +38,6 @@ func NewClient(region api.Region, apiKey string, client api.Doer, logger log.Fie
 	return &Client{
 		RiotAPIClient:    api.NewRiotAPIClient(region, apiKey, client, logger),
 		DataDragonClient: api.NewDataDragonClient(client, region, logger),
+		StaticDataClient: api.NewStaticDataClient(client, logger),
 	}
 }
