@@ -10,13 +10,13 @@ func TestLeagueList_GetRank(t *testing.T) {
 	tests := []struct {
 		name    string
 		i       int
-		entries []LeagueEntry
-		want    LeagueEntry
+		entries []LeagueItem
+		want    LeagueItem
 	}{
 		{
 			name: "get rank",
 			i:    0,
-			entries: []LeagueEntry{
+			entries: []LeagueItem{
 				{
 					LeaguePoints: 0,
 				},
@@ -24,7 +24,7 @@ func TestLeagueList_GetRank(t *testing.T) {
 					LeaguePoints: 1,
 				},
 			},
-			want: LeagueEntry{
+			want: LeagueItem{
 				LeaguePoints: 1,
 			},
 		},
