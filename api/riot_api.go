@@ -159,12 +159,12 @@ func (c RiotAPIClient) GetMasterLeague(queue queue) (*model.LeagueList, error) {
 }
 
 // GetLeaguesBySummoner returns all leagues a summoner with the given ID is in
-func (c RiotAPIClient) GetLeaguesBySummoner(summonerID string) ([]*model.LeagueEntry, error) {
+func (c RiotAPIClient) GetLeaguesBySummoner(summonerID string) ([]*model.LeagueItem, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLeaguesBySummoner",
 		"Region": c.Region,
 	})
-	var leagues []*model.LeagueEntry
+	var leagues []*model.LeagueItem
 	if err := c.getInto(fmt.Sprintf(endpointGetLeaguesBySummoner, summonerID), &leagues); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -173,12 +173,12 @@ func (c RiotAPIClient) GetLeaguesBySummoner(summonerID string) ([]*model.LeagueE
 }
 
 // GetLeagues returns all players with a a league specified by its queue, tier and division
-func (c RiotAPIClient) GetLeagues(queue queue, tier tier, division division) ([]*model.LeagueEntry, error) {
+func (c RiotAPIClient) GetLeagues(queue queue, tier tier, division division) ([]*model.LeagueItem, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLeagues",
 		"Region": c.Region,
 	})
-	var leagues []*model.LeagueEntry
+	var leagues []*model.LeagueItem
 	if err := c.getInto(fmt.Sprintf(endpointGetLeagues, queue, tier, division), &leagues); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -331,13 +331,13 @@ func (c RiotAPIClient) GetMatchForTournament(matchID int, tournamentCode string)
 }
 
 // GetCurrentGame returns a currently running game for a summoner
-func (c RiotAPIClient) GetCurrentGame(summonerID string) (*model.CurrentGameInfo, error) {
+func (c RiotAPIClient) GetCurrentGame(summonerID string) (*model.GameInfo, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method":     "GetCurrentGame",
 		"Region":     c.Region,
 		"summonerID": summonerID,
 	})
-	var games model.CurrentGameInfo
+	var games model.GameInfo
 	if err := c.getInto(fmt.Sprintf(endpointGetCurrentGame, summonerID), &games); err != nil {
 		logger.Error(err)
 		return nil, err
