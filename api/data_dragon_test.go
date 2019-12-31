@@ -463,7 +463,7 @@ func Test_versionGreaterThan(t *testing.T) {
 }
 
 func dataDragonResponseDoer(object interface{}) Doer {
-	return mock.NewJSONMockDoer(model.DataDragonResponse{
+	return mock.NewJSONMockDoer(dataDragonResponse{
 		Data: object,
 	}, 200)
 }
