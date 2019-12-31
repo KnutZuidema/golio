@@ -616,14 +616,14 @@ func TestRiotAPIClient_GetLeaguesBySummoner(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    []*model.LeagueEntry
+		want    []*model.LeagueItem
 		doer    Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: []*model.LeagueEntry{},
-			doer: mock.NewJSONMockDoer([]*model.LeagueEntry{}, 200),
+			want: []*model.LeagueItem{},
+			doer: mock.NewJSONMockDoer([]*model.LeagueItem{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -640,13 +640,13 @@ func TestRiotAPIClient_GetLeaguesBySummoner(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: []*model.LeagueEntry{},
-			doer: rateLimitDoer([]*model.LeagueEntry{}),
+			want: []*model.LeagueItem{},
+			doer: rateLimitDoer([]*model.LeagueItem{}),
 		},
 		{
 			name: "unavailable once",
-			want: []*model.LeagueEntry{},
-			doer: unavailableOnceDoer([]*model.LeagueEntry{}),
+			want: []*model.LeagueItem{},
+			doer: unavailableOnceDoer([]*model.LeagueItem{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -670,14 +670,14 @@ func TestRiotAPIClient_GetSummonerLeagues(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    []*model.LeagueEntry
+		want    []*model.LeagueItem
 		doer    Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: []*model.LeagueEntry{},
-			doer: mock.NewJSONMockDoer([]*model.LeagueEntry{}, 200),
+			want: []*model.LeagueItem{},
+			doer: mock.NewJSONMockDoer([]*model.LeagueItem{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -694,13 +694,13 @@ func TestRiotAPIClient_GetSummonerLeagues(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: []*model.LeagueEntry{},
-			doer: rateLimitDoer([]*model.LeagueEntry{}),
+			want: []*model.LeagueItem{},
+			doer: rateLimitDoer([]*model.LeagueItem{}),
 		},
 		{
 			name: "unavailable once",
-			want: []*model.LeagueEntry{},
-			doer: unavailableOnceDoer([]*model.LeagueEntry{}),
+			want: []*model.LeagueItem{},
+			doer: unavailableOnceDoer([]*model.LeagueItem{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -724,14 +724,14 @@ func TestRiotAPIClient_GetLeagues(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    []*model.LeagueEntry
+		want    []*model.LeagueItem
 		doer    Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: []*model.LeagueEntry{},
-			doer: mock.NewJSONMockDoer([]*model.LeagueEntry{}, 200),
+			want: []*model.LeagueItem{},
+			doer: mock.NewJSONMockDoer([]*model.LeagueItem{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -748,13 +748,13 @@ func TestRiotAPIClient_GetLeagues(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: []*model.LeagueEntry{},
-			doer: rateLimitDoer([]*model.LeagueEntry{}),
+			want: []*model.LeagueItem{},
+			doer: rateLimitDoer([]*model.LeagueItem{}),
 		},
 		{
 			name: "unavailable once",
-			want: []*model.LeagueEntry{},
-			doer: unavailableOnceDoer([]*model.LeagueEntry{}),
+			want: []*model.LeagueItem{},
+			doer: unavailableOnceDoer([]*model.LeagueItem{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -1277,14 +1277,14 @@ func TestRiotAPIClient_GetCurrentGame(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.CurrentGameInfo
+		want    *model.GameInfo
 		doer    Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.CurrentGameInfo{},
-			doer: mock.NewJSONMockDoer(model.CurrentGameInfo{}, 200),
+			want: &model.GameInfo{},
+			doer: mock.NewJSONMockDoer(model.GameInfo{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -1301,13 +1301,13 @@ func TestRiotAPIClient_GetCurrentGame(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.CurrentGameInfo{},
-			doer: rateLimitDoer(model.CurrentGameInfo{}),
+			want: &model.GameInfo{},
+			doer: rateLimitDoer(model.GameInfo{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.CurrentGameInfo{},
-			doer: unavailableOnceDoer(model.CurrentGameInfo{}),
+			want: &model.GameInfo{},
+			doer: unavailableOnceDoer(model.GameInfo{}),
 		},
 		{
 			name:    "unavailable twice",

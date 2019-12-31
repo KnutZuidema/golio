@@ -264,7 +264,7 @@ func (c *DataDragonClient) getInto(endpoint string, target interface{}) error {
 	if err != nil {
 		return err
 	}
-	var ddResponse model.DataDragonResponse
+	var ddResponse dataDragonResponse
 	if err = json.NewDecoder(response.Body).Decode(&ddResponse); err != nil {
 		return err
 	}
@@ -359,4 +359,11 @@ func rwLockToggle(mu *sync.RWMutex) (func(), func()) {
 			mu.RUnlock()
 			mu.Lock()
 		}
+}
+
+type dataDragonResponse struct {
+	Type    string
+	Format  string
+	Version string
+	Data    interface{}
 }
