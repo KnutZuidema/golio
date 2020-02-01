@@ -1,4 +1,6 @@
-package api
+// Package static provides methods to access static data and constant values used by the Riot API.
+// These values will rarely be updated, only if e.g. a new season starts or a new game mode is added.
+package static
 
 import (
 	"encoding/json"
@@ -7,20 +9,22 @@ import (
 
 	"github.com/sirupsen/logrus"
 
+	"github.com/KnutZuidema/golio/api"
+	"github.com/KnutZuidema/golio/internal"
 	"github.com/KnutZuidema/golio/model"
 )
 
-// StaticDataClient provides access to static data provided by Riot
+// Client provides access to static data provided by Riot
 // data is fetched on the first call to each method and cached for further calls
-type StaticDataClient struct {
+type Client struct {
 	logger  logrus.FieldLogger
-	client  Doer
+	client  internal.Doer
 	mutexes map[string]*sync.RWMutex
 	cache   map[string]interface{}
 }
 
-// NewStaticDataClient returns a new client
-func NewStaticDataClient(doer Doer, logger logrus.FieldLogger) *StaticDataClient {
+// NewClient returns a new client
+func NewClient(doer internal.Doer, logger logrus.FieldLogger) *Client {
 	mutexes := map[string]*sync.RWMutex{
 		"seasons":   {},
 		"queues":    {},
@@ -28,7 +32,7 @@ func NewStaticDataClient(doer Doer, logger logrus.FieldLogger) *StaticDataClient
 		"gameModes": {},
 		"gameTypes": {},
 	}
-	return &StaticDataClient{
+	return &Client{
 		logger:  logger,
 		client:  doer,
 		mutexes: mutexes,
@@ -37,9 +41,9 @@ func NewStaticDataClient(doer Doer, logger logrus.FieldLogger) *StaticDataClient
 }
 
 // GetSeasons returns static data for seasons
-func (c *StaticDataClient) GetSeasons() ([]model.Season, error) {
+func (c *Client) GetSeasons() ([]model.Season, error) {
 	mu := c.mutexes["seasons"]
-	unlock, toggle := rwLockToggle(mu)
+	unlock, toggle := internal.RWLockToggle(mu)
 	defer unlock()
 	seasons, ok := c.cache["seasons"].([]model.Season)
 	if !ok {
@@ -55,9 +59,9 @@ func (c *StaticDataClient) GetSeasons() ([]model.Season, error) {
 }
 
 // GetQueues returns static data for queues
-func (c *StaticDataClient) GetQueues() ([]model.Queue, error) {
+func (c *Client) GetQueues() ([]model.Queue, error) {
 	mu := c.mutexes["queues"]
-	unlock, toggle := rwLockToggle(mu)
+	unlock, toggle := internal.RWLockToggle(mu)
 	defer unlock()
 	queues, ok := c.cache["queues"].([]model.Queue)
 	if !ok {
@@ -73,9 +77,9 @@ func (c *StaticDataClient) GetQueues() ([]model.Queue, error) {
 }
 
 // GetMaps returns static data for maps
-func (c *StaticDataClient) GetMaps() ([]model.Map, error) {
+func (c *Client) GetMaps() ([]model.Map, error) {
 	mu := c.mutexes["maps"]
-	unlock, toggle := rwLockToggle(mu)
+	unlock, toggle := internal.RWLockToggle(mu)
 	defer unlock()
 	maps, ok := c.cache["maps"].([]model.Map)
 	if !ok {
@@ -91,9 +95,9 @@ func (c *StaticDataClient) GetMaps() ([]model.Map, error) {
 }
 
 // GetGameModes returns static data for game modes
-func (c *StaticDataClient) GetGameModes() ([]model.GameMode, error) {
+func (c *Client) GetGameModes() ([]model.GameMode, error) {
 	mu := c.mutexes["gameModes"]
-	unlock, toggle := rwLockToggle(mu)
+	unlock, toggle := internal.RWLockToggle(mu)
 	defer unlock()
 	gameModes, ok := c.cache["gameModes"].([]model.GameMode)
 	if !ok {
@@ -109,9 +113,9 @@ func (c *StaticDataClient) GetGameModes() ([]model.GameMode, error) {
 }
 
 // GetGameTypes returns static data for game types
-func (c *StaticDataClient) GetGameTypes() ([]model.GameType, error) {
+func (c *Client) GetGameTypes() ([]model.GameType, error) {
 	mu := c.mutexes["gameTypes"]
-	unlock, toggle := rwLockToggle(mu)
+	unlock, toggle := internal.RWLockToggle(mu)
 	defer unlock()
 	gameTypes, ok := c.cache["gameTypes"].([]model.GameType)
 	if !ok {
@@ -127,20 +131,20 @@ func (c *StaticDataClient) GetGameTypes() ([]model.GameType, error) {
 }
 
 // ClearCaches clears caches for all methods
-func (c *StaticDataClient) ClearCaches() {
+func (c *Client) ClearCaches() {
 	c.cache = map[string]interface{}{}
 }
 
-func (c *StaticDataClient) getInto(endpoint string, target interface{}) error {
+func (c *Client) getInto(endpoint string, target interface{}) error {
 	req, _ := http.NewRequest(http.MethodGet, endpoint, nil)
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return err
 	}
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		err, ok := StatusToError[resp.StatusCode]
+		err, ok := api.StatusToError[resp.StatusCode]
 		if !ok {
-			err = Error{
+			err = api.Error{
 				Message:    "unknown error reason",
 				StatusCode: resp.StatusCode,
 			}

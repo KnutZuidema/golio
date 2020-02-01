@@ -1,4 +1,4 @@
-package api
+package static
 
 import (
 	"fmt"
@@ -8,7 +8,9 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/KnutZuidema/golio/mock"
+	"github.com/KnutZuidema/golio/api"
+	"github.com/KnutZuidema/golio/internal"
+	"github.com/KnutZuidema/golio/internal/mock"
 	"github.com/KnutZuidema/golio/model"
 )
 
@@ -16,7 +18,7 @@ func TestStaticDataClient_GetSeasons(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    []model.Season
 		wantErr error
 	}{
@@ -28,12 +30,12 @@ func TestStaticDataClient_GetSeasons(t *testing.T) {
 		{
 			name:    "known error",
 			doer:    mock.NewStatusMockDoer(http.StatusForbidden),
-			wantErr: ErrForbidden,
+			wantErr: api.ErrForbidden,
 		},
 		{
 			name: "unknown error",
 			doer: mock.NewStatusMockDoer(999),
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -41,7 +43,7 @@ func TestStaticDataClient_GetSeasons(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewStaticDataClient(tt.doer, log.StandardLogger())
+			c := NewClient(tt.doer, log.StandardLogger())
 			got, err := c.GetSeasons()
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
@@ -58,7 +60,7 @@ func TestStaticDataClient_GetQueues(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    []model.Queue
 		wantErr error
 	}{
@@ -70,12 +72,12 @@ func TestStaticDataClient_GetQueues(t *testing.T) {
 		{
 			name:    "known error",
 			doer:    mock.NewStatusMockDoer(http.StatusForbidden),
-			wantErr: ErrForbidden,
+			wantErr: api.ErrForbidden,
 		},
 		{
 			name: "unknown error",
 			doer: mock.NewStatusMockDoer(999),
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -83,7 +85,7 @@ func TestStaticDataClient_GetQueues(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewStaticDataClient(tt.doer, log.StandardLogger())
+			c := NewClient(tt.doer, log.StandardLogger())
 			got, err := c.GetQueues()
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
@@ -100,7 +102,7 @@ func TestStaticDataClient_GetMaps(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    []model.Map
 		wantErr error
 	}{
@@ -112,12 +114,12 @@ func TestStaticDataClient_GetMaps(t *testing.T) {
 		{
 			name:    "known error",
 			doer:    mock.NewStatusMockDoer(http.StatusForbidden),
-			wantErr: ErrForbidden,
+			wantErr: api.ErrForbidden,
 		},
 		{
 			name: "unknown error",
 			doer: mock.NewStatusMockDoer(999),
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -125,7 +127,7 @@ func TestStaticDataClient_GetMaps(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewStaticDataClient(tt.doer, log.StandardLogger())
+			c := NewClient(tt.doer, log.StandardLogger())
 			got, err := c.GetMaps()
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
@@ -142,7 +144,7 @@ func TestStaticDataClient_GetGameModes(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    []model.GameMode
 		wantErr error
 	}{
@@ -154,12 +156,12 @@ func TestStaticDataClient_GetGameModes(t *testing.T) {
 		{
 			name:    "known error",
 			doer:    mock.NewStatusMockDoer(http.StatusForbidden),
-			wantErr: ErrForbidden,
+			wantErr: api.ErrForbidden,
 		},
 		{
 			name: "unknown error",
 			doer: mock.NewStatusMockDoer(999),
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -167,7 +169,7 @@ func TestStaticDataClient_GetGameModes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewStaticDataClient(tt.doer, log.StandardLogger())
+			c := NewClient(tt.doer, log.StandardLogger())
 			got, err := c.GetGameModes()
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
@@ -184,7 +186,7 @@ func TestStaticDataClient_GetGameTypes(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    []model.GameType
 		wantErr error
 	}{
@@ -196,12 +198,12 @@ func TestStaticDataClient_GetGameTypes(t *testing.T) {
 		{
 			name:    "known error",
 			doer:    mock.NewStatusMockDoer(http.StatusForbidden),
-			wantErr: ErrForbidden,
+			wantErr: api.ErrForbidden,
 		},
 		{
 			name: "unknown error",
 			doer: mock.NewStatusMockDoer(999),
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -209,7 +211,7 @@ func TestStaticDataClient_GetGameTypes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewStaticDataClient(tt.doer, log.StandardLogger())
+			c := NewClient(tt.doer, log.StandardLogger())
 			got, err := c.GetGameTypes()
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
@@ -227,7 +229,7 @@ func TestStaticDataClient_getInto(t *testing.T) {
 	tests := []struct {
 		name    string
 		target  interface{}
-		doer    Doer
+		doer    internal.Doer
 		wantErr bool
 	}{
 		{
@@ -241,14 +243,14 @@ func TestStaticDataClient_getInto(t *testing.T) {
 		},
 		{
 			name:    "fail decode",
-			target:  failJSONDecoding{},
+			target:  struct{}{},
 			doer:    mock.NewJSONMockDoer(0, 200),
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewStaticDataClient(tt.doer, log.StandardLogger())
+			c := NewClient(tt.doer, log.StandardLogger())
 			err := c.getInto("endpoint", tt.target)
 			assert.Equal(t, tt.wantErr, err != nil)
 		})
@@ -256,6 +258,6 @@ func TestStaticDataClient_getInto(t *testing.T) {
 }
 
 func TestStaticDataClient_ClearCaches(t *testing.T) {
-	client := NewStaticDataClient(http.DefaultClient, log.StandardLogger())
+	client := NewClient(http.DefaultClient, log.StandardLogger())
 	client.ClearCaches()
 }
