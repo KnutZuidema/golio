@@ -1,4 +1,4 @@
-package api
+package riot
 
 import (
 	"fmt"
@@ -10,7 +10,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/KnutZuidema/golio/mock"
+	"github.com/KnutZuidema/golio/api"
+	"github.com/KnutZuidema/golio/internal"
+	"github.com/KnutZuidema/golio/internal/mock"
 	"github.com/KnutZuidema/golio/model"
 )
 
@@ -18,7 +20,7 @@ func TestRiotAPIClient_GetSummonerByName(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    *model.Summoner
 		wantErr error
 	}{
@@ -29,7 +31,7 @@ func TestRiotAPIClient_GetSummonerByName(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -37,7 +39,7 @@ func TestRiotAPIClient_GetSummonerByName(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -52,14 +54,14 @@ func TestRiotAPIClient_GetSummonerByName(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetSummonerByName("name")
 			assert.Equal(t, err, tt.wantErr)
 			if tt.wantErr == nil {
@@ -73,7 +75,7 @@ func TestRiotAPIClient_GetSummonerByAccount(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    *model.Summoner
 		wantErr error
 	}{
@@ -84,7 +86,7 @@ func TestRiotAPIClient_GetSummonerByAccount(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -92,7 +94,7 @@ func TestRiotAPIClient_GetSummonerByAccount(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -107,14 +109,14 @@ func TestRiotAPIClient_GetSummonerByAccount(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetSummonerByAccount("accountID")
 			assert.Equal(t, err, tt.wantErr)
 			if tt.wantErr == nil {
@@ -128,7 +130,7 @@ func TestRiotAPIClient_GetSummonerByPUUID(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    *model.Summoner
 		wantErr error
 	}{
@@ -139,7 +141,7 @@ func TestRiotAPIClient_GetSummonerByPUUID(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -147,7 +149,7 @@ func TestRiotAPIClient_GetSummonerByPUUID(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -162,14 +164,14 @@ func TestRiotAPIClient_GetSummonerByPUUID(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetSummonerByPUUID("puuid")
 			assert.Equal(t, err, tt.wantErr)
 			if tt.wantErr == nil {
@@ -183,7 +185,7 @@ func TestRiotAPIClient_GetSummonerBySummonerID(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    *model.Summoner
 		wantErr error
 	}{
@@ -194,7 +196,7 @@ func TestRiotAPIClient_GetSummonerBySummonerID(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -202,7 +204,7 @@ func TestRiotAPIClient_GetSummonerBySummonerID(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -217,14 +219,14 @@ func TestRiotAPIClient_GetSummonerBySummonerID(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetSummonerBySummonerID("id")
 			assert.Equal(t, err, tt.wantErr)
 			if tt.wantErr == nil {
@@ -239,7 +241,7 @@ func TestRiotAPIClient_GetChampionMasteries(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    []*model.ChampionMastery
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -249,7 +251,7 @@ func TestRiotAPIClient_GetChampionMasteries(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -257,7 +259,7 @@ func TestRiotAPIClient_GetChampionMasteries(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -272,13 +274,13 @@ func TestRiotAPIClient_GetChampionMasteries(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetChampionMasteries("id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -293,7 +295,7 @@ func TestRiotAPIClient_GetChampionMastery(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.ChampionMastery
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -303,7 +305,7 @@ func TestRiotAPIClient_GetChampionMastery(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -311,7 +313,7 @@ func TestRiotAPIClient_GetChampionMastery(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -326,13 +328,13 @@ func TestRiotAPIClient_GetChampionMastery(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetChampionMastery("id", "id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -347,7 +349,7 @@ func TestRiotAPIClient_GetChampionMasteryTotalScore(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    int
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -357,7 +359,7 @@ func TestRiotAPIClient_GetChampionMasteryTotalScore(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -365,7 +367,7 @@ func TestRiotAPIClient_GetChampionMasteryTotalScore(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -380,13 +382,13 @@ func TestRiotAPIClient_GetChampionMasteryTotalScore(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetChampionMasteryTotalScore("id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -401,7 +403,7 @@ func TestRiotAPIClient_GetFreeChampionRotation(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.ChampionInfo
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -411,7 +413,7 @@ func TestRiotAPIClient_GetFreeChampionRotation(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -419,7 +421,7 @@ func TestRiotAPIClient_GetFreeChampionRotation(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -434,13 +436,13 @@ func TestRiotAPIClient_GetFreeChampionRotation(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetFreeChampionRotation()
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -455,7 +457,7 @@ func TestRiotAPIClient_GetChallengerLeague(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.LeagueList
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -465,7 +467,7 @@ func TestRiotAPIClient_GetChallengerLeague(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -473,7 +475,7 @@ func TestRiotAPIClient_GetChallengerLeague(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -488,13 +490,13 @@ func TestRiotAPIClient_GetChallengerLeague(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetChallengerLeague(QueueRankedSolo)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -509,7 +511,7 @@ func TestRiotAPIClient_GetGrandmasterLeague(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.LeagueList
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -519,7 +521,7 @@ func TestRiotAPIClient_GetGrandmasterLeague(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -527,7 +529,7 @@ func TestRiotAPIClient_GetGrandmasterLeague(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -542,13 +544,13 @@ func TestRiotAPIClient_GetGrandmasterLeague(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetGrandmasterLeague(QueueRankedSolo)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -563,7 +565,7 @@ func TestRiotAPIClient_GetMasterLeague(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.LeagueList
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -573,7 +575,7 @@ func TestRiotAPIClient_GetMasterLeague(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -581,7 +583,7 @@ func TestRiotAPIClient_GetMasterLeague(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -596,13 +598,13 @@ func TestRiotAPIClient_GetMasterLeague(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetMasterLeague(QueueRankedSolo)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -617,7 +619,7 @@ func TestRiotAPIClient_GetLeaguesBySummoner(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    []*model.LeagueItem
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -627,7 +629,7 @@ func TestRiotAPIClient_GetLeaguesBySummoner(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -635,7 +637,7 @@ func TestRiotAPIClient_GetLeaguesBySummoner(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -650,13 +652,13 @@ func TestRiotAPIClient_GetLeaguesBySummoner(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetLeaguesBySummoner("id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -671,7 +673,7 @@ func TestRiotAPIClient_GetSummonerLeagues(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    []*model.LeagueItem
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -681,7 +683,7 @@ func TestRiotAPIClient_GetSummonerLeagues(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -689,7 +691,7 @@ func TestRiotAPIClient_GetSummonerLeagues(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -704,13 +706,13 @@ func TestRiotAPIClient_GetSummonerLeagues(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetLeaguesBySummoner("id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -725,7 +727,7 @@ func TestRiotAPIClient_GetLeagues(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    []*model.LeagueItem
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -735,7 +737,7 @@ func TestRiotAPIClient_GetLeagues(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -743,7 +745,7 @@ func TestRiotAPIClient_GetLeagues(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -758,13 +760,13 @@ func TestRiotAPIClient_GetLeagues(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetLeagues(QueueRankedSolo, TierGold, DivisionThree)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -779,7 +781,7 @@ func TestRiotAPIClient_GetLeague(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.LeagueList
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -789,7 +791,7 @@ func TestRiotAPIClient_GetLeague(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -797,7 +799,7 @@ func TestRiotAPIClient_GetLeague(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -812,13 +814,13 @@ func TestRiotAPIClient_GetLeague(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetLeague("id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -833,7 +835,7 @@ func TestRiotAPIClient_GetStatus(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.Status
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -843,7 +845,7 @@ func TestRiotAPIClient_GetStatus(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -851,7 +853,7 @@ func TestRiotAPIClient_GetStatus(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -866,13 +868,13 @@ func TestRiotAPIClient_GetStatus(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetStatus()
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -887,7 +889,7 @@ func TestRiotAPIClient_GetMatchesByAccount(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.Matchlist
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -897,7 +899,7 @@ func TestRiotAPIClient_GetMatchesByAccount(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -905,7 +907,7 @@ func TestRiotAPIClient_GetMatchesByAccount(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -920,13 +922,13 @@ func TestRiotAPIClient_GetMatchesByAccount(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetMatchesByAccount("id", 0, 1)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -941,7 +943,7 @@ func TestRiotAPIClient_GetMatchesByAccountStream(t *testing.T) {
 	count := 0
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -960,7 +962,7 @@ func TestRiotAPIClient_GetMatchesByAccountStream(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -968,7 +970,7 @@ func TestRiotAPIClient_GetMatchesByAccountStream(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -981,13 +983,13 @@ func TestRiotAPIClient_GetMatchesByAccountStream(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got := client.GetMatchesByAccountStream("id")
 			for res := range got {
 				if res.Error != nil && tt.wantErr != nil {
@@ -1008,7 +1010,7 @@ func TestRiotAPIClient_GetMatch(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.Match
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -1018,7 +1020,7 @@ func TestRiotAPIClient_GetMatch(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -1026,7 +1028,7 @@ func TestRiotAPIClient_GetMatch(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -1041,13 +1043,13 @@ func TestRiotAPIClient_GetMatch(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetMatch(1)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -1062,7 +1064,7 @@ func TestRiotAPIClient_GetMatchTimeline(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.MatchTimeline
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -1072,7 +1074,7 @@ func TestRiotAPIClient_GetMatchTimeline(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -1080,7 +1082,7 @@ func TestRiotAPIClient_GetMatchTimeline(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -1095,13 +1097,13 @@ func TestRiotAPIClient_GetMatchTimeline(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetMatchTimeline(0)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -1116,7 +1118,7 @@ func TestRiotAPIClient_GetMatchIDsByTournamentCode(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    []int
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -1126,7 +1128,7 @@ func TestRiotAPIClient_GetMatchIDsByTournamentCode(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -1134,7 +1136,7 @@ func TestRiotAPIClient_GetMatchIDsByTournamentCode(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -1149,13 +1151,13 @@ func TestRiotAPIClient_GetMatchIDsByTournamentCode(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetMatchIDsByTournamentCode("tournamentCode")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -1170,7 +1172,7 @@ func TestRiotAPIClient_GetMatchForTournament(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.Match
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -1180,7 +1182,7 @@ func TestRiotAPIClient_GetMatchForTournament(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -1188,7 +1190,7 @@ func TestRiotAPIClient_GetMatchForTournament(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -1203,13 +1205,13 @@ func TestRiotAPIClient_GetMatchForTournament(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetMatchForTournament(0, "tournamentCode")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -1224,7 +1226,7 @@ func TestRiotAPIClient_GetFeaturedGames(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.FeaturedGames
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -1234,7 +1236,7 @@ func TestRiotAPIClient_GetFeaturedGames(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -1242,7 +1244,7 @@ func TestRiotAPIClient_GetFeaturedGames(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -1257,13 +1259,13 @@ func TestRiotAPIClient_GetFeaturedGames(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetFeaturedGames()
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -1278,7 +1280,7 @@ func TestRiotAPIClient_GetCurrentGame(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.GameInfo
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -1288,7 +1290,7 @@ func TestRiotAPIClient_GetCurrentGame(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -1296,7 +1298,7 @@ func TestRiotAPIClient_GetCurrentGame(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -1311,13 +1313,13 @@ func TestRiotAPIClient_GetCurrentGame(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetCurrentGame("id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -1332,7 +1334,7 @@ func TestRiotAPIClient_CreateTournamentCodes(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    []string
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -1342,7 +1344,7 @@ func TestRiotAPIClient_CreateTournamentCodes(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -1350,7 +1352,7 @@ func TestRiotAPIClient_CreateTournamentCodes(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -1365,13 +1367,13 @@ func TestRiotAPIClient_CreateTournamentCodes(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.CreateTournamentCodes(0, 0, &model.TournamentCodeParameters{}, true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -1386,7 +1388,7 @@ func TestRiotAPIClient_GetLobbyEvents(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.LobbyEventList
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -1396,7 +1398,7 @@ func TestRiotAPIClient_GetLobbyEvents(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -1404,7 +1406,7 @@ func TestRiotAPIClient_GetLobbyEvents(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -1419,13 +1421,13 @@ func TestRiotAPIClient_GetLobbyEvents(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetLobbyEvents("code", true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -1440,7 +1442,7 @@ func TestRiotAPIClient_CreateTournamentProvider(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    int
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -1450,7 +1452,7 @@ func TestRiotAPIClient_CreateTournamentProvider(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -1458,7 +1460,7 @@ func TestRiotAPIClient_CreateTournamentProvider(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -1473,13 +1475,13 @@ func TestRiotAPIClient_CreateTournamentProvider(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.CreateTournamentProvider(&model.ProviderRegistrationParameters{}, true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -1494,7 +1496,7 @@ func TestRiotAPIClient_CreateTournament(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    int
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -1504,7 +1506,7 @@ func TestRiotAPIClient_CreateTournament(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -1512,7 +1514,7 @@ func TestRiotAPIClient_CreateTournament(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -1527,13 +1529,13 @@ func TestRiotAPIClient_CreateTournament(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.CreateTournament(&model.TournamentRegistrationParameters{}, true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -1548,7 +1550,7 @@ func TestRiotAPIClient_GetTournament(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    *model.Tournament
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -1558,7 +1560,7 @@ func TestRiotAPIClient_GetTournament(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -1566,7 +1568,7 @@ func TestRiotAPIClient_GetTournament(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -1581,13 +1583,13 @@ func TestRiotAPIClient_GetTournament(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetTournament("code")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -1601,7 +1603,7 @@ func TestRiotAPIClient_UpdateTournament(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -1610,7 +1612,7 @@ func TestRiotAPIClient_UpdateTournament(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -1618,7 +1620,7 @@ func TestRiotAPIClient_UpdateTournament(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -1631,13 +1633,13 @@ func TestRiotAPIClient_UpdateTournament(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			err := client.UpdateTournament("code", model.TournamentUpdateParameters{})
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 		})
@@ -1649,7 +1651,7 @@ func TestRiotAPIClient_GetThirdPartyCode(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    string
-		doer    Doer
+		doer    internal.Doer
 		wantErr error
 	}{
 		{
@@ -1659,7 +1661,7 @@ func TestRiotAPIClient_GetThirdPartyCode(t *testing.T) {
 		},
 		{
 			name: "unknown error status",
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -1667,7 +1669,7 @@ func TestRiotAPIClient_GetThirdPartyCode(t *testing.T) {
 		},
 		{
 			name:    "not found",
-			wantErr: ErrNotFound,
+			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
 		{
@@ -1682,13 +1684,13 @@ func TestRiotAPIClient_GetThirdPartyCode(t *testing.T) {
 		},
 		{
 			name:    "unavailable twice",
-			wantErr: ErrServiceUnavailable,
+			wantErr: api.ErrServiceUnavailable,
 			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewRiotAPIClient(RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
 			got, err := client.GetThirdPartyCode("id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
@@ -1708,7 +1710,7 @@ func TestRiotAPIClient_doRequest(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		doer    Doer
+		doer    internal.Doer
 		wantErr bool
 	}{
 		{
@@ -1750,7 +1752,7 @@ func TestRiotAPIClient_doRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewRiotAPIClient(RegionEuropeNorthEast, "", tt.doer, logrus.StandardLogger())
+			c := NewClient(api.RegionEuropeNorthEast, "", tt.doer, logrus.StandardLogger())
 			_, err := c.doRequest(tt.args.method, tt.args.endpoint, tt.args.body)
 			assert.Equal(t, err != nil, tt.wantErr)
 		})
@@ -1765,13 +1767,13 @@ func TestRiotAPIClient_getInto(t *testing.T) {
 	}{
 		{
 			name:    "fail decode",
-			target:  failJSONDecoding{},
+			target:  struct{}{},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewRiotAPIClient(RegionOceania, "API_KEY", mock.NewJSONMockDoer(0, 200), logrus.StandardLogger())
+			c := NewClient(api.RegionOceania, "API_KEY", mock.NewJSONMockDoer(0, 200), logrus.StandardLogger())
 			err := c.getInto("endpoint", tt.target)
 			assert.Equal(t, tt.wantErr, err != nil)
 		})
@@ -1786,13 +1788,13 @@ func TestRiotAPIClient_postInto(t *testing.T) {
 	}{
 		{
 			name:    "fail decode",
-			target:  failJSONDecoding{},
+			target:  struct{}{},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewRiotAPIClient(RegionOceania, "API_KEY", mock.NewJSONMockDoer(0, 200), logrus.StandardLogger())
+			c := NewClient(api.RegionOceania, "API_KEY", mock.NewJSONMockDoer(0, 200), logrus.StandardLogger())
 			err := c.postInto("endpoint", struct{}{}, tt.target)
 			assert.Equal(t, tt.wantErr, err != nil)
 		})
@@ -1807,13 +1809,13 @@ func TestRiotAPIClient_post(t *testing.T) {
 	}{
 		{
 			name:    "fail encode",
-			target:  failJSONEncoding{},
+			target:  mock.FailJSONEncoding{},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewRiotAPIClient(RegionOceania, "API_KEY", mock.NewStatusMockDoer(200), logrus.StandardLogger())
+			c := NewClient(api.RegionOceania, "API_KEY", mock.NewStatusMockDoer(200), logrus.StandardLogger())
 			_, err := c.post("endpoint", tt.target)
 			assert.Equal(t, tt.wantErr, err != nil)
 		})
@@ -1828,20 +1830,20 @@ func TestRiotAPIClient_put(t *testing.T) {
 	}{
 		{
 			name:    "fail encode",
-			target:  failJSONEncoding{},
+			target:  mock.FailJSONEncoding{},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewRiotAPIClient(RegionOceania, "API_KEY", mock.NewStatusMockDoer(200), logrus.StandardLogger())
+			c := NewClient(api.RegionOceania, "API_KEY", mock.NewStatusMockDoer(200), logrus.StandardLogger())
 			err := c.put("endpoint", tt.target)
 			assert.Equal(t, tt.wantErr, err != nil)
 		})
 	}
 }
 
-func rateLimitDoer(object interface{}) Doer {
+func rateLimitDoer(object interface{}) internal.Doer {
 	rateLimitCount := 0
 	return &mock.Doer{
 		Custom: func(r *http.Request) (*http.Response, error) {
@@ -1856,7 +1858,7 @@ func rateLimitDoer(object interface{}) Doer {
 	}
 }
 
-func unavailableOnceDoer(object interface{}) Doer {
+func unavailableOnceDoer(object interface{}) internal.Doer {
 	unavailableCount := 0
 	return &mock.Doer{
 		Custom: func(r *http.Request) (*http.Response, error) {
@@ -1869,7 +1871,7 @@ func unavailableOnceDoer(object interface{}) Doer {
 	}
 }
 
-func failOnSecondDoer() Doer {
+func failOnSecondDoer() internal.Doer {
 	count := 0
 	return &mock.Doer{
 		Custom: func(r *http.Request) (*http.Response, error) {
@@ -1882,20 +1884,8 @@ func failOnSecondDoer() Doer {
 	}
 }
 
-func invalidHeaderDoer() Doer {
+func invalidHeaderDoer() internal.Doer {
 	return mock.NewHeaderMockDoer(http.StatusTooManyRequests, http.Header{
 		"Retry-After": []string{"abc"},
 	})
-}
-
-type failJSONEncoding struct{}
-
-func (f failJSONEncoding) MarshalJSON() ([]byte, error) {
-	return nil, fmt.Errorf("error")
-}
-
-type failJSONDecoding struct{}
-
-func (f failJSONDecoding) UnmarshalJSON([]byte) error {
-	return fmt.Errorf("error")
 }
