@@ -1,4 +1,4 @@
-package api
+package datadragon
 
 import (
 	"fmt"
@@ -9,13 +9,15 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/KnutZuidema/golio/mock"
+	"github.com/KnutZuidema/golio/api"
+	"github.com/KnutZuidema/golio/internal"
+	"github.com/KnutZuidema/golio/internal/mock"
 	"github.com/KnutZuidema/golio/model"
 )
 
 func TestNewDataDragonClient(t *testing.T) {
 	t.Parallel()
-	ddClient := NewDataDragonClient(http.DefaultClient, RegionEuropeWest, log.StandardLogger())
+	ddClient := NewClient(http.DefaultClient, api.RegionEuropeWest, log.StandardLogger())
 	require.NotNil(t, ddClient)
 }
 
@@ -23,7 +25,7 @@ func TestDataDragonClient_GetChampions(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    []model.ChampionData
 		wantErr error
 	}{
@@ -37,12 +39,12 @@ func TestDataDragonClient_GetChampions(t *testing.T) {
 		{
 			name:    "known error",
 			doer:    mock.NewStatusMockDoer(http.StatusForbidden),
-			wantErr: ErrForbidden,
+			wantErr: api.ErrForbidden,
 		},
 		{
 			name: "unknown error",
 			doer: mock.NewStatusMockDoer(999),
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -50,7 +52,7 @@ func TestDataDragonClient_GetChampions(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewDataDragonClient(tt.doer, RegionEuropeWest, log.StandardLogger())
+			c := NewClient(tt.doer, api.RegionEuropeWest, log.StandardLogger())
 			got, err := c.GetChampions()
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
@@ -67,7 +69,7 @@ func TestDataDragonClient_GetChampion(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    model.ChampionDataExtended
 		wantErr error
 	}{
@@ -86,12 +88,12 @@ func TestDataDragonClient_GetChampion(t *testing.T) {
 		{
 			name:    "known error",
 			doer:    mock.NewStatusMockDoer(http.StatusForbidden),
-			wantErr: ErrForbidden,
+			wantErr: api.ErrForbidden,
 		},
 		{
 			name: "unknown error",
 			doer: mock.NewStatusMockDoer(999),
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -99,7 +101,7 @@ func TestDataDragonClient_GetChampion(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewDataDragonClient(tt.doer, RegionEuropeWest, log.StandardLogger())
+			c := NewClient(tt.doer, api.RegionEuropeWest, log.StandardLogger())
 			got, err := c.GetChampion("champion")
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
@@ -116,7 +118,7 @@ func TestDataDragonClient_GetProfileIcons(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    []model.ProfileIcon
 		wantErr error
 	}{
@@ -130,12 +132,12 @@ func TestDataDragonClient_GetProfileIcons(t *testing.T) {
 		{
 			name:    "known error",
 			doer:    mock.NewStatusMockDoer(http.StatusForbidden),
-			wantErr: ErrForbidden,
+			wantErr: api.ErrForbidden,
 		},
 		{
 			name: "unknown error",
 			doer: mock.NewStatusMockDoer(999),
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -143,7 +145,7 @@ func TestDataDragonClient_GetProfileIcons(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewDataDragonClient(tt.doer, RegionEuropeWest, log.StandardLogger())
+			c := NewClient(tt.doer, api.RegionEuropeWest, log.StandardLogger())
 			got, err := c.GetProfileIcons()
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
@@ -160,7 +162,7 @@ func TestDataDragonClient_GetItems(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    []model.Item
 		wantErr error
 	}{
@@ -174,12 +176,12 @@ func TestDataDragonClient_GetItems(t *testing.T) {
 		{
 			name:    "known error",
 			doer:    mock.NewStatusMockDoer(http.StatusForbidden),
-			wantErr: ErrForbidden,
+			wantErr: api.ErrForbidden,
 		},
 		{
 			name: "unknown error",
 			doer: mock.NewStatusMockDoer(999),
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -187,7 +189,7 @@ func TestDataDragonClient_GetItems(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewDataDragonClient(tt.doer, RegionEuropeWest, log.StandardLogger())
+			c := NewClient(tt.doer, api.RegionEuropeWest, log.StandardLogger())
 			got, err := c.GetItems()
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
@@ -204,7 +206,7 @@ func TestDataDragonClient_GetRunes(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    []model.Item
 		wantErr error
 	}{
@@ -218,12 +220,12 @@ func TestDataDragonClient_GetRunes(t *testing.T) {
 		{
 			name:    "known error",
 			doer:    mock.NewStatusMockDoer(http.StatusForbidden),
-			wantErr: ErrForbidden,
+			wantErr: api.ErrForbidden,
 		},
 		{
 			name: "unknown error",
 			doer: mock.NewStatusMockDoer(999),
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -231,7 +233,7 @@ func TestDataDragonClient_GetRunes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewDataDragonClient(tt.doer, RegionEuropeWest, log.StandardLogger())
+			c := NewClient(tt.doer, api.RegionEuropeWest, log.StandardLogger())
 			got, err := c.GetRunes()
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
@@ -248,7 +250,7 @@ func TestDataDragonClient_GetMasteries(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    []model.Mastery
 		wantErr error
 	}{
@@ -262,12 +264,12 @@ func TestDataDragonClient_GetMasteries(t *testing.T) {
 		{
 			name:    "known error",
 			doer:    mock.NewStatusMockDoer(http.StatusForbidden),
-			wantErr: ErrForbidden,
+			wantErr: api.ErrForbidden,
 		},
 		{
 			name: "unknown error",
 			doer: mock.NewStatusMockDoer(999),
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -275,7 +277,7 @@ func TestDataDragonClient_GetMasteries(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewDataDragonClient(tt.doer, RegionEuropeWest, log.StandardLogger())
+			c := NewClient(tt.doer, api.RegionEuropeWest, log.StandardLogger())
 			got, err := c.GetMasteries()
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
@@ -292,7 +294,7 @@ func TestDataDragonClient_GetSummonerSpells(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		want    []model.SummonerSpell
 		wantErr error
 	}{
@@ -306,12 +308,12 @@ func TestDataDragonClient_GetSummonerSpells(t *testing.T) {
 		{
 			name:    "known error",
 			doer:    mock.NewStatusMockDoer(http.StatusForbidden),
-			wantErr: ErrForbidden,
+			wantErr: api.ErrForbidden,
 		},
 		{
 			name: "unknown error",
 			doer: mock.NewStatusMockDoer(999),
-			wantErr: Error{
+			wantErr: api.Error{
 				Message:    "unknown error reason",
 				StatusCode: 999,
 			},
@@ -319,7 +321,7 @@ func TestDataDragonClient_GetSummonerSpells(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewDataDragonClient(tt.doer, RegionEuropeWest, log.StandardLogger())
+			c := NewClient(tt.doer, api.RegionEuropeWest, log.StandardLogger())
 			got, err := c.GetSummonerSpells()
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
@@ -334,7 +336,7 @@ func TestDataDragonClient_GetSummonerSpells(t *testing.T) {
 
 func TestDataDragonClient_ClearCaches(t *testing.T) {
 	t.Parallel()
-	c := NewDataDragonClient(http.DefaultClient, RegionKorea, log.StandardLogger())
+	c := NewClient(http.DefaultClient, api.RegionKorea, log.StandardLogger())
 	c.ClearCaches()
 }
 
@@ -343,7 +345,7 @@ func TestDataDragonClient_doRequest(t *testing.T) {
 	tests := []struct {
 		name     string
 		endpoint string
-		doer     Doer
+		doer     internal.Doer
 		format   dataDragonURL
 		wantErr  bool
 	}{
@@ -367,7 +369,7 @@ func TestDataDragonClient_doRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewDataDragonClient(tt.doer, RegionEuropeWest, log.StandardLogger())
+			c := NewClient(tt.doer, api.RegionEuropeWest, log.StandardLogger())
 			_, err := c.doRequest(tt.format, tt.endpoint)
 			assert.Equal(t, err != nil, tt.wantErr)
 		})
@@ -378,7 +380,7 @@ func TestDataDragonClient_init(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		doer    Doer
+		doer    internal.Doer
 		wantErr bool
 	}{
 		{
@@ -395,8 +397,8 @@ func TestDataDragonClient_init(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewDataDragonClient(tt.doer, RegionOceania, log.StandardLogger())
-			if err := c.init(RegionOceania); (err != nil) != tt.wantErr {
+			c := NewClient(tt.doer, api.RegionOceania, log.StandardLogger())
+			if err := c.init(api.RegionOceania); (err != nil) != tt.wantErr {
 				t.Errorf("DataDragonClient.init() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -412,13 +414,13 @@ func TestDataDragonClient_getInto(t *testing.T) {
 	}{
 		{
 			name:    "fail decode",
-			target:  failJSONDecoding{},
+			target:  struct{}{},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := NewDataDragonClient(mock.NewJSONMockDoer(0, 200), RegionOceania, log.StandardLogger())
+			c := NewClient(mock.NewJSONMockDoer(0, 200), api.RegionOceania, log.StandardLogger())
 			err := c.getInto("endpoint", tt.target)
 			assert.Equal(t, tt.wantErr, err != nil)
 		})
@@ -462,7 +464,7 @@ func Test_versionGreaterThan(t *testing.T) {
 	}
 }
 
-func dataDragonResponseDoer(object interface{}) Doer {
+func dataDragonResponseDoer(object interface{}) internal.Doer {
 	return mock.NewJSONMockDoer(dataDragonResponse{
 		Data: object,
 	}, 200)
