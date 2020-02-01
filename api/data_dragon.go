@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 
 	"github.com/KnutZuidema/golio/model"
 
@@ -38,22 +39,23 @@ var (
 
 // DataDragonClient provides access to all data provided by the Data Dragon service
 type DataDragonClient struct {
-	logger          log.FieldLogger
-	Version         string
-	Language        languageCode
-	client          Doer
-	championsMu     sync.RWMutex
-	championsByName map[string]model.ChampionDataExtended
-	profileIconsMu  sync.RWMutex
-	profileIcons    []model.ProfileIcon
-	itemsMu         sync.RWMutex
-	items           []model.Item
-	masteriesMu     sync.RWMutex
-	masteries       []model.Mastery
-	runesMu         sync.RWMutex
-	runes           []model.Item
-	summonersMu     sync.RWMutex
-	summoners       []model.SummonerSpell
+	logger             log.FieldLogger
+	Version            string
+	Language           languageCode
+	client             Doer
+	championsMu        sync.RWMutex
+	championsByName    map[string]model.ChampionDataExtended
+	getChampionsToggle uint32
+	profileIconsMu     sync.RWMutex
+	profileIcons       []model.ProfileIcon
+	itemsMu            sync.RWMutex
+	items              []model.Item
+	masteriesMu        sync.RWMutex
+	masteries          []model.Mastery
+	runesMu            sync.RWMutex
+	runes              []model.Item
+	summonersMu        sync.RWMutex
+	summoners          []model.SummonerSpell
 }
 
 // NewDataDragonClient returns a new client for the Data Dragon service.
@@ -94,7 +96,7 @@ func (c *DataDragonClient) init(region string) error {
 func (c *DataDragonClient) GetChampions() ([]model.ChampionData, error) {
 	unlock, toggle := rwLockToggle(&c.championsMu)
 	defer unlock()
-	if len(c.championsByName) < 1 {
+	if atomic.CompareAndSwapUint32(&c.getChampionsToggle, 0, 1) {
 		toggle()
 		var champions map[string]model.ChampionData
 		if err := c.getInto("/champion.json", &champions); err != nil {
@@ -114,10 +116,11 @@ func (c *DataDragonClient) GetChampions() ([]model.ChampionData, error) {
 
 // GetChampion returns information about the champion with the given name
 func (c *DataDragonClient) GetChampion(name string) (model.ChampionDataExtended, error) {
-	c.championsMu.RLock()
+	unlock, toggle := rwLockToggle(&c.championsMu)
+	defer unlock()
 	champion, ok := c.championsByName[name]
-	c.championsMu.RUnlock()
 	if !ok || champion.Lore == "" {
+		toggle()
 		var data map[string]model.ChampionDataExtended
 		if err := c.getInto(fmt.Sprintf("/champion/%s.json", name), &data); err != nil {
 			return model.ChampionDataExtended{}, err
@@ -126,9 +129,7 @@ func (c *DataDragonClient) GetChampion(name string) (model.ChampionDataExtended,
 		if !ok {
 			return model.ChampionDataExtended{}, fmt.Errorf("no data for champion %s", name)
 		}
-		c.championsMu.Lock()
 		c.championsByName[name] = champion
-		c.championsMu.Unlock()
 	}
 	return champion, nil
 }
@@ -241,6 +242,7 @@ func (c *DataDragonClient) GetSummonerSpells() ([]model.SummonerSpell, error) {
 func (c *DataDragonClient) ClearCaches() {
 	c.championsMu.Lock()
 	c.championsByName = map[string]model.ChampionDataExtended{}
+	atomic.StoreUint32(&c.getChampionsToggle, 0)
 	c.championsMu.Unlock()
 	c.masteriesMu.Lock()
 	c.masteries = []model.Mastery{}
