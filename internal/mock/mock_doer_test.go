@@ -165,3 +165,9 @@ func TestDoer_Do(t *testing.T) {
 		})
 	}
 }
+
+func TestFailJSONEncoding_MarshalJSON(t *testing.T) {
+	if _, err := json.Marshal(FailJSONEncoding{}); err == nil {
+		t.Errorf("should return error")
+	}
+}

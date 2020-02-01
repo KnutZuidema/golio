@@ -2,6 +2,7 @@ package mock
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 )
@@ -65,4 +66,12 @@ func (d *Doer) Do(r *http.Request) (*http.Response, error) {
 		d.Response.Body = d.ResponseBody
 	}
 	return &d.Response, nil
+}
+
+// FailJSONEncoding is a type that will return an error when trying to encode using the json package
+type FailJSONEncoding struct{}
+
+// MarshalJSON implements the json.Marshaler interface
+func (f FailJSONEncoding) MarshalJSON() ([]byte, error) {
+	return nil, fmt.Errorf("error")
 }
