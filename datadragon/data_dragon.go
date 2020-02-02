@@ -1,4 +1,6 @@
-package api
+// Package datadragon provides methods for retrieving data from the DataDragon API.
+// This data is only updated for every new version of League of Legends.
+package datadragon
 
 import (
 	"encoding/json"
@@ -9,6 +11,8 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"github.com/KnutZuidema/golio/api"
+	"github.com/KnutZuidema/golio/internal"
 	"github.com/KnutZuidema/golio/model"
 
 	log "github.com/sirupsen/logrus"
@@ -21,28 +25,28 @@ const (
 )
 
 var (
-	regionToRealmRegion = map[Region]string{
-		RegionEuropeWest:        "euw",
-		RegionEuropeNorthEast:   "eun",
-		RegionJapan:             "jp",
-		RegionKorea:             "kr",
-		RegionLatinAmericaNorth: "lan",
-		RegionLatinAmericaSouth: "las",
-		RegionNorthAmerica:      "na",
-		RegionOceania:           "oce",
-		RegionPBE:               "pbe",
-		RegionRussia:            "ru",
-		RegionTurkey:            "tr",
-		RegionBrasil:            "br",
+	regionToRealmRegion = map[api.Region]string{
+		api.RegionEuropeWest:        "euw",
+		api.RegionEuropeNorthEast:   "eun",
+		api.RegionJapan:             "jp",
+		api.RegionKorea:             "kr",
+		api.RegionLatinAmericaNorth: "lan",
+		api.RegionLatinAmericaSouth: "las",
+		api.RegionNorthAmerica:      "na",
+		api.RegionOceania:           "oce",
+		api.RegionPBE:               "pbe",
+		api.RegionRussia:            "ru",
+		api.RegionTurkey:            "tr",
+		api.RegionBrasil:            "br",
 	}
 )
 
-// DataDragonClient provides access to all data provided by the Data Dragon service
-type DataDragonClient struct {
+// Client provides access to all data provided by the Data Dragon service
+type Client struct {
 	logger             log.FieldLogger
 	Version            string
 	Language           languageCode
-	client             Doer
+	client             internal.Doer
 	championsMu        sync.RWMutex
 	championsByName    map[string]model.ChampionDataExtended
 	getChampionsToggle uint32
@@ -58,9 +62,9 @@ type DataDragonClient struct {
 	summoners          []model.SummonerSpell
 }
 
-// NewDataDragonClient returns a new client for the Data Dragon service.
-func NewDataDragonClient(client Doer, region Region, logger log.FieldLogger) *DataDragonClient {
-	c := &DataDragonClient{
+// NewClient returns a new client for the Data Dragon service.
+func NewClient(client internal.Doer, region api.Region, logger log.FieldLogger) *Client {
+	c := &Client{
 		client:          client,
 		logger:          logger.WithField("client", "data dragon"),
 		championsByName: map[string]model.ChampionDataExtended{},
@@ -72,7 +76,7 @@ func NewDataDragonClient(client Doer, region Region, logger log.FieldLogger) *Da
 	return c
 }
 
-func (c *DataDragonClient) init(region string) error {
+func (c *Client) init(region string) error {
 	var res struct {
 		Version  string `json:"v"`
 		Language string `json:"l"`
@@ -93,8 +97,8 @@ func (c *DataDragonClient) init(region string) error {
 }
 
 // GetChampions returns all existing champions
-func (c *DataDragonClient) GetChampions() ([]model.ChampionData, error) {
-	unlock, toggle := rwLockToggle(&c.championsMu)
+func (c *Client) GetChampions() ([]model.ChampionData, error) {
+	unlock, toggle := internal.RWLockToggle(&c.championsMu)
 	defer unlock()
 	if atomic.CompareAndSwapUint32(&c.getChampionsToggle, 0, 1) {
 		toggle()
@@ -115,8 +119,8 @@ func (c *DataDragonClient) GetChampions() ([]model.ChampionData, error) {
 }
 
 // GetChampion returns information about the champion with the given name
-func (c *DataDragonClient) GetChampion(name string) (model.ChampionDataExtended, error) {
-	unlock, toggle := rwLockToggle(&c.championsMu)
+func (c *Client) GetChampion(name string) (model.ChampionDataExtended, error) {
+	unlock, toggle := internal.RWLockToggle(&c.championsMu)
 	defer unlock()
 	champion, ok := c.championsByName[name]
 	if !ok || champion.Lore == "" {
@@ -135,8 +139,8 @@ func (c *DataDragonClient) GetChampion(name string) (model.ChampionDataExtended,
 }
 
 // GetProfileIcons returns all existing profile icons
-func (c *DataDragonClient) GetProfileIcons() ([]model.ProfileIcon, error) {
-	unlock, toggle := rwLockToggle(&c.profileIconsMu)
+func (c *Client) GetProfileIcons() ([]model.ProfileIcon, error) {
+	unlock, toggle := internal.RWLockToggle(&c.profileIconsMu)
 	defer unlock()
 	if len(c.profileIcons) < 1 {
 		toggle()
@@ -155,8 +159,8 @@ func (c *DataDragonClient) GetProfileIcons() ([]model.ProfileIcon, error) {
 }
 
 // GetItems returns all existing items
-func (c *DataDragonClient) GetItems() ([]model.Item, error) {
-	unlock, toggle := rwLockToggle(&c.itemsMu)
+func (c *Client) GetItems() ([]model.Item, error) {
+	unlock, toggle := internal.RWLockToggle(&c.itemsMu)
 	defer unlock()
 	if len(c.items) < 1 {
 		toggle()
@@ -177,8 +181,8 @@ func (c *DataDragonClient) GetItems() ([]model.Item, error) {
 
 // GetMasteries returns all existing masteries. Masteries were removed in patch 7.23.1. If any version higher than that
 // is specified the last available version will be used instead.
-func (c *DataDragonClient) GetMasteries() ([]model.Mastery, error) {
-	unlock, toggle := rwLockToggle(&c.masteriesMu)
+func (c *Client) GetMasteries() ([]model.Mastery, error) {
+	unlock, toggle := internal.RWLockToggle(&c.masteriesMu)
 	defer unlock()
 	if len(c.masteries) < 1 {
 		toggle()
@@ -198,8 +202,8 @@ func (c *DataDragonClient) GetMasteries() ([]model.Mastery, error) {
 
 // GetRunes returns all existing runes. Runes were removed in patch 7.23.1. If any version higher than that
 // is specified the last available version will be used instead.
-func (c *DataDragonClient) GetRunes() ([]model.Item, error) {
-	unlock, toggle := rwLockToggle(&c.runesMu)
+func (c *Client) GetRunes() ([]model.Item, error) {
+	unlock, toggle := internal.RWLockToggle(&c.runesMu)
 	defer unlock()
 	if len(c.runes) < 1 {
 		toggle()
@@ -219,8 +223,8 @@ func (c *DataDragonClient) GetRunes() ([]model.Item, error) {
 }
 
 // GetSummonerSpells returns all existing summoner spells
-func (c *DataDragonClient) GetSummonerSpells() ([]model.SummonerSpell, error) {
-	unlock, toggle := rwLockToggle(&c.summonersMu)
+func (c *Client) GetSummonerSpells() ([]model.SummonerSpell, error) {
+	unlock, toggle := internal.RWLockToggle(&c.summonersMu)
 	defer unlock()
 	if len(c.summoners) < 1 {
 		toggle()
@@ -239,7 +243,7 @@ func (c *DataDragonClient) GetSummonerSpells() ([]model.SummonerSpell, error) {
 }
 
 // ClearCaches resets all caches of the data dragon client
-func (c *DataDragonClient) ClearCaches() {
+func (c *Client) ClearCaches() {
 	c.championsMu.Lock()
 	c.championsByName = map[string]model.ChampionDataExtended{}
 	atomic.StoreUint32(&c.getChampionsToggle, 0)
@@ -261,7 +265,7 @@ func (c *DataDragonClient) ClearCaches() {
 	c.runesMu.Unlock()
 }
 
-func (c *DataDragonClient) getInto(endpoint string, target interface{}) error {
+func (c *Client) getInto(endpoint string, target interface{}) error {
 	response, err := c.doRequest(dataDragonDataURLFormat, endpoint)
 	if err != nil {
 		return err
@@ -275,7 +279,7 @@ func (c *DataDragonClient) getInto(endpoint string, target interface{}) error {
 	return json.Unmarshal(data, &target)
 }
 
-func (c *DataDragonClient) doRequest(format dataDragonURL, endpoint string) (*http.Response, error) {
+func (c *Client) doRequest(format dataDragonURL, endpoint string) (*http.Response, error) {
 	request, err := c.newRequest(format, endpoint)
 	if err != nil {
 		return nil, err
@@ -286,9 +290,9 @@ func (c *DataDragonClient) doRequest(format dataDragonURL, endpoint string) (*ht
 	}
 	if response.StatusCode < 200 || response.StatusCode > 299 {
 		var err error
-		err, ok := StatusToError[response.StatusCode]
+		err, ok := api.StatusToError[response.StatusCode]
 		if !ok {
-			err = Error{
+			err = api.Error{
 				Message:    "unknown error reason",
 				StatusCode: response.StatusCode,
 			}
@@ -298,7 +302,7 @@ func (c *DataDragonClient) doRequest(format dataDragonURL, endpoint string) (*ht
 	return response, nil
 }
 
-func (c *DataDragonClient) newRequest(format dataDragonURL, endpoint string) (*http.Request, error) {
+func (c *Client) newRequest(format dataDragonURL, endpoint string) (*http.Request, error) {
 	var version string
 	if (strings.Contains(endpoint, "rune") || strings.Contains(endpoint, "mastery")) &&
 		versionGreaterThan(c.Version, latestRuneAndMasteryVersion) {
@@ -340,27 +344,6 @@ func versionGreaterThan(v1, v2 string) bool {
 		}
 	}
 	return false
-}
-
-// rwLockToggle locks the given mutex for reading and returns two functions
-// the first function returned should be used to unlock the mutex
-// the second function returned will unlock the read lock and instead lock the mutex for writing
-// the unlock function will always call the correct unlock method
-func rwLockToggle(mu *sync.RWMutex) (func(), func()) {
-	sw := true
-	mu.RLock()
-	return func() {
-			if sw {
-				mu.RUnlock()
-			} else {
-				mu.Unlock()
-			}
-		},
-		func() {
-			sw = false
-			mu.RUnlock()
-			mu.Lock()
-		}
 }
 
 type dataDragonResponse struct {

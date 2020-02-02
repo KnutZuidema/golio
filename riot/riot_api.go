@@ -1,4 +1,6 @@
-package api
+// Package riot provides methods for accessing the Riot API for League of Legends.
+// This includes dynamic data like the current game a summoner is in or their ranked standing.
+package riot
 
 import (
 	"bytes"
@@ -9,22 +11,24 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/KnutZuidema/golio/api"
+	"github.com/KnutZuidema/golio/internal"
 	"github.com/KnutZuidema/golio/model"
 
 	log "github.com/sirupsen/logrus"
 )
 
-// RiotAPIClient provides access to all Riot API endpoints
-type RiotAPIClient struct {
+// Client provides access to all Riot API endpoints
+type Client struct {
 	logger log.FieldLogger
-	Region Region
+	Region api.Region
 	apiKey string
-	client Doer
+	client internal.Doer
 }
 
-// NewRiotAPIClient returns a new api client for the Riot API
-func NewRiotAPIClient(region Region, apiKey string, client Doer, logger log.FieldLogger) *RiotAPIClient {
-	return &RiotAPIClient{
+// NewClient returns a new api client for the Riot API
+func NewClient(region api.Region, apiKey string, client internal.Doer, logger log.FieldLogger) *Client {
+	return &Client{
 		Region: region,
 		apiKey: apiKey,
 		client: client,
@@ -33,27 +37,27 @@ func NewRiotAPIClient(region Region, apiKey string, client Doer, logger log.Fiel
 }
 
 // GetSummonerByName returns the summoner with the given summoner name
-func (c RiotAPIClient) GetSummonerByName(name string) (*model.Summoner, error) {
+func (c Client) GetSummonerByName(name string) (*model.Summoner, error) {
 	return c.getSummonerBy(identificationName, name)
 }
 
 // GetSummonerByAccount returns the summoner with the given account ID
-func (c RiotAPIClient) GetSummonerByAccount(id string) (*model.Summoner, error) {
+func (c Client) GetSummonerByAccount(id string) (*model.Summoner, error) {
 	return c.getSummonerBy(identificationAccountID, id)
 }
 
 // GetSummonerByPUUID returns the summoner with the given PUUID
-func (c RiotAPIClient) GetSummonerByPUUID(puuid string) (*model.Summoner, error) {
+func (c Client) GetSummonerByPUUID(puuid string) (*model.Summoner, error) {
 	return c.getSummonerBy(identificationPUUID, puuid)
 }
 
 // GetSummonerBySummonerID returns the summoner with the given ID
-func (c RiotAPIClient) GetSummonerBySummonerID(summonerID string) (*model.Summoner, error) {
+func (c Client) GetSummonerBySummonerID(summonerID string) (*model.Summoner, error) {
 	return c.getSummonerBy(identificationSummonerID, summonerID)
 }
 
 // GetChampionMasteries returns information about masteries for the summoner with the given ID
-func (c RiotAPIClient) GetChampionMasteries(summonerID string) ([]*model.ChampionMastery, error) {
+func (c Client) GetChampionMasteries(summonerID string) ([]*model.ChampionMastery, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChampionMasteries",
 		"Region": c.Region,
@@ -71,7 +75,7 @@ func (c RiotAPIClient) GetChampionMasteries(summonerID string) ([]*model.Champio
 
 // GetChampionMastery returns information about the mastery of the champion with the given ID the summoner with the
 // given ID has
-func (c RiotAPIClient) GetChampionMastery(summonerID, championID string) (*model.ChampionMastery, error) {
+func (c Client) GetChampionMastery(summonerID, championID string) (*model.ChampionMastery, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChampionMastery",
 		"Region": c.Region,
@@ -89,7 +93,7 @@ func (c RiotAPIClient) GetChampionMastery(summonerID, championID string) (*model
 
 // GetChampionMasteryTotalScore returns the accumulated mastery score of all champions played by the summoner with the
 // given ID
-func (c RiotAPIClient) GetChampionMasteryTotalScore(summonerID string) (int, error) {
+func (c Client) GetChampionMasteryTotalScore(summonerID string) (int, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChampionMasteryTotalScore",
 		"Region": c.Region,
@@ -103,7 +107,7 @@ func (c RiotAPIClient) GetChampionMasteryTotalScore(summonerID string) (int, err
 }
 
 // GetFreeChampionRotation returns information about the current free champion rotation
-func (c RiotAPIClient) GetFreeChampionRotation() (*model.ChampionInfo, error) {
+func (c Client) GetFreeChampionRotation() (*model.ChampionInfo, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetFreeChampionRotation",
 		"Region": c.Region,
@@ -117,7 +121,7 @@ func (c RiotAPIClient) GetFreeChampionRotation() (*model.ChampionInfo, error) {
 }
 
 // GetChallengerLeague returns the current Challenger league for the Region
-func (c RiotAPIClient) GetChallengerLeague(queue queue) (*model.LeagueList, error) {
+func (c Client) GetChallengerLeague(queue queue) (*model.LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChallengerLeague",
 		"Region": c.Region,
@@ -131,7 +135,7 @@ func (c RiotAPIClient) GetChallengerLeague(queue queue) (*model.LeagueList, erro
 }
 
 // GetGrandmasterLeague returns the current Grandmaster league for the Region
-func (c RiotAPIClient) GetGrandmasterLeague(queue queue) (*model.LeagueList, error) {
+func (c Client) GetGrandmasterLeague(queue queue) (*model.LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetGrandmasterLeague",
 		"Region": c.Region,
@@ -145,7 +149,7 @@ func (c RiotAPIClient) GetGrandmasterLeague(queue queue) (*model.LeagueList, err
 }
 
 // GetMasterLeague returns the current Master league for the Region
-func (c RiotAPIClient) GetMasterLeague(queue queue) (*model.LeagueList, error) {
+func (c Client) GetMasterLeague(queue queue) (*model.LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMasterLeague",
 		"Region": c.Region,
@@ -159,7 +163,7 @@ func (c RiotAPIClient) GetMasterLeague(queue queue) (*model.LeagueList, error) {
 }
 
 // GetLeaguesBySummoner returns all leagues a summoner with the given ID is in
-func (c RiotAPIClient) GetLeaguesBySummoner(summonerID string) ([]*model.LeagueItem, error) {
+func (c Client) GetLeaguesBySummoner(summonerID string) ([]*model.LeagueItem, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLeaguesBySummoner",
 		"Region": c.Region,
@@ -173,7 +177,7 @@ func (c RiotAPIClient) GetLeaguesBySummoner(summonerID string) ([]*model.LeagueI
 }
 
 // GetLeagues returns all players with a a league specified by its queue, tier and division
-func (c RiotAPIClient) GetLeagues(queue queue, tier tier, division division) ([]*model.LeagueItem, error) {
+func (c Client) GetLeagues(queue queue, tier tier, division division) ([]*model.LeagueItem, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLeagues",
 		"Region": c.Region,
@@ -187,7 +191,7 @@ func (c RiotAPIClient) GetLeagues(queue queue, tier tier, division division) ([]
 }
 
 // GetLeague returns a ranked league with the specified ID
-func (c RiotAPIClient) GetLeague(leagueID string) (*model.LeagueList, error) {
+func (c Client) GetLeague(leagueID string) (*model.LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLeague",
 		"Region": c.Region,
@@ -201,7 +205,7 @@ func (c RiotAPIClient) GetLeague(leagueID string) (*model.LeagueList, error) {
 }
 
 // GetStatus returns the current status of the services for the Region
-func (c RiotAPIClient) GetStatus() (*model.Status, error) {
+func (c Client) GetStatus() (*model.Status, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetStatus",
 		"Region": c.Region,
@@ -215,7 +219,7 @@ func (c RiotAPIClient) GetStatus() (*model.Status, error) {
 }
 
 // GetMatch returns a match specified by its ID
-func (c RiotAPIClient) GetMatch(id int) (*model.Match, error) {
+func (c Client) GetMatch(id int) (*model.Match, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMatch",
 		"Region": c.Region,
@@ -229,7 +233,7 @@ func (c RiotAPIClient) GetMatch(id int) (*model.Match, error) {
 }
 
 // GetMatchesByAccount returns a specified range of matches played on the account
-func (c RiotAPIClient) GetMatchesByAccount(accountID string, beginIndex, endIndex int) (*model.Matchlist, error) {
+func (c Client) GetMatchesByAccount(accountID string, beginIndex, endIndex int) (*model.Matchlist, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMatchesByAccount",
 		"Region": c.Region,
@@ -253,7 +257,7 @@ type MatchStreamValue struct {
 
 // GetMatchesByAccountStream returns all matches played on this account as a stream, requesting new until there are no
 // more new games
-func (c RiotAPIClient) GetMatchesByAccountStream(accountID string) <-chan MatchStreamValue {
+func (c Client) GetMatchesByAccountStream(accountID string) <-chan MatchStreamValue {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMatchesByAccountStream",
 		"Region": c.Region,
@@ -285,7 +289,7 @@ func (c RiotAPIClient) GetMatchesByAccountStream(accountID string) <-chan MatchS
 
 // GetMatchTimeline returns the timeline for the given match
 // NOTE: timelines are not available for every match
-func (c RiotAPIClient) GetMatchTimeline(matchID int) (*model.MatchTimeline, error) {
+func (c Client) GetMatchTimeline(matchID int) (*model.MatchTimeline, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method":  "GetMatchTimeline",
 		"region":  c.Region,
@@ -300,7 +304,7 @@ func (c RiotAPIClient) GetMatchTimeline(matchID int) (*model.MatchTimeline, erro
 }
 
 // GetMatchIDsByTournamentCode returns all match ids for the given tournament
-func (c RiotAPIClient) GetMatchIDsByTournamentCode(tournamentCode string) ([]int, error) {
+func (c Client) GetMatchIDsByTournamentCode(tournamentCode string) ([]int, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method":         "GetMatchIDsByTournamentCode",
 		"region":         c.Region,
@@ -315,7 +319,7 @@ func (c RiotAPIClient) GetMatchIDsByTournamentCode(tournamentCode string) ([]int
 }
 
 // GetMatchForTournament returns the match data for the given match in the given tournament
-func (c RiotAPIClient) GetMatchForTournament(matchID int, tournamentCode string) (*model.Match, error) {
+func (c Client) GetMatchForTournament(matchID int, tournamentCode string) (*model.Match, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method":         "GetMatchForTournament",
 		"region":         c.Region,
@@ -331,7 +335,7 @@ func (c RiotAPIClient) GetMatchForTournament(matchID int, tournamentCode string)
 }
 
 // GetCurrentGame returns a currently running game for a summoner
-func (c RiotAPIClient) GetCurrentGame(summonerID string) (*model.GameInfo, error) {
+func (c Client) GetCurrentGame(summonerID string) (*model.GameInfo, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method":     "GetCurrentGame",
 		"Region":     c.Region,
@@ -346,7 +350,7 @@ func (c RiotAPIClient) GetCurrentGame(summonerID string) (*model.GameInfo, error
 }
 
 // GetFeaturedGames returns the currently featured games
-func (c RiotAPIClient) GetFeaturedGames() (*model.FeaturedGames, error) {
+func (c Client) GetFeaturedGames() (*model.FeaturedGames, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetFeaturedGames",
 		"Region": c.Region,
@@ -362,7 +366,7 @@ func (c RiotAPIClient) GetFeaturedGames() (*model.FeaturedGames, error) {
 // CreateTournamentCodes creates a specified amount of codes for a tournament.
 // For more information about the parameters see the documentation for TournamentCodeParameters.
 // Set the useStub flag to true to use the stub endpoints for mocking an implementation
-func (c RiotAPIClient) CreateTournamentCodes(tournamentID, count int, parameters *model.TournamentCodeParameters,
+func (c Client) CreateTournamentCodes(tournamentID, count int, parameters *model.TournamentCodeParameters,
 	useStub bool) ([]string, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "CreateTournamentCodes",
@@ -383,7 +387,7 @@ func (c RiotAPIClient) CreateTournamentCodes(tournamentID, count int, parameters
 
 // GetLobbyEvents returns the lobby events for a lobby specified by the tournament code
 // Set the useStub flag to true to use the stub endpoints for mocking an implementation
-func (c RiotAPIClient) GetLobbyEvents(code string, useStub bool) (*model.LobbyEventList, error) {
+func (c Client) GetLobbyEvents(code string, useStub bool) (*model.LobbyEventList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLobbyEvents",
 		"Region": c.Region,
@@ -404,7 +408,7 @@ func (c RiotAPIClient) GetLobbyEvents(code string, useStub bool) (*model.LobbyEv
 // CreateTournamentProvider creates a tournament provider and returns the ID.
 // For more information about the parameters see the documentation for ProviderRegistrationParameters.
 // Set the useStub flag to true to use the stub endpoints for mocking an implementation
-func (c RiotAPIClient) CreateTournamentProvider(parameters *model.ProviderRegistrationParameters,
+func (c Client) CreateTournamentProvider(parameters *model.ProviderRegistrationParameters,
 	useStub bool) (int, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "CreateTournamentProvider",
@@ -426,7 +430,7 @@ func (c RiotAPIClient) CreateTournamentProvider(parameters *model.ProviderRegist
 // CreateTournament creates a tournament and returns the ID.
 // For more information about the parameters see the documentation for TournamentRegistrationParameters.
 // Set the useStub flag to true to use the stub endpoints for mocking an implementation
-func (c RiotAPIClient) CreateTournament(parameters *model.TournamentRegistrationParameters, useStub bool) (int, error) {
+func (c Client) CreateTournament(parameters *model.TournamentRegistrationParameters, useStub bool) (int, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "CreateTournament",
 		"Region": c.Region,
@@ -445,7 +449,7 @@ func (c RiotAPIClient) CreateTournament(parameters *model.TournamentRegistration
 }
 
 // GetTournament returns an existing tournament
-func (c RiotAPIClient) GetTournament(code string) (*model.Tournament, error) {
+func (c Client) GetTournament(code string) (*model.Tournament, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetTournament",
 		"Region": c.Region,
@@ -459,7 +463,7 @@ func (c RiotAPIClient) GetTournament(code string) (*model.Tournament, error) {
 }
 
 // UpdateTournament updates an existing tournament
-func (c RiotAPIClient) UpdateTournament(code string, parameters model.TournamentUpdateParameters) error {
+func (c Client) UpdateTournament(code string, parameters model.TournamentUpdateParameters) error {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "UpdateTournament",
 		"Region": c.Region,
@@ -472,7 +476,7 @@ func (c RiotAPIClient) UpdateTournament(code string, parameters model.Tournament
 }
 
 // GetThirdPartyCode returns the third party code for the given summoner id
-func (c RiotAPIClient) GetThirdPartyCode(id string) (string, error) {
+func (c Client) GetThirdPartyCode(id string) (string, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetThirdPartyCode",
 		"Region": c.Region,
@@ -485,7 +489,7 @@ func (c RiotAPIClient) GetThirdPartyCode(id string) (string, error) {
 	return code, nil
 }
 
-func (c RiotAPIClient) getSummonerBy(by identification, value string) (*model.Summoner, error) {
+func (c Client) getSummonerBy(by identification, value string) (*model.Summoner, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "getSummonerBy",
 		"Region": c.Region,
@@ -505,7 +509,7 @@ func (c RiotAPIClient) getSummonerBy(by identification, value string) (*model.Su
 	return summoner, nil
 }
 
-func (c RiotAPIClient) getInto(endpoint string, target interface{}) error {
+func (c Client) getInto(endpoint string, target interface{}) error {
 	logger := c.logger.WithFields(log.Fields{
 		"method":   "getInto",
 		"Region":   c.Region,
@@ -523,7 +527,7 @@ func (c RiotAPIClient) getInto(endpoint string, target interface{}) error {
 	return nil
 }
 
-func (c RiotAPIClient) postInto(endpoint string, body, target interface{}) error {
+func (c Client) postInto(endpoint string, body, target interface{}) error {
 	logger := c.logger.WithFields(log.Fields{
 		"method":   "postInto",
 		"Region":   c.Region,
@@ -541,7 +545,7 @@ func (c RiotAPIClient) postInto(endpoint string, body, target interface{}) error
 	return nil
 }
 
-func (c RiotAPIClient) put(endpoint string, body interface{}) error {
+func (c Client) put(endpoint string, body interface{}) error {
 	logger := c.logger.WithFields(log.Fields{
 		"method":   "put",
 		"Region":   c.Region,
@@ -556,11 +560,11 @@ func (c RiotAPIClient) put(endpoint string, body interface{}) error {
 	return err
 }
 
-func (c RiotAPIClient) get(endpoint string) (*http.Response, error) {
+func (c Client) get(endpoint string) (*http.Response, error) {
 	return c.doRequest("GET", endpoint, nil)
 }
 
-func (c RiotAPIClient) post(endpoint string, body interface{}) (*http.Response, error) {
+func (c Client) post(endpoint string, body interface{}) (*http.Response, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method":   "post",
 		"Region":   c.Region,
@@ -574,7 +578,7 @@ func (c RiotAPIClient) post(endpoint string, body interface{}) (*http.Response, 
 	return c.doRequest("POST", endpoint, buf)
 }
 
-func (c RiotAPIClient) doRequest(method, endpoint string, body io.Reader) (*http.Response, error) {
+func (c Client) doRequest(method, endpoint string, body io.Reader) (*http.Response, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method":   "doRequest",
 		"Region":   c.Region,
@@ -612,9 +616,9 @@ func (c RiotAPIClient) doRequest(method, endpoint string, body io.Reader) (*http
 	}
 	if response.StatusCode < 200 || response.StatusCode > 299 {
 		logger.Errorf("error response: %v", response.Status)
-		err, ok := StatusToError[response.StatusCode]
+		err, ok := api.StatusToError[response.StatusCode]
 		if !ok {
-			err = Error{
+			err = api.Error{
 				Message:    "unknown error reason",
 				StatusCode: response.StatusCode,
 			}
@@ -624,7 +628,7 @@ func (c RiotAPIClient) doRequest(method, endpoint string, body io.Reader) (*http
 	return response, nil
 }
 
-func (c RiotAPIClient) newRequest(method, endpoint string, body io.Reader) (*http.Request, error) {
+func (c Client) newRequest(method, endpoint string, body io.Reader) (*http.Request, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "newRequest",
 		"Region": c.Region,
