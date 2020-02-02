@@ -128,7 +128,7 @@ func (c *Client) GetChampionByID(id string) (ChampionDataExtended, error) {
 			return c.GetChampion(champion.Name)
 		}
 	}
-	return ChampionDataExtended{}, fmt.Errorf("no champion for id %s", id)
+	return ChampionDataExtended{}, api.ErrNotFound
 }
 
 // GetChampion returns information about the champion with the given name
@@ -144,7 +144,7 @@ func (c *Client) GetChampion(name string) (ChampionDataExtended, error) {
 		}
 		champion, ok = data[name]
 		if !ok {
-			return ChampionDataExtended{}, fmt.Errorf("no data for champion %s", name)
+			return ChampionDataExtended{}, api.ErrNotFound
 		}
 		c.championsByName[name] = champion
 	}
@@ -182,7 +182,7 @@ func (c *Client) GetProfileIcon(id int) (ProfileIcon, error) {
 			return icon, nil
 		}
 	}
-	return ProfileIcon{}, fmt.Errorf("no profile icon for id %d", id)
+	return ProfileIcon{}, api.ErrNotFound
 }
 
 // GetItems returns all existing items
@@ -217,7 +217,7 @@ func (c *Client) GetItem(id string) (Item, error) {
 			return item, nil
 		}
 	}
-	return Item{}, fmt.Errorf("no item for id %s", id)
+	return Item{}, api.ErrNotFound
 }
 
 // GetMasteries returns all existing masteries. Masteries were removed in patch 7.23.1. If any version higher than that
@@ -252,7 +252,7 @@ func (c *Client) GetMastery(id int) (Mastery, error) {
 			return mastery, nil
 		}
 	}
-	return Mastery{}, fmt.Errorf("no mastery for id %d", id)
+	return Mastery{}, api.ErrNotFound
 }
 
 // GetRunes returns all existing runes. Runes were removed in patch 7.23.1. If any version higher than that
@@ -288,7 +288,7 @@ func (c *Client) GetRune(id string) (Item, error) {
 			return r, nil
 		}
 	}
-	return Item{}, fmt.Errorf("no rune for id %s", id)
+	return Item{}, api.ErrNotFound
 }
 
 // GetSummonerSpells returns all existing summoner spells
@@ -322,7 +322,7 @@ func (c *Client) GetSummonerSpell(id string) (SummonerSpell, error) {
 			return summonerSpell, nil
 		}
 	}
-	return SummonerSpell{}, fmt.Errorf("no summoner spell for id %s", id)
+	return SummonerSpell{}, api.ErrNotFound
 }
 
 // ClearCaches resets all caches of the data dragon client
