@@ -11,7 +11,6 @@ import (
 	"github.com/KnutZuidema/golio/api"
 	"github.com/KnutZuidema/golio/internal"
 	"github.com/KnutZuidema/golio/internal/mock"
-	"github.com/KnutZuidema/golio/model"
 )
 
 func TestStaticDataClient_GetSeasons(t *testing.T) {
@@ -19,13 +18,13 @@ func TestStaticDataClient_GetSeasons(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.Season
+		want    []Season
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: mock.NewJSONMockDoer([]model.Season{{}}, 200),
-			want: []model.Season{{}},
+			doer: mock.NewJSONMockDoer([]Season{{}}, 200),
+			want: []Season{{}},
 		},
 		{
 			name:    "known error",
@@ -61,13 +60,13 @@ func TestStaticDataClient_GetQueues(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.Queue
+		want    []Queue
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: mock.NewJSONMockDoer([]model.Queue{{}}, 200),
-			want: []model.Queue{{}},
+			doer: mock.NewJSONMockDoer([]Queue{{}}, 200),
+			want: []Queue{{}},
 		},
 		{
 			name:    "known error",
@@ -103,13 +102,13 @@ func TestStaticDataClient_GetMaps(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.Map
+		want    []Map
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: mock.NewJSONMockDoer([]model.Map{{}}, 200),
-			want: []model.Map{{}},
+			doer: mock.NewJSONMockDoer([]Map{{}}, 200),
+			want: []Map{{}},
 		},
 		{
 			name:    "known error",
@@ -145,13 +144,13 @@ func TestStaticDataClient_GetGameModes(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.GameMode
+		want    []GameMode
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: mock.NewJSONMockDoer([]model.GameMode{{}}, 200),
-			want: []model.GameMode{{}},
+			doer: mock.NewJSONMockDoer([]GameMode{{}}, 200),
+			want: []GameMode{{}},
 		},
 		{
 			name:    "known error",
@@ -187,13 +186,13 @@ func TestStaticDataClient_GetGameTypes(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.GameType
+		want    []GameType
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: mock.NewJSONMockDoer([]model.GameType{{}}, 200),
-			want: []model.GameType{{}},
+			doer: mock.NewJSONMockDoer([]GameType{{}}, 200),
+			want: []GameType{{}},
 		},
 		{
 			name:    "known error",

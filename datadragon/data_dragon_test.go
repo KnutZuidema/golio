@@ -12,7 +12,6 @@ import (
 	"github.com/KnutZuidema/golio/api"
 	"github.com/KnutZuidema/golio/internal"
 	"github.com/KnutZuidema/golio/internal/mock"
-	"github.com/KnutZuidema/golio/model"
 )
 
 func TestNewDataDragonClient(t *testing.T) {
@@ -26,15 +25,15 @@ func TestDataDragonClient_GetChampions(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.ChampionData
+		want    []ChampionData
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.ChampionData{
+			doer: dataDragonResponseDoer(map[string]ChampionData{
 				"champion": {},
 			}),
-			want: []model.ChampionData{{}},
+			want: []ChampionData{{}},
 		},
 		{
 			name:    "known error",
@@ -70,15 +69,15 @@ func TestDataDragonClient_GetChampion(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    model.ChampionDataExtended
+		want    ChampionDataExtended
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.ChampionDataExtended{
+			doer: dataDragonResponseDoer(map[string]ChampionDataExtended{
 				"champion": {},
 			}),
-			want: model.ChampionDataExtended{},
+			want: ChampionDataExtended{},
 		},
 		{
 			name:    "invalid data dragon response",
@@ -119,15 +118,15 @@ func TestDataDragonClient_GetProfileIcons(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.ProfileIcon
+		want    []ProfileIcon
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.ProfileIcon{
+			doer: dataDragonResponseDoer(map[string]ProfileIcon{
 				"icon": {},
 			}),
-			want: []model.ProfileIcon{{}},
+			want: []ProfileIcon{{}},
 		},
 		{
 			name:    "known error",
@@ -163,15 +162,15 @@ func TestDataDragonClient_GetItems(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.Item
+		want    []Item
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.Item{
+			doer: dataDragonResponseDoer(map[string]Item{
 				"item": {},
 			}),
-			want: []model.Item{{ID: "item"}},
+			want: []Item{{ID: "item"}},
 		},
 		{
 			name:    "known error",
@@ -207,15 +206,15 @@ func TestDataDragonClient_GetRunes(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.Item
+		want    []Item
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.Item{
+			doer: dataDragonResponseDoer(map[string]Item{
 				"rune": {},
 			}),
-			want: []model.Item{{ID: "rune"}},
+			want: []Item{{ID: "rune"}},
 		},
 		{
 			name:    "known error",
@@ -251,15 +250,15 @@ func TestDataDragonClient_GetMasteries(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.Mastery
+		want    []Mastery
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.Mastery{
+			doer: dataDragonResponseDoer(map[string]Mastery{
 				"mastery": {},
 			}),
-			want: []model.Mastery{{}},
+			want: []Mastery{{}},
 		},
 		{
 			name:    "known error",
@@ -295,15 +294,15 @@ func TestDataDragonClient_GetSummonerSpells(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.SummonerSpell
+		want    []SummonerSpell
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.SummonerSpell{
+			doer: dataDragonResponseDoer(map[string]SummonerSpell{
 				"summoner": {},
 			}),
-			want: []model.SummonerSpell{{}},
+			want: []SummonerSpell{{}},
 		},
 		{
 			name:    "known error",

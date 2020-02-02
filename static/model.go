@@ -1,4 +1,4 @@
-package model
+package static
 
 // Season contains an ID and a name for a season
 type Season struct {

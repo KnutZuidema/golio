@@ -1,4 +1,4 @@
-package model
+package datadragon
 
 // ChampionData contains information about a champion
 type ChampionData struct {

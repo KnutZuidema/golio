@@ -13,7 +13,6 @@ import (
 	"github.com/KnutZuidema/golio/api"
 	"github.com/KnutZuidema/golio/internal"
 	"github.com/KnutZuidema/golio/internal/mock"
-	"github.com/KnutZuidema/golio/model"
 )
 
 func TestRiotAPIClient_GetSummonerByName(t *testing.T) {
@@ -21,13 +20,13 @@ func TestRiotAPIClient_GetSummonerByName(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    *model.Summoner
+		want    *Summoner
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.Summoner{},
-			doer: mock.NewJSONMockDoer(&model.Summoner{}, 200),
+			want: &Summoner{},
+			doer: mock.NewJSONMockDoer(&Summoner{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -44,13 +43,13 @@ func TestRiotAPIClient_GetSummonerByName(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.Summoner{},
-			doer: rateLimitDoer(&model.Summoner{}),
+			want: &Summoner{},
+			doer: rateLimitDoer(&Summoner{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.Summoner{},
-			doer: unavailableOnceDoer(&model.Summoner{}),
+			want: &Summoner{},
+			doer: unavailableOnceDoer(&Summoner{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -76,13 +75,13 @@ func TestRiotAPIClient_GetSummonerByAccount(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    *model.Summoner
+		want    *Summoner
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.Summoner{},
-			doer: mock.NewJSONMockDoer(&model.Summoner{}, 200),
+			want: &Summoner{},
+			doer: mock.NewJSONMockDoer(&Summoner{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -99,13 +98,13 @@ func TestRiotAPIClient_GetSummonerByAccount(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.Summoner{},
-			doer: rateLimitDoer(&model.Summoner{}),
+			want: &Summoner{},
+			doer: rateLimitDoer(&Summoner{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.Summoner{},
-			doer: unavailableOnceDoer(&model.Summoner{}),
+			want: &Summoner{},
+			doer: unavailableOnceDoer(&Summoner{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -131,13 +130,13 @@ func TestRiotAPIClient_GetSummonerByPUUID(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    *model.Summoner
+		want    *Summoner
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.Summoner{},
-			doer: mock.NewJSONMockDoer(&model.Summoner{}, 200),
+			want: &Summoner{},
+			doer: mock.NewJSONMockDoer(&Summoner{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -154,13 +153,13 @@ func TestRiotAPIClient_GetSummonerByPUUID(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.Summoner{},
-			doer: rateLimitDoer(&model.Summoner{}),
+			want: &Summoner{},
+			doer: rateLimitDoer(&Summoner{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.Summoner{},
-			doer: unavailableOnceDoer(&model.Summoner{}),
+			want: &Summoner{},
+			doer: unavailableOnceDoer(&Summoner{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -186,13 +185,13 @@ func TestRiotAPIClient_GetSummonerBySummonerID(t *testing.T) {
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    *model.Summoner
+		want    *Summoner
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.Summoner{},
-			doer: mock.NewJSONMockDoer(&model.Summoner{}, 200),
+			want: &Summoner{},
+			doer: mock.NewJSONMockDoer(&Summoner{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -209,13 +208,13 @@ func TestRiotAPIClient_GetSummonerBySummonerID(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.Summoner{},
-			doer: rateLimitDoer(&model.Summoner{}),
+			want: &Summoner{},
+			doer: rateLimitDoer(&Summoner{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.Summoner{},
-			doer: unavailableOnceDoer(&model.Summoner{}),
+			want: &Summoner{},
+			doer: unavailableOnceDoer(&Summoner{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -240,14 +239,14 @@ func TestRiotAPIClient_GetChampionMasteries(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    []*model.ChampionMastery
+		want    []*ChampionMastery
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: []*model.ChampionMastery{},
-			doer: mock.NewJSONMockDoer([]*model.ChampionMastery{}, 200),
+			want: []*ChampionMastery{},
+			doer: mock.NewJSONMockDoer([]*ChampionMastery{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -264,13 +263,13 @@ func TestRiotAPIClient_GetChampionMasteries(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: []*model.ChampionMastery{},
-			doer: rateLimitDoer([]*model.ChampionMastery{}),
+			want: []*ChampionMastery{},
+			doer: rateLimitDoer([]*ChampionMastery{}),
 		},
 		{
 			name: "unavailable once",
-			want: []*model.ChampionMastery{},
-			doer: unavailableOnceDoer([]*model.ChampionMastery{}),
+			want: []*ChampionMastery{},
+			doer: unavailableOnceDoer([]*ChampionMastery{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -294,14 +293,14 @@ func TestRiotAPIClient_GetChampionMastery(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.ChampionMastery
+		want    *ChampionMastery
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.ChampionMastery{},
-			doer: mock.NewJSONMockDoer(&model.ChampionMastery{}, 200),
+			want: &ChampionMastery{},
+			doer: mock.NewJSONMockDoer(&ChampionMastery{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -318,13 +317,13 @@ func TestRiotAPIClient_GetChampionMastery(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.ChampionMastery{},
-			doer: rateLimitDoer(&model.ChampionMastery{}),
+			want: &ChampionMastery{},
+			doer: rateLimitDoer(&ChampionMastery{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.ChampionMastery{},
-			doer: unavailableOnceDoer(&model.ChampionMastery{}),
+			want: &ChampionMastery{},
+			doer: unavailableOnceDoer(&ChampionMastery{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -402,14 +401,14 @@ func TestRiotAPIClient_GetFreeChampionRotation(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.ChampionInfo
+		want    *ChampionInfo
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.ChampionInfo{},
-			doer: mock.NewJSONMockDoer(model.ChampionInfo{}, 200),
+			want: &ChampionInfo{},
+			doer: mock.NewJSONMockDoer(ChampionInfo{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -426,13 +425,13 @@ func TestRiotAPIClient_GetFreeChampionRotation(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.ChampionInfo{},
-			doer: rateLimitDoer(model.ChampionInfo{}),
+			want: &ChampionInfo{},
+			doer: rateLimitDoer(ChampionInfo{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.ChampionInfo{},
-			doer: unavailableOnceDoer(model.ChampionInfo{}),
+			want: &ChampionInfo{},
+			doer: unavailableOnceDoer(ChampionInfo{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -456,14 +455,14 @@ func TestRiotAPIClient_GetChallengerLeague(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.LeagueList
+		want    *LeagueList
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.LeagueList{},
-			doer: mock.NewJSONMockDoer(model.LeagueList{}, 200),
+			want: &LeagueList{},
+			doer: mock.NewJSONMockDoer(LeagueList{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -480,13 +479,13 @@ func TestRiotAPIClient_GetChallengerLeague(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.LeagueList{},
-			doer: rateLimitDoer(model.LeagueList{}),
+			want: &LeagueList{},
+			doer: rateLimitDoer(LeagueList{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.LeagueList{},
-			doer: unavailableOnceDoer(model.LeagueList{}),
+			want: &LeagueList{},
+			doer: unavailableOnceDoer(LeagueList{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -510,14 +509,14 @@ func TestRiotAPIClient_GetGrandmasterLeague(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.LeagueList
+		want    *LeagueList
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.LeagueList{},
-			doer: mock.NewJSONMockDoer(model.LeagueList{}, 200),
+			want: &LeagueList{},
+			doer: mock.NewJSONMockDoer(LeagueList{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -534,13 +533,13 @@ func TestRiotAPIClient_GetGrandmasterLeague(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.LeagueList{},
-			doer: rateLimitDoer(model.LeagueList{}),
+			want: &LeagueList{},
+			doer: rateLimitDoer(LeagueList{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.LeagueList{},
-			doer: unavailableOnceDoer(model.LeagueList{}),
+			want: &LeagueList{},
+			doer: unavailableOnceDoer(LeagueList{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -564,14 +563,14 @@ func TestRiotAPIClient_GetMasterLeague(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.LeagueList
+		want    *LeagueList
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.LeagueList{},
-			doer: mock.NewJSONMockDoer(model.LeagueList{}, 200),
+			want: &LeagueList{},
+			doer: mock.NewJSONMockDoer(LeagueList{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -588,13 +587,13 @@ func TestRiotAPIClient_GetMasterLeague(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.LeagueList{},
-			doer: rateLimitDoer(model.LeagueList{}),
+			want: &LeagueList{},
+			doer: rateLimitDoer(LeagueList{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.LeagueList{},
-			doer: unavailableOnceDoer(model.LeagueList{}),
+			want: &LeagueList{},
+			doer: unavailableOnceDoer(LeagueList{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -618,14 +617,14 @@ func TestRiotAPIClient_GetLeaguesBySummoner(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    []*model.LeagueItem
+		want    []*LeagueItem
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: []*model.LeagueItem{},
-			doer: mock.NewJSONMockDoer([]*model.LeagueItem{}, 200),
+			want: []*LeagueItem{},
+			doer: mock.NewJSONMockDoer([]*LeagueItem{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -642,13 +641,13 @@ func TestRiotAPIClient_GetLeaguesBySummoner(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: []*model.LeagueItem{},
-			doer: rateLimitDoer([]*model.LeagueItem{}),
+			want: []*LeagueItem{},
+			doer: rateLimitDoer([]*LeagueItem{}),
 		},
 		{
 			name: "unavailable once",
-			want: []*model.LeagueItem{},
-			doer: unavailableOnceDoer([]*model.LeagueItem{}),
+			want: []*LeagueItem{},
+			doer: unavailableOnceDoer([]*LeagueItem{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -672,14 +671,14 @@ func TestRiotAPIClient_GetSummonerLeagues(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    []*model.LeagueItem
+		want    []*LeagueItem
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: []*model.LeagueItem{},
-			doer: mock.NewJSONMockDoer([]*model.LeagueItem{}, 200),
+			want: []*LeagueItem{},
+			doer: mock.NewJSONMockDoer([]*LeagueItem{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -696,13 +695,13 @@ func TestRiotAPIClient_GetSummonerLeagues(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: []*model.LeagueItem{},
-			doer: rateLimitDoer([]*model.LeagueItem{}),
+			want: []*LeagueItem{},
+			doer: rateLimitDoer([]*LeagueItem{}),
 		},
 		{
 			name: "unavailable once",
-			want: []*model.LeagueItem{},
-			doer: unavailableOnceDoer([]*model.LeagueItem{}),
+			want: []*LeagueItem{},
+			doer: unavailableOnceDoer([]*LeagueItem{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -726,14 +725,14 @@ func TestRiotAPIClient_GetLeagues(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    []*model.LeagueItem
+		want    []*LeagueItem
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: []*model.LeagueItem{},
-			doer: mock.NewJSONMockDoer([]*model.LeagueItem{}, 200),
+			want: []*LeagueItem{},
+			doer: mock.NewJSONMockDoer([]*LeagueItem{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -750,13 +749,13 @@ func TestRiotAPIClient_GetLeagues(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: []*model.LeagueItem{},
-			doer: rateLimitDoer([]*model.LeagueItem{}),
+			want: []*LeagueItem{},
+			doer: rateLimitDoer([]*LeagueItem{}),
 		},
 		{
 			name: "unavailable once",
-			want: []*model.LeagueItem{},
-			doer: unavailableOnceDoer([]*model.LeagueItem{}),
+			want: []*LeagueItem{},
+			doer: unavailableOnceDoer([]*LeagueItem{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -780,14 +779,14 @@ func TestRiotAPIClient_GetLeague(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.LeagueList
+		want    *LeagueList
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.LeagueList{},
-			doer: mock.NewJSONMockDoer(model.LeagueList{}, 200),
+			want: &LeagueList{},
+			doer: mock.NewJSONMockDoer(LeagueList{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -804,13 +803,13 @@ func TestRiotAPIClient_GetLeague(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.LeagueList{},
-			doer: rateLimitDoer(model.LeagueList{}),
+			want: &LeagueList{},
+			doer: rateLimitDoer(LeagueList{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.LeagueList{},
-			doer: unavailableOnceDoer(model.LeagueList{}),
+			want: &LeagueList{},
+			doer: unavailableOnceDoer(LeagueList{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -834,14 +833,14 @@ func TestRiotAPIClient_GetStatus(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.Status
+		want    *Status
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.Status{},
-			doer: mock.NewJSONMockDoer(model.Status{}, 200),
+			want: &Status{},
+			doer: mock.NewJSONMockDoer(Status{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -858,13 +857,13 @@ func TestRiotAPIClient_GetStatus(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.Status{},
-			doer: rateLimitDoer(model.Status{}),
+			want: &Status{},
+			doer: rateLimitDoer(Status{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.Status{},
-			doer: unavailableOnceDoer(model.Status{}),
+			want: &Status{},
+			doer: unavailableOnceDoer(Status{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -888,14 +887,14 @@ func TestRiotAPIClient_GetMatchesByAccount(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.Matchlist
+		want    *Matchlist
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.Matchlist{},
-			doer: mock.NewJSONMockDoer(model.Matchlist{}, 200),
+			want: &Matchlist{},
+			doer: mock.NewJSONMockDoer(Matchlist{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -912,13 +911,13 @@ func TestRiotAPIClient_GetMatchesByAccount(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.Matchlist{},
-			doer: rateLimitDoer(model.Matchlist{}),
+			want: &Matchlist{},
+			doer: rateLimitDoer(Matchlist{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.Matchlist{},
-			doer: unavailableOnceDoer(model.Matchlist{}),
+			want: &Matchlist{},
+			doer: unavailableOnceDoer(Matchlist{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -952,11 +951,11 @@ func TestRiotAPIClient_GetMatchesByAccountStream(t *testing.T) {
 				Custom: func(r *http.Request) (*http.Response, error) {
 					if count == 0 {
 						count++
-						return mock.NewJSONMockDoer(model.Matchlist{
-							Matches: make([]model.MatchReference, 100),
+						return mock.NewJSONMockDoer(Matchlist{
+							Matches: make([]MatchReference, 100),
 						}, 200).Do(r)
 					}
-					return mock.NewJSONMockDoer(model.Matchlist{}, 200).Do(r)
+					return mock.NewJSONMockDoer(Matchlist{}, 200).Do(r)
 				},
 			},
 		},
@@ -975,11 +974,11 @@ func TestRiotAPIClient_GetMatchesByAccountStream(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			doer: rateLimitDoer(model.Matchlist{}),
+			doer: rateLimitDoer(Matchlist{}),
 		},
 		{
 			name: "unavailable once",
-			doer: unavailableOnceDoer(model.Matchlist{}),
+			doer: unavailableOnceDoer(Matchlist{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -1009,14 +1008,14 @@ func TestRiotAPIClient_GetMatch(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.Match
+		want    *Match
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.Match{},
-			doer: mock.NewJSONMockDoer(model.Match{}, 200),
+			want: &Match{},
+			doer: mock.NewJSONMockDoer(Match{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -1033,13 +1032,13 @@ func TestRiotAPIClient_GetMatch(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.Match{},
-			doer: rateLimitDoer(model.Match{}),
+			want: &Match{},
+			doer: rateLimitDoer(Match{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.Match{},
-			doer: unavailableOnceDoer(model.Match{}),
+			want: &Match{},
+			doer: unavailableOnceDoer(Match{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -1063,14 +1062,14 @@ func TestRiotAPIClient_GetMatchTimeline(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.MatchTimeline
+		want    *MatchTimeline
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.MatchTimeline{},
-			doer: mock.NewJSONMockDoer(model.MatchTimeline{}, 200),
+			want: &MatchTimeline{},
+			doer: mock.NewJSONMockDoer(MatchTimeline{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -1087,13 +1086,13 @@ func TestRiotAPIClient_GetMatchTimeline(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.MatchTimeline{},
-			doer: rateLimitDoer(model.MatchTimeline{}),
+			want: &MatchTimeline{},
+			doer: rateLimitDoer(MatchTimeline{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.MatchTimeline{},
-			doer: unavailableOnceDoer(model.MatchTimeline{}),
+			want: &MatchTimeline{},
+			doer: unavailableOnceDoer(MatchTimeline{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -1171,14 +1170,14 @@ func TestRiotAPIClient_GetMatchForTournament(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.Match
+		want    *Match
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.Match{},
-			doer: mock.NewJSONMockDoer(model.Match{}, 200),
+			want: &Match{},
+			doer: mock.NewJSONMockDoer(Match{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -1195,13 +1194,13 @@ func TestRiotAPIClient_GetMatchForTournament(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.Match{},
-			doer: rateLimitDoer(model.Match{}),
+			want: &Match{},
+			doer: rateLimitDoer(Match{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.Match{},
-			doer: unavailableOnceDoer(model.Match{}),
+			want: &Match{},
+			doer: unavailableOnceDoer(Match{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -1225,14 +1224,14 @@ func TestRiotAPIClient_GetFeaturedGames(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.FeaturedGames
+		want    *FeaturedGames
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.FeaturedGames{},
-			doer: mock.NewJSONMockDoer(model.FeaturedGames{}, 200),
+			want: &FeaturedGames{},
+			doer: mock.NewJSONMockDoer(FeaturedGames{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -1249,13 +1248,13 @@ func TestRiotAPIClient_GetFeaturedGames(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.FeaturedGames{},
-			doer: rateLimitDoer(model.FeaturedGames{}),
+			want: &FeaturedGames{},
+			doer: rateLimitDoer(FeaturedGames{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.FeaturedGames{},
-			doer: unavailableOnceDoer(model.FeaturedGames{}),
+			want: &FeaturedGames{},
+			doer: unavailableOnceDoer(FeaturedGames{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -1279,14 +1278,14 @@ func TestRiotAPIClient_GetCurrentGame(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.GameInfo
+		want    *GameInfo
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.GameInfo{},
-			doer: mock.NewJSONMockDoer(model.GameInfo{}, 200),
+			want: &GameInfo{},
+			doer: mock.NewJSONMockDoer(GameInfo{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -1303,13 +1302,13 @@ func TestRiotAPIClient_GetCurrentGame(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.GameInfo{},
-			doer: rateLimitDoer(model.GameInfo{}),
+			want: &GameInfo{},
+			doer: rateLimitDoer(GameInfo{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.GameInfo{},
-			doer: unavailableOnceDoer(model.GameInfo{}),
+			want: &GameInfo{},
+			doer: unavailableOnceDoer(GameInfo{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -1374,7 +1373,7 @@ func TestRiotAPIClient_CreateTournamentCodes(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.CreateTournamentCodes(0, 0, &model.TournamentCodeParameters{}, true)
+			got, err := client.CreateTournamentCodes(0, 0, &TournamentCodeParameters{}, true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -1387,14 +1386,14 @@ func TestRiotAPIClient_GetLobbyEvents(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.LobbyEventList
+		want    *LobbyEventList
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.LobbyEventList{},
-			doer: mock.NewJSONMockDoer(model.LobbyEventList{}, 200),
+			want: &LobbyEventList{},
+			doer: mock.NewJSONMockDoer(LobbyEventList{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -1411,13 +1410,13 @@ func TestRiotAPIClient_GetLobbyEvents(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.LobbyEventList{},
-			doer: rateLimitDoer(model.LobbyEventList{}),
+			want: &LobbyEventList{},
+			doer: rateLimitDoer(LobbyEventList{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.LobbyEventList{},
-			doer: unavailableOnceDoer(model.LobbyEventList{}),
+			want: &LobbyEventList{},
+			doer: unavailableOnceDoer(LobbyEventList{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -1482,7 +1481,7 @@ func TestRiotAPIClient_CreateTournamentProvider(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.CreateTournamentProvider(&model.ProviderRegistrationParameters{}, true)
+			got, err := client.CreateTournamentProvider(&ProviderRegistrationParameters{}, true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -1536,7 +1535,7 @@ func TestRiotAPIClient_CreateTournament(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.CreateTournament(&model.TournamentRegistrationParameters{}, true)
+			got, err := client.CreateTournament(&TournamentRegistrationParameters{}, true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -1549,14 +1548,14 @@ func TestRiotAPIClient_GetTournament(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *model.Tournament
+		want    *Tournament
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &model.Tournament{},
-			doer: mock.NewJSONMockDoer(model.Tournament{}, 200),
+			want: &Tournament{},
+			doer: mock.NewJSONMockDoer(Tournament{}, 200),
 		},
 		{
 			name: "unknown error status",
@@ -1573,13 +1572,13 @@ func TestRiotAPIClient_GetTournament(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &model.Tournament{},
-			doer: rateLimitDoer(model.Tournament{}),
+			want: &Tournament{},
+			doer: rateLimitDoer(Tournament{}),
 		},
 		{
 			name: "unavailable once",
-			want: &model.Tournament{},
-			doer: unavailableOnceDoer(model.Tournament{}),
+			want: &Tournament{},
+			doer: unavailableOnceDoer(Tournament{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -1640,7 +1639,7 @@ func TestRiotAPIClient_UpdateTournament(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			err := client.UpdateTournament("code", model.TournamentUpdateParameters{})
+			err := client.UpdateTournament("code", TournamentUpdateParameters{})
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 		})
 	}
