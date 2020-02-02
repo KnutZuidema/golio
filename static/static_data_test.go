@@ -13,7 +13,7 @@ import (
 	"github.com/KnutZuidema/golio/internal/mock"
 )
 
-func TestStaticDataClient_GetSeasons(t *testing.T) {
+func TestClient_GetSeasons(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
@@ -55,7 +55,7 @@ func TestStaticDataClient_GetSeasons(t *testing.T) {
 	}
 }
 
-func TestStaticDataClient_GetQueues(t *testing.T) {
+func TestClient_GetQueues(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
@@ -97,7 +97,7 @@ func TestStaticDataClient_GetQueues(t *testing.T) {
 	}
 }
 
-func TestStaticDataClient_GetMaps(t *testing.T) {
+func TestClient_GetMaps(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
@@ -139,7 +139,7 @@ func TestStaticDataClient_GetMaps(t *testing.T) {
 	}
 }
 
-func TestStaticDataClient_GetGameModes(t *testing.T) {
+func TestClient_GetGameModes(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
@@ -181,7 +181,7 @@ func TestStaticDataClient_GetGameModes(t *testing.T) {
 	}
 }
 
-func TestStaticDataClient_GetGameTypes(t *testing.T) {
+func TestClient_GetGameTypes(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
@@ -223,7 +223,202 @@ func TestStaticDataClient_GetGameTypes(t *testing.T) {
 	}
 }
 
-func TestStaticDataClient_getInto(t *testing.T) {
+func TestClient_GetGameMode(t *testing.T) {
+	type test struct {
+		name    string
+		doer    internal.Doer
+		id      string
+		want    GameMode
+		wantErr error
+	}
+	tests := []test{
+		{
+			name: "get response",
+			doer: mock.NewJSONMockDoer([]GameMode{{Mode: "id"}}, 200),
+			id:   "id",
+			want: GameMode{Mode: "id"},
+		},
+		{
+			name:    "not found",
+			doer:    mock.NewJSONMockDoer([]GameMode{}, 200),
+			wantErr: api.ErrNotFound,
+		},
+		{
+			name: "unknown error",
+			doer: mock.NewStatusMockDoer(999),
+			wantErr: api.Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			client := NewClient(test.doer, log.StandardLogger())
+			got, err := client.GetGameMode(test.id)
+			assert.Equal(t, test.wantErr, err)
+			assert.Equal(t, test.want, got)
+		})
+	}
+}
+
+func TestClient_GetGameType(t *testing.T) {
+	type test struct {
+		name    string
+		doer    internal.Doer
+		id      string
+		want    GameType
+		wantErr error
+	}
+	tests := []test{
+		{
+			name: "get response",
+			doer: mock.NewJSONMockDoer([]GameType{{Type: "id"}}, 200),
+			id:   "id",
+			want: GameType{Type: "id"},
+		},
+		{
+			name:    "not found",
+			doer:    mock.NewJSONMockDoer([]GameType{}, 200),
+			wantErr: api.ErrNotFound,
+		},
+		{
+			name: "unknown error",
+			doer: mock.NewStatusMockDoer(999),
+			wantErr: api.Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			client := NewClient(test.doer, log.StandardLogger())
+			got, err := client.GetGameType(test.id)
+			assert.Equal(t, test.wantErr, err)
+			assert.Equal(t, test.want, got)
+		})
+	}
+}
+
+func TestClient_GetMap(t *testing.T) {
+	type test struct {
+		name    string
+		doer    internal.Doer
+		id      int
+		want    Map
+		wantErr error
+	}
+	tests := []test{
+		{
+			name: "get response",
+			doer: mock.NewJSONMockDoer([]Map{{ID: 1}}, 200),
+			id:   1,
+			want: Map{ID: 1},
+		},
+		{
+			name:    "not found",
+			doer:    mock.NewJSONMockDoer([]Map{}, 200),
+			wantErr: api.ErrNotFound,
+		},
+		{
+			name: "unknown error",
+			doer: mock.NewStatusMockDoer(999),
+			wantErr: api.Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			client := NewClient(test.doer, log.StandardLogger())
+			got, err := client.GetMap(test.id)
+			assert.Equal(t, test.wantErr, err)
+			assert.Equal(t, test.want, got)
+		})
+	}
+}
+
+func TestClient_GetQueue(t *testing.T) {
+	type test struct {
+		name    string
+		doer    internal.Doer
+		id      int
+		want    Queue
+		wantErr error
+	}
+	tests := []test{
+		{
+			name: "get response",
+			doer: mock.NewJSONMockDoer([]Queue{{ID: 1}}, 200),
+			id:   1,
+			want: Queue{ID: 1},
+		},
+		{
+			name:    "not found",
+			doer:    mock.NewJSONMockDoer([]Queue{}, 200),
+			wantErr: api.ErrNotFound,
+		},
+		{
+			name: "unknown error",
+			doer: mock.NewStatusMockDoer(999),
+			wantErr: api.Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			client := NewClient(test.doer, log.StandardLogger())
+			got, err := client.GetQueue(test.id)
+			assert.Equal(t, test.wantErr, err)
+			assert.Equal(t, test.want, got)
+		})
+	}
+}
+
+func TestClient_GetSeason(t *testing.T) {
+	type test struct {
+		name    string
+		doer    internal.Doer
+		id      int
+		want    Season
+		wantErr error
+	}
+	tests := []test{
+		{
+			name: "get response",
+			doer: mock.NewJSONMockDoer([]Season{{ID: 1}}, 200),
+			id:   1,
+			want: Season{ID: 1},
+		},
+		{
+			name:    "not found",
+			doer:    mock.NewJSONMockDoer([]Season{}, 200),
+			wantErr: api.ErrNotFound,
+		},
+		{
+			name: "unknown error",
+			doer: mock.NewStatusMockDoer(999),
+			wantErr: api.Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			client := NewClient(test.doer, log.StandardLogger())
+			got, err := client.GetSeason(test.id)
+			assert.Equal(t, test.wantErr, err)
+			assert.Equal(t, test.want, got)
+		})
+	}
+}
+
+func TestClient_getInto(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
@@ -256,7 +451,7 @@ func TestStaticDataClient_getInto(t *testing.T) {
 	}
 }
 
-func TestStaticDataClient_ClearCaches(t *testing.T) {
+func TestClient_ClearCaches(t *testing.T) {
 	client := NewClient(http.DefaultClient, log.StandardLogger())
 	client.ClearCaches()
 }

@@ -57,6 +57,20 @@ func (c *Client) GetSeasons() ([]Season, error) {
 	return res, nil
 }
 
+// GetSeason returns the season for the specified id or an error if no season for the id exists
+func (c *Client) GetSeason(id int) (Season, error) {
+	seasons, err := c.GetSeasons()
+	if err != nil {
+		return Season{}, err
+	}
+	for _, season := range seasons {
+		if season.ID == id {
+			return season, nil
+		}
+	}
+	return Season{}, api.ErrNotFound
+}
+
 // GetQueues returns static data for queues
 func (c *Client) GetQueues() ([]Queue, error) {
 	mu := c.mutexes["queues"]
@@ -73,6 +87,20 @@ func (c *Client) GetQueues() ([]Queue, error) {
 	res := make([]Queue, len(queues))
 	copy(res, queues)
 	return res, nil
+}
+
+// GetQueue returns the queue for the specified id or an error if no queue for the id exists
+func (c *Client) GetQueue(id int) (Queue, error) {
+	queues, err := c.GetQueues()
+	if err != nil {
+		return Queue{}, err
+	}
+	for _, queue := range queues {
+		if queue.ID == id {
+			return queue, nil
+		}
+	}
+	return Queue{}, api.ErrNotFound
 }
 
 // GetMaps returns static data for maps
@@ -93,6 +121,20 @@ func (c *Client) GetMaps() ([]Map, error) {
 	return res, nil
 }
 
+// GetMap returns the map for the specified id or an error if no map for the id exists
+func (c *Client) GetMap(id int) (Map, error) {
+	mapps, err := c.GetMaps()
+	if err != nil {
+		return Map{}, err
+	}
+	for _, mapp := range mapps {
+		if mapp.ID == id {
+			return mapp, nil
+		}
+	}
+	return Map{}, api.ErrNotFound
+}
+
 // GetGameModes returns static data for game modes
 func (c *Client) GetGameModes() ([]GameMode, error) {
 	mu := c.mutexes["gameModes"]
@@ -111,6 +153,20 @@ func (c *Client) GetGameModes() ([]GameMode, error) {
 	return res, nil
 }
 
+// GetGameMode returns the game mode for the specified id or an error if no mode for the id exists
+func (c *Client) GetGameMode(mode string) (GameMode, error) {
+	modes, err := c.GetGameModes()
+	if err != nil {
+		return GameMode{}, err
+	}
+	for _, mo := range modes {
+		if mo.Mode == mode {
+			return mo, nil
+		}
+	}
+	return GameMode{}, api.ErrNotFound
+}
+
 // GetGameTypes returns static data for game types
 func (c *Client) GetGameTypes() ([]GameType, error) {
 	mu := c.mutexes["gameTypes"]
@@ -127,6 +183,20 @@ func (c *Client) GetGameTypes() ([]GameType, error) {
 	res := make([]GameType, len(gameTypes))
 	copy(res, gameTypes)
 	return res, nil
+}
+
+// GetGameType returns the game type for the specified id or an error if no type for the id exists
+func (c *Client) GetGameType(typ string) (GameType, error) {
+	types, err := c.GetGameTypes()
+	if err != nil {
+		return GameType{}, err
+	}
+	for _, mo := range types {
+		if mo.Type == typ {
+			return mo, nil
+		}
+	}
+	return GameType{}, api.ErrNotFound
 }
 
 // ClearCaches clears caches for all methods
