@@ -117,6 +117,20 @@ func (c *Client) GetChampions() ([]ChampionData, error) {
 	return res, nil
 }
 
+// GetChampionByID returns information about the champion with the given id
+func (c *Client) GetChampionByID(id string) (ChampionDataExtended, error) {
+	champions, err := c.GetChampions()
+	if err != nil {
+		return ChampionDataExtended{}, err
+	}
+	for _, champion := range champions {
+		if champion.ID == id {
+			return c.GetChampion(champion.Name)
+		}
+	}
+	return ChampionDataExtended{}, fmt.Errorf("no champion for id %s", id)
+}
+
 // GetChampion returns information about the champion with the given name
 func (c *Client) GetChampion(name string) (ChampionDataExtended, error) {
 	unlock, toggle := internal.RWLockToggle(&c.championsMu)
@@ -157,6 +171,20 @@ func (c *Client) GetProfileIcons() ([]ProfileIcon, error) {
 	return res, nil
 }
 
+// GetProfileIcon return information about the profile icon with the given id
+func (c *Client) GetProfileIcon(id int) (ProfileIcon, error) {
+	icons, err := c.GetProfileIcons()
+	if err != nil {
+		return ProfileIcon{}, err
+	}
+	for _, icon := range icons {
+		if icon.ID == id {
+			return icon, nil
+		}
+	}
+	return ProfileIcon{}, fmt.Errorf("no profile icon for id %d", id)
+}
+
 // GetItems returns all existing items
 func (c *Client) GetItems() ([]Item, error) {
 	unlock, toggle := internal.RWLockToggle(&c.itemsMu)
@@ -178,6 +206,20 @@ func (c *Client) GetItems() ([]Item, error) {
 	return res, nil
 }
 
+// GetItem return information about the item with the given id
+func (c *Client) GetItem(id string) (Item, error) {
+	items, err := c.GetItems()
+	if err != nil {
+		return Item{}, err
+	}
+	for _, item := range items {
+		if item.ID == id {
+			return item, nil
+		}
+	}
+	return Item{}, fmt.Errorf("no item for id %s", id)
+}
+
 // GetMasteries returns all existing masteries. Masteries were removed in patch 7.23.1. If any version higher than that
 // is specified the last available version will be used instead.
 func (c *Client) GetMasteries() ([]Mastery, error) {
@@ -197,6 +239,20 @@ func (c *Client) GetMasteries() ([]Mastery, error) {
 	res := make([]Mastery, len(c.masteries))
 	copy(res, c.masteries)
 	return res, nil
+}
+
+// GetMastery returns information about the mastery with the given id
+func (c *Client) GetMastery(id int) (Mastery, error) {
+	masteries, err := c.GetMasteries()
+	if err != nil {
+		return Mastery{}, err
+	}
+	for _, mastery := range masteries {
+		if mastery.ID == id {
+			return mastery, nil
+		}
+	}
+	return Mastery{}, fmt.Errorf("no mastery for id %d", id)
 }
 
 // GetRunes returns all existing runes. Runes were removed in patch 7.23.1. If any version higher than that
@@ -221,6 +277,20 @@ func (c *Client) GetRunes() ([]Item, error) {
 	return res, nil
 }
 
+// GetRune returns information about the rune with the given id
+func (c *Client) GetRune(id string) (Item, error) {
+	runes, err := c.GetRunes()
+	if err != nil {
+		return Item{}, err
+	}
+	for _, r := range runes {
+		if r.ID == id {
+			return r, nil
+		}
+	}
+	return Item{}, fmt.Errorf("no rune for id %s", id)
+}
+
 // GetSummonerSpells returns all existing summoner spells
 func (c *Client) GetSummonerSpells() ([]SummonerSpell, error) {
 	unlock, toggle := internal.RWLockToggle(&c.summonersMu)
@@ -239,6 +309,20 @@ func (c *Client) GetSummonerSpells() ([]SummonerSpell, error) {
 	res := make([]SummonerSpell, len(c.summoners))
 	copy(res, c.summoners)
 	return res, nil
+}
+
+// GetSummonerSpell returns information about the summoner spell with the given id
+func (c *Client) GetSummonerSpell(id string) (SummonerSpell, error) {
+	summonerSpells, err := c.GetSummonerSpells()
+	if err != nil {
+		return SummonerSpell{}, err
+	}
+	for _, summonerSpell := range summonerSpells {
+		if summonerSpell.ID == id {
+			return summonerSpell, nil
+		}
+	}
+	return SummonerSpell{}, fmt.Errorf("no summoner spell for id %s", id)
 }
 
 // ClearCaches resets all caches of the data dragon client
