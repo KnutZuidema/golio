@@ -952,7 +952,7 @@ func TestRiotAPIClient_GetMatchesByAccountStream(t *testing.T) {
 					if count == 0 {
 						count++
 						return mock.NewJSONMockDoer(Matchlist{
-							Matches: make([]MatchReference, 100),
+							Matches: make([]*MatchReference, 100),
 						}, 200).Do(r)
 					}
 					return mock.NewJSONMockDoer(Matchlist{}, 200).Do(r)
@@ -998,7 +998,6 @@ func TestRiotAPIClient_GetMatchesByAccountStream(t *testing.T) {
 					require.Equal(t, res.Error, io.EOF)
 					return
 				}
-				assert.NotNil(t, res.MatchReference)
 			}
 		})
 	}

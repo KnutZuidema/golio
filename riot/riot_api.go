@@ -272,9 +272,7 @@ func (c Client) GetMatchesByAccountStream(accountID string) <-chan MatchStreamVa
 				return
 			}
 			for _, match := range matches.Matches {
-				m := new(MatchReference)
-				*m = match
-				cMatches <- MatchStreamValue{MatchReference: m}
+				cMatches <- MatchStreamValue{MatchReference: match}
 			}
 			if len(matches.Matches) < 100 {
 				cMatches <- MatchStreamValue{Error: io.EOF}
