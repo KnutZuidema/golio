@@ -11,11 +11,10 @@ import (
 	"strconv"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/KnutZuidema/golio/api"
 	"github.com/KnutZuidema/golio/internal"
-	"github.com/KnutZuidema/golio/model"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // Client provides access to all Riot API endpoints
@@ -37,32 +36,32 @@ func NewClient(region api.Region, apiKey string, client internal.Doer, logger lo
 }
 
 // GetSummonerByName returns the summoner with the given summoner name
-func (c Client) GetSummonerByName(name string) (*model.Summoner, error) {
+func (c Client) GetSummonerByName(name string) (*Summoner, error) {
 	return c.getSummonerBy(identificationName, name)
 }
 
 // GetSummonerByAccount returns the summoner with the given account ID
-func (c Client) GetSummonerByAccount(id string) (*model.Summoner, error) {
+func (c Client) GetSummonerByAccount(id string) (*Summoner, error) {
 	return c.getSummonerBy(identificationAccountID, id)
 }
 
 // GetSummonerByPUUID returns the summoner with the given PUUID
-func (c Client) GetSummonerByPUUID(puuid string) (*model.Summoner, error) {
+func (c Client) GetSummonerByPUUID(puuid string) (*Summoner, error) {
 	return c.getSummonerBy(identificationPUUID, puuid)
 }
 
 // GetSummonerBySummonerID returns the summoner with the given ID
-func (c Client) GetSummonerBySummonerID(summonerID string) (*model.Summoner, error) {
+func (c Client) GetSummonerBySummonerID(summonerID string) (*Summoner, error) {
 	return c.getSummonerBy(identificationSummonerID, summonerID)
 }
 
 // GetChampionMasteries returns information about masteries for the summoner with the given ID
-func (c Client) GetChampionMasteries(summonerID string) ([]*model.ChampionMastery, error) {
+func (c Client) GetChampionMasteries(summonerID string) ([]*ChampionMastery, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChampionMasteries",
 		"Region": c.Region,
 	})
-	var masteries []*model.ChampionMastery
+	var masteries []*ChampionMastery
 	if err := c.getInto(
 		fmt.Sprintf(endpointGetChampionMasteries, summonerID),
 		&masteries,
@@ -75,12 +74,12 @@ func (c Client) GetChampionMasteries(summonerID string) ([]*model.ChampionMaster
 
 // GetChampionMastery returns information about the mastery of the champion with the given ID the summoner with the
 // given ID has
-func (c Client) GetChampionMastery(summonerID, championID string) (*model.ChampionMastery, error) {
+func (c Client) GetChampionMastery(summonerID, championID string) (*ChampionMastery, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChampionMastery",
 		"Region": c.Region,
 	})
-	var mastery *model.ChampionMastery
+	var mastery *ChampionMastery
 	if err := c.getInto(
 		fmt.Sprintf(endpointGetChampionMastery, summonerID, championID),
 		&mastery,
@@ -107,12 +106,12 @@ func (c Client) GetChampionMasteryTotalScore(summonerID string) (int, error) {
 }
 
 // GetFreeChampionRotation returns information about the current free champion rotation
-func (c Client) GetFreeChampionRotation() (*model.ChampionInfo, error) {
+func (c Client) GetFreeChampionRotation() (*ChampionInfo, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetFreeChampionRotation",
 		"Region": c.Region,
 	})
-	var info *model.ChampionInfo
+	var info *ChampionInfo
 	if err := c.getInto(endpointGetFreeChampionRotation, &info); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -121,12 +120,12 @@ func (c Client) GetFreeChampionRotation() (*model.ChampionInfo, error) {
 }
 
 // GetChallengerLeague returns the current Challenger league for the Region
-func (c Client) GetChallengerLeague(queue queue) (*model.LeagueList, error) {
+func (c Client) GetChallengerLeague(queue queue) (*LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetChallengerLeague",
 		"Region": c.Region,
 	})
-	var list *model.LeagueList
+	var list *LeagueList
 	if err := c.getInto(fmt.Sprintf(endpointGetChallengerLeague, queue), &list); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -135,12 +134,12 @@ func (c Client) GetChallengerLeague(queue queue) (*model.LeagueList, error) {
 }
 
 // GetGrandmasterLeague returns the current Grandmaster league for the Region
-func (c Client) GetGrandmasterLeague(queue queue) (*model.LeagueList, error) {
+func (c Client) GetGrandmasterLeague(queue queue) (*LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetGrandmasterLeague",
 		"Region": c.Region,
 	})
-	var list *model.LeagueList
+	var list *LeagueList
 	if err := c.getInto(fmt.Sprintf(endpointGetGrandmasterLeague, queue), &list); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -149,12 +148,12 @@ func (c Client) GetGrandmasterLeague(queue queue) (*model.LeagueList, error) {
 }
 
 // GetMasterLeague returns the current Master league for the Region
-func (c Client) GetMasterLeague(queue queue) (*model.LeagueList, error) {
+func (c Client) GetMasterLeague(queue queue) (*LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMasterLeague",
 		"Region": c.Region,
 	})
-	var list *model.LeagueList
+	var list *LeagueList
 	if err := c.getInto(fmt.Sprintf(endpointGetMasterLeague, queue), &list); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -163,12 +162,12 @@ func (c Client) GetMasterLeague(queue queue) (*model.LeagueList, error) {
 }
 
 // GetLeaguesBySummoner returns all leagues a summoner with the given ID is in
-func (c Client) GetLeaguesBySummoner(summonerID string) ([]*model.LeagueItem, error) {
+func (c Client) GetLeaguesBySummoner(summonerID string) ([]*LeagueItem, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLeaguesBySummoner",
 		"Region": c.Region,
 	})
-	var leagues []*model.LeagueItem
+	var leagues []*LeagueItem
 	if err := c.getInto(fmt.Sprintf(endpointGetLeaguesBySummoner, summonerID), &leagues); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -177,12 +176,12 @@ func (c Client) GetLeaguesBySummoner(summonerID string) ([]*model.LeagueItem, er
 }
 
 // GetLeagues returns all players with a a league specified by its queue, tier and division
-func (c Client) GetLeagues(queue queue, tier tier, division division) ([]*model.LeagueItem, error) {
+func (c Client) GetLeagues(queue queue, tier tier, division division) ([]*LeagueItem, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLeagues",
 		"Region": c.Region,
 	})
-	var leagues []*model.LeagueItem
+	var leagues []*LeagueItem
 	if err := c.getInto(fmt.Sprintf(endpointGetLeagues, queue, tier, division), &leagues); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -191,12 +190,12 @@ func (c Client) GetLeagues(queue queue, tier tier, division division) ([]*model.
 }
 
 // GetLeague returns a ranked league with the specified ID
-func (c Client) GetLeague(leagueID string) (*model.LeagueList, error) {
+func (c Client) GetLeague(leagueID string) (*LeagueList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLeague",
 		"Region": c.Region,
 	})
-	var leagues *model.LeagueList
+	var leagues *LeagueList
 	if err := c.getInto(fmt.Sprintf(endpointGetLeague, leagueID), &leagues); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -205,12 +204,12 @@ func (c Client) GetLeague(leagueID string) (*model.LeagueList, error) {
 }
 
 // GetStatus returns the current status of the services for the Region
-func (c Client) GetStatus() (*model.Status, error) {
+func (c Client) GetStatus() (*Status, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetStatus",
 		"Region": c.Region,
 	})
-	var status *model.Status
+	var status *Status
 	if err := c.getInto(endpointGetStatus, &status); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -219,12 +218,12 @@ func (c Client) GetStatus() (*model.Status, error) {
 }
 
 // GetMatch returns a match specified by its ID
-func (c Client) GetMatch(id int) (*model.Match, error) {
+func (c Client) GetMatch(id int) (*Match, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMatch",
 		"Region": c.Region,
 	})
-	var match *model.Match
+	var match *Match
 	if err := c.getInto(fmt.Sprintf(endpointGetMatch, id), &match); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -233,12 +232,12 @@ func (c Client) GetMatch(id int) (*model.Match, error) {
 }
 
 // GetMatchesByAccount returns a specified range of matches played on the account
-func (c Client) GetMatchesByAccount(accountID string, beginIndex, endIndex int) (*model.Matchlist, error) {
+func (c Client) GetMatchesByAccount(accountID string, beginIndex, endIndex int) (*Matchlist, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetMatchesByAccount",
 		"Region": c.Region,
 	})
-	var matches *model.Matchlist
+	var matches *Matchlist
 	if err := c.getInto(
 		fmt.Sprintf(endpointGetMatchesByAccount, accountID, beginIndex, endIndex),
 		&matches,
@@ -251,7 +250,7 @@ func (c Client) GetMatchesByAccount(accountID string, beginIndex, endIndex int) 
 
 // MatchStreamValue value returned by GetMatchesByAccountStream, containing either a reference to a match or an error
 type MatchStreamValue struct {
-	*model.MatchReference
+	*MatchReference
 	Error error
 }
 
@@ -273,9 +272,7 @@ func (c Client) GetMatchesByAccountStream(accountID string) <-chan MatchStreamVa
 				return
 			}
 			for _, match := range matches.Matches {
-				m := new(model.MatchReference)
-				*m = match
-				cMatches <- MatchStreamValue{MatchReference: m}
+				cMatches <- MatchStreamValue{MatchReference: match}
 			}
 			if len(matches.Matches) < 100 {
 				cMatches <- MatchStreamValue{Error: io.EOF}
@@ -289,13 +286,13 @@ func (c Client) GetMatchesByAccountStream(accountID string) <-chan MatchStreamVa
 
 // GetMatchTimeline returns the timeline for the given match
 // NOTE: timelines are not available for every match
-func (c Client) GetMatchTimeline(matchID int) (*model.MatchTimeline, error) {
+func (c Client) GetMatchTimeline(matchID int) (*MatchTimeline, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method":  "GetMatchTimeline",
 		"region":  c.Region,
 		"matchID": matchID,
 	})
-	var timeline model.MatchTimeline
+	var timeline MatchTimeline
 	if err := c.getInto(fmt.Sprintf(endpointGetMatchTimeline, matchID), &timeline); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -319,14 +316,14 @@ func (c Client) GetMatchIDsByTournamentCode(tournamentCode string) ([]int, error
 }
 
 // GetMatchForTournament returns the match data for the given match in the given tournament
-func (c Client) GetMatchForTournament(matchID int, tournamentCode string) (*model.Match, error) {
+func (c Client) GetMatchForTournament(matchID int, tournamentCode string) (*Match, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method":         "GetMatchForTournament",
 		"region":         c.Region,
 		"matchID":        matchID,
 		"tournamentCode": tournamentCode,
 	})
-	var match model.Match
+	var match Match
 	if err := c.getInto(fmt.Sprintf(endpointGetMatchForTournament, matchID, tournamentCode), &match); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -335,13 +332,13 @@ func (c Client) GetMatchForTournament(matchID int, tournamentCode string) (*mode
 }
 
 // GetCurrentGame returns a currently running game for a summoner
-func (c Client) GetCurrentGame(summonerID string) (*model.GameInfo, error) {
+func (c Client) GetCurrentGame(summonerID string) (*GameInfo, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method":     "GetCurrentGame",
 		"Region":     c.Region,
 		"summonerID": summonerID,
 	})
-	var games model.GameInfo
+	var games GameInfo
 	if err := c.getInto(fmt.Sprintf(endpointGetCurrentGame, summonerID), &games); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -350,12 +347,12 @@ func (c Client) GetCurrentGame(summonerID string) (*model.GameInfo, error) {
 }
 
 // GetFeaturedGames returns the currently featured games
-func (c Client) GetFeaturedGames() (*model.FeaturedGames, error) {
+func (c Client) GetFeaturedGames() (*FeaturedGames, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetFeaturedGames",
 		"Region": c.Region,
 	})
-	var games model.FeaturedGames
+	var games FeaturedGames
 	if err := c.getInto(endpointGetFeaturedGames, &games); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -366,7 +363,7 @@ func (c Client) GetFeaturedGames() (*model.FeaturedGames, error) {
 // CreateTournamentCodes creates a specified amount of codes for a tournament.
 // For more information about the parameters see the documentation for TournamentCodeParameters.
 // Set the useStub flag to true to use the stub endpoints for mocking an implementation
-func (c Client) CreateTournamentCodes(tournamentID, count int, parameters *model.TournamentCodeParameters,
+func (c Client) CreateTournamentCodes(tournamentID, count int, parameters *TournamentCodeParameters,
 	useStub bool) ([]string, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "CreateTournamentCodes",
@@ -387,7 +384,7 @@ func (c Client) CreateTournamentCodes(tournamentID, count int, parameters *model
 
 // GetLobbyEvents returns the lobby events for a lobby specified by the tournament code
 // Set the useStub flag to true to use the stub endpoints for mocking an implementation
-func (c Client) GetLobbyEvents(code string, useStub bool) (*model.LobbyEventList, error) {
+func (c Client) GetLobbyEvents(code string, useStub bool) (*LobbyEventList, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetLobbyEvents",
 		"Region": c.Region,
@@ -397,7 +394,7 @@ func (c Client) GetLobbyEvents(code string, useStub bool) (*model.LobbyEventList
 	if useStub {
 		endpoint = endpointGetStubLobbyEvents
 	}
-	var events model.LobbyEventList
+	var events LobbyEventList
 	if err := c.getInto(fmt.Sprintf(endpoint, code), &events); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -408,7 +405,7 @@ func (c Client) GetLobbyEvents(code string, useStub bool) (*model.LobbyEventList
 // CreateTournamentProvider creates a tournament provider and returns the ID.
 // For more information about the parameters see the documentation for ProviderRegistrationParameters.
 // Set the useStub flag to true to use the stub endpoints for mocking an implementation
-func (c Client) CreateTournamentProvider(parameters *model.ProviderRegistrationParameters,
+func (c Client) CreateTournamentProvider(parameters *ProviderRegistrationParameters,
 	useStub bool) (int, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "CreateTournamentProvider",
@@ -430,7 +427,7 @@ func (c Client) CreateTournamentProvider(parameters *model.ProviderRegistrationP
 // CreateTournament creates a tournament and returns the ID.
 // For more information about the parameters see the documentation for TournamentRegistrationParameters.
 // Set the useStub flag to true to use the stub endpoints for mocking an implementation
-func (c Client) CreateTournament(parameters *model.TournamentRegistrationParameters, useStub bool) (int, error) {
+func (c Client) CreateTournament(parameters *TournamentRegistrationParameters, useStub bool) (int, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "CreateTournament",
 		"Region": c.Region,
@@ -449,12 +446,12 @@ func (c Client) CreateTournament(parameters *model.TournamentRegistrationParamet
 }
 
 // GetTournament returns an existing tournament
-func (c Client) GetTournament(code string) (*model.Tournament, error) {
+func (c Client) GetTournament(code string) (*Tournament, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "GetTournament",
 		"Region": c.Region,
 	})
-	var tournament model.Tournament
+	var tournament Tournament
 	if err := c.getInto(fmt.Sprintf(endpointGetTournament, code), &tournament); err != nil {
 		logger.Error(err)
 		return nil, err
@@ -463,7 +460,7 @@ func (c Client) GetTournament(code string) (*model.Tournament, error) {
 }
 
 // UpdateTournament updates an existing tournament
-func (c Client) UpdateTournament(code string, parameters model.TournamentUpdateParameters) error {
+func (c Client) UpdateTournament(code string, parameters TournamentUpdateParameters) error {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "UpdateTournament",
 		"Region": c.Region,
@@ -489,7 +486,7 @@ func (c Client) GetThirdPartyCode(id string) (string, error) {
 	return code, nil
 }
 
-func (c Client) getSummonerBy(by identification, value string) (*model.Summoner, error) {
+func (c Client) getSummonerBy(by identification, value string) (*Summoner, error) {
 	logger := c.logger.WithFields(log.Fields{
 		"method": "getSummonerBy",
 		"Region": c.Region,
@@ -501,7 +498,7 @@ func (c Client) getSummonerBy(by identification, value string) (*model.Summoner,
 	default:
 		endpoint = fmt.Sprintf(endpointGetSummonerBy, by, value)
 	}
-	var summoner *model.Summoner
+	var summoner *Summoner
 	if err := c.getInto(endpoint, &summoner); err != nil {
 		logger.Error(err)
 		return nil, err

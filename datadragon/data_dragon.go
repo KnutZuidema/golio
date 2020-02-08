@@ -11,11 +11,10 @@ import (
 	"sync"
 	"sync/atomic"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/KnutZuidema/golio/api"
 	"github.com/KnutZuidema/golio/internal"
-	"github.com/KnutZuidema/golio/model"
-
-	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -48,18 +47,18 @@ type Client struct {
 	Language           languageCode
 	client             internal.Doer
 	championsMu        sync.RWMutex
-	championsByName    map[string]model.ChampionDataExtended
+	championsByName    map[string]ChampionDataExtended
 	getChampionsToggle uint32
 	profileIconsMu     sync.RWMutex
-	profileIcons       []model.ProfileIcon
+	profileIcons       []ProfileIcon
 	itemsMu            sync.RWMutex
-	items              []model.Item
+	items              []Item
 	masteriesMu        sync.RWMutex
-	masteries          []model.Mastery
+	masteries          []Mastery
 	runesMu            sync.RWMutex
-	runes              []model.Item
+	runes              []Item
 	summonersMu        sync.RWMutex
-	summoners          []model.SummonerSpell
+	summoners          []SummonerSpell
 }
 
 // NewClient returns a new client for the Data Dragon service.
@@ -67,7 +66,7 @@ func NewClient(client internal.Doer, region api.Region, logger log.FieldLogger) 
 	c := &Client{
 		client:          client,
 		logger:          logger.WithField("client", "data dragon"),
-		championsByName: map[string]model.ChampionDataExtended{},
+		championsByName: map[string]ChampionDataExtended{},
 	}
 	if err := c.init(regionToRealmRegion[region]); err != nil {
 		c.Version = fallbackVersion
@@ -97,41 +96,55 @@ func (c *Client) init(region string) error {
 }
 
 // GetChampions returns all existing champions
-func (c *Client) GetChampions() ([]model.ChampionData, error) {
+func (c *Client) GetChampions() ([]ChampionData, error) {
 	unlock, toggle := internal.RWLockToggle(&c.championsMu)
 	defer unlock()
 	if atomic.CompareAndSwapUint32(&c.getChampionsToggle, 0, 1) {
 		toggle()
-		var champions map[string]model.ChampionData
+		var champions map[string]ChampionData
 		if err := c.getInto("/champion.json", &champions); err != nil {
 			return nil, err
 		}
 		for _, champion := range champions {
-			data := model.ChampionDataExtended{ChampionData: champion}
+			data := ChampionDataExtended{ChampionData: champion}
 			c.championsByName[champion.Name] = data
 		}
 	}
-	res := make([]model.ChampionData, 0, len(c.championsByName))
+	res := make([]ChampionData, 0, len(c.championsByName))
 	for _, champion := range c.championsByName {
 		res = append(res, champion.ChampionData)
 	}
 	return res, nil
 }
 
+// GetChampionByID returns information about the champion with the given id
+func (c *Client) GetChampionByID(id string) (ChampionDataExtended, error) {
+	champions, err := c.GetChampions()
+	if err != nil {
+		return ChampionDataExtended{}, err
+	}
+	for _, champion := range champions {
+		if champion.ID == id {
+			return c.GetChampion(champion.Name)
+		}
+	}
+	return ChampionDataExtended{}, api.ErrNotFound
+}
+
 // GetChampion returns information about the champion with the given name
-func (c *Client) GetChampion(name string) (model.ChampionDataExtended, error) {
+func (c *Client) GetChampion(name string) (ChampionDataExtended, error) {
 	unlock, toggle := internal.RWLockToggle(&c.championsMu)
 	defer unlock()
 	champion, ok := c.championsByName[name]
 	if !ok || champion.Lore == "" {
 		toggle()
-		var data map[string]model.ChampionDataExtended
+		var data map[string]ChampionDataExtended
 		if err := c.getInto(fmt.Sprintf("/champion/%s.json", name), &data); err != nil {
-			return model.ChampionDataExtended{}, err
+			return ChampionDataExtended{}, err
 		}
 		champion, ok = data[name]
 		if !ok {
-			return model.ChampionDataExtended{}, fmt.Errorf("no data for champion %s", name)
+			return ChampionDataExtended{}, api.ErrNotFound
 		}
 		c.championsByName[name] = champion
 	}
@@ -139,129 +152,199 @@ func (c *Client) GetChampion(name string) (model.ChampionDataExtended, error) {
 }
 
 // GetProfileIcons returns all existing profile icons
-func (c *Client) GetProfileIcons() ([]model.ProfileIcon, error) {
+func (c *Client) GetProfileIcons() ([]ProfileIcon, error) {
 	unlock, toggle := internal.RWLockToggle(&c.profileIconsMu)
 	defer unlock()
 	if len(c.profileIcons) < 1 {
 		toggle()
-		var res map[string]model.ProfileIcon
+		var res map[string]ProfileIcon
 		if err := c.getInto("/profileicon.json", &res); err != nil {
 			return nil, err
 		}
-		c.profileIcons = make([]model.ProfileIcon, 0, len(res))
+		c.profileIcons = make([]ProfileIcon, 0, len(res))
 		for _, profileIcon := range res {
 			c.profileIcons = append(c.profileIcons, profileIcon)
 		}
 	}
-	res := make([]model.ProfileIcon, len(c.profileIcons))
+	res := make([]ProfileIcon, len(c.profileIcons))
 	copy(res, c.profileIcons)
 	return res, nil
 }
 
+// GetProfileIcon return information about the profile icon with the given id
+func (c *Client) GetProfileIcon(id int) (ProfileIcon, error) {
+	icons, err := c.GetProfileIcons()
+	if err != nil {
+		return ProfileIcon{}, err
+	}
+	for _, icon := range icons {
+		if icon.ID == id {
+			return icon, nil
+		}
+	}
+	return ProfileIcon{}, api.ErrNotFound
+}
+
 // GetItems returns all existing items
-func (c *Client) GetItems() ([]model.Item, error) {
+func (c *Client) GetItems() ([]Item, error) {
 	unlock, toggle := internal.RWLockToggle(&c.itemsMu)
 	defer unlock()
 	if len(c.items) < 1 {
 		toggle()
-		var res map[string]model.Item
+		var res map[string]Item
 		if err := c.getInto("/item.json", &res); err != nil {
 			return nil, err
 		}
-		c.items = make([]model.Item, 0, len(res))
+		c.items = make([]Item, 0, len(res))
 		for id, item := range res {
 			item.ID = id
 			c.items = append(c.items, item)
 		}
 	}
-	res := make([]model.Item, len(c.items))
+	res := make([]Item, len(c.items))
 	copy(res, c.items)
 	return res, nil
 }
 
+// GetItem return information about the item with the given id
+func (c *Client) GetItem(id string) (Item, error) {
+	items, err := c.GetItems()
+	if err != nil {
+		return Item{}, err
+	}
+	for _, item := range items {
+		if item.ID == id {
+			return item, nil
+		}
+	}
+	return Item{}, api.ErrNotFound
+}
+
 // GetMasteries returns all existing masteries. Masteries were removed in patch 7.23.1. If any version higher than that
 // is specified the last available version will be used instead.
-func (c *Client) GetMasteries() ([]model.Mastery, error) {
+func (c *Client) GetMasteries() ([]Mastery, error) {
 	unlock, toggle := internal.RWLockToggle(&c.masteriesMu)
 	defer unlock()
 	if len(c.masteries) < 1 {
 		toggle()
-		var res map[string]model.Mastery
+		var res map[string]Mastery
 		if err := c.getInto("/mastery.json", &res); err != nil {
 			return nil, err
 		}
-		c.masteries = make([]model.Mastery, 0, len(res))
+		c.masteries = make([]Mastery, 0, len(res))
 		for _, mastery := range res {
 			c.masteries = append(c.masteries, mastery)
 		}
 	}
-	res := make([]model.Mastery, len(c.masteries))
+	res := make([]Mastery, len(c.masteries))
 	copy(res, c.masteries)
 	return res, nil
 }
 
+// GetMastery returns information about the mastery with the given id
+func (c *Client) GetMastery(id int) (Mastery, error) {
+	masteries, err := c.GetMasteries()
+	if err != nil {
+		return Mastery{}, err
+	}
+	for _, mastery := range masteries {
+		if mastery.ID == id {
+			return mastery, nil
+		}
+	}
+	return Mastery{}, api.ErrNotFound
+}
+
 // GetRunes returns all existing runes. Runes were removed in patch 7.23.1. If any version higher than that
 // is specified the last available version will be used instead.
-func (c *Client) GetRunes() ([]model.Item, error) {
+func (c *Client) GetRunes() ([]Item, error) {
 	unlock, toggle := internal.RWLockToggle(&c.runesMu)
 	defer unlock()
 	if len(c.runes) < 1 {
 		toggle()
-		var res map[string]model.Item
+		var res map[string]Item
 		if err := c.getInto("/rune.json", &res); err != nil {
 			return nil, err
 		}
-		c.runes = make([]model.Item, 0, len(res))
+		c.runes = make([]Item, 0, len(res))
 		for id, runeItem := range res {
 			runeItem.ID = id
 			c.runes = append(c.runes, runeItem)
 		}
 	}
-	res := make([]model.Item, len(c.runes))
+	res := make([]Item, len(c.runes))
 	copy(res, c.runes)
 	return res, nil
 }
 
+// GetRune returns information about the rune with the given id
+func (c *Client) GetRune(id string) (Item, error) {
+	runes, err := c.GetRunes()
+	if err != nil {
+		return Item{}, err
+	}
+	for _, r := range runes {
+		if r.ID == id {
+			return r, nil
+		}
+	}
+	return Item{}, api.ErrNotFound
+}
+
 // GetSummonerSpells returns all existing summoner spells
-func (c *Client) GetSummonerSpells() ([]model.SummonerSpell, error) {
+func (c *Client) GetSummonerSpells() ([]SummonerSpell, error) {
 	unlock, toggle := internal.RWLockToggle(&c.summonersMu)
 	defer unlock()
 	if len(c.summoners) < 1 {
 		toggle()
-		var res map[string]model.SummonerSpell
+		var res map[string]SummonerSpell
 		if err := c.getInto("/summoner.json", &res); err != nil {
 			return nil, err
 		}
-		c.summoners = make([]model.SummonerSpell, 0, len(res))
+		c.summoners = make([]SummonerSpell, 0, len(res))
 		for _, summoner := range res {
 			c.summoners = append(c.summoners, summoner)
 		}
 	}
-	res := make([]model.SummonerSpell, len(c.summoners))
+	res := make([]SummonerSpell, len(c.summoners))
 	copy(res, c.summoners)
 	return res, nil
+}
+
+// GetSummonerSpell returns information about the summoner spell with the given id
+func (c *Client) GetSummonerSpell(id string) (SummonerSpell, error) {
+	summonerSpells, err := c.GetSummonerSpells()
+	if err != nil {
+		return SummonerSpell{}, err
+	}
+	for _, summonerSpell := range summonerSpells {
+		if summonerSpell.ID == id {
+			return summonerSpell, nil
+		}
+	}
+	return SummonerSpell{}, api.ErrNotFound
 }
 
 // ClearCaches resets all caches of the data dragon client
 func (c *Client) ClearCaches() {
 	c.championsMu.Lock()
-	c.championsByName = map[string]model.ChampionDataExtended{}
+	c.championsByName = map[string]ChampionDataExtended{}
 	atomic.StoreUint32(&c.getChampionsToggle, 0)
 	c.championsMu.Unlock()
 	c.masteriesMu.Lock()
-	c.masteries = []model.Mastery{}
+	c.masteries = []Mastery{}
 	c.masteriesMu.Unlock()
 	c.profileIconsMu.Lock()
-	c.profileIcons = []model.ProfileIcon{}
+	c.profileIcons = []ProfileIcon{}
 	c.profileIconsMu.Unlock()
 	c.itemsMu.Lock()
-	c.items = []model.Item{}
+	c.items = []Item{}
 	c.itemsMu.Unlock()
 	c.summonersMu.Lock()
-	c.summoners = []model.SummonerSpell{}
+	c.summoners = []SummonerSpell{}
 	c.summonersMu.Unlock()
 	c.runesMu.Lock()
-	c.runes = []model.Item{}
+	c.runes = []Item{}
 	c.runesMu.Unlock()
 }
 

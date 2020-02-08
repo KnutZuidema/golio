@@ -87,6 +87,26 @@ const (
 	DivisionFour           = "IV"
 )
 
+// MatchEventType is the type of an event
+type MatchEventType string
+
+// All legal value for match event types
+const (
+	MatchEventTypeChampionKill     MatchEventType = "CHAMPION_KILL"
+	MatchEventTypeWardPlaced                      = "WARD_PLACED"
+	MatchEventTypeWardKill                        = "WARD_KILL"
+	MatchEventTypeBuildingKill                    = "BUILDING_KILL"
+	MatchEventTypeEliteMonsterKill                = "ELITE_MONSTER_KILL"
+	MatchEventTypeItemPurchased                   = "ITEM_PURCHASED"
+	MatchEventTypeItemSold                        = "ITEM_SOLD"
+	MatchEventTypeItemDestroyed                   = "ITEM_DESTROYED"
+	MatchEventTypeItemUndo                        = "ITEM_UNDO"
+	MatchEventTypeSkillLevelUp                    = "SKILL_LEVEL_UP"
+	MatchEventTypeAscendedEvent                   = "ASCENDED_EVENT"
+	MatchEventTypeCapturePoint                    = "CAPTURE_POINT"
+	MatchEventTypePoroKingSummon                  = "PORO_KING_SUMMON"
+)
+
 var (
 	// Queues is a list of all available queue types
 	Queues = []queue{
@@ -111,5 +131,22 @@ var (
 		DivisionTwo,
 		DivisionThree,
 		DivisionFour,
+	}
+
+	// MatchEventTypes is a list of all available match events
+	MatchEventTypes = []MatchEventType{
+		MatchEventTypeChampionKill,
+		MatchEventTypeWardPlaced,
+		MatchEventTypeWardKill,
+		MatchEventTypeBuildingKill,
+		MatchEventTypeEliteMonsterKill,
+		MatchEventTypeItemPurchased,
+		MatchEventTypeItemSold,
+		MatchEventTypeItemDestroyed,
+		MatchEventTypeItemUndo,
+		MatchEventTypeSkillLevelUp,
+		MatchEventTypeAscendedEvent,
+		MatchEventTypeCapturePoint,
+		MatchEventTypePoroKingSummon,
 	}
 )

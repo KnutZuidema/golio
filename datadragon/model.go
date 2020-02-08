@@ -1,4 +1,4 @@
-package model
+package datadragon
 
 // ChampionData contains information about a champion
 type ChampionData struct {
@@ -13,6 +13,11 @@ type ChampionData struct {
 	Tags    []string          `json:"tags"`
 	Partype string            `json:"partype"`
 	Stats   ChampionDataStats `json:"stats"`
+}
+
+// GetExtended returns extended information for this champion
+func (d *ChampionData) GetExtended(client *Client) (ChampionDataExtended, error) {
+	return client.GetChampion(d.Name)
 }
 
 // ChampionDataInfo contains information about the playstyle of a champion
@@ -145,6 +150,11 @@ type RecommendedItem struct {
 	ID        string `json:"id"`
 	Count     int    `json:"count"`
 	HideCount bool   `json:"hideCount"`
+}
+
+// GetItem returns the item object for this recommended item
+func (i RecommendedItem) GetItem(client *Client) (Item, error) {
+	return client.GetItem(i.ID)
 }
 
 // Item represents an item

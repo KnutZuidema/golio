@@ -12,29 +12,28 @@ import (
 	"github.com/KnutZuidema/golio/api"
 	"github.com/KnutZuidema/golio/internal"
 	"github.com/KnutZuidema/golio/internal/mock"
-	"github.com/KnutZuidema/golio/model"
 )
 
-func TestNewDataDragonClient(t *testing.T) {
+func TestNewClient(t *testing.T) {
 	t.Parallel()
 	ddClient := NewClient(http.DefaultClient, api.RegionEuropeWest, log.StandardLogger())
 	require.NotNil(t, ddClient)
 }
 
-func TestDataDragonClient_GetChampions(t *testing.T) {
+func TestClient_GetChampions(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.ChampionData
+		want    []ChampionData
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.ChampionData{
+			doer: dataDragonResponseDoer(map[string]ChampionData{
 				"champion": {},
 			}),
-			want: []model.ChampionData{{}},
+			want: []ChampionData{{}},
 		},
 		{
 			name:    "known error",
@@ -65,25 +64,25 @@ func TestDataDragonClient_GetChampions(t *testing.T) {
 	}
 }
 
-func TestDataDragonClient_GetChampion(t *testing.T) {
+func TestClient_GetChampion(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    model.ChampionDataExtended
+		want    ChampionDataExtended
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.ChampionDataExtended{
+			doer: dataDragonResponseDoer(map[string]ChampionDataExtended{
 				"champion": {},
 			}),
-			want: model.ChampionDataExtended{},
+			want: ChampionDataExtended{},
 		},
 		{
-			name:    "invalid data dragon response",
+			name:    "not found",
 			doer:    mock.NewJSONMockDoer(struct{}{}, 200),
-			wantErr: fmt.Errorf("no data for champion champion"),
+			wantErr: api.ErrNotFound,
 		},
 		{
 			name:    "known error",
@@ -114,20 +113,20 @@ func TestDataDragonClient_GetChampion(t *testing.T) {
 	}
 }
 
-func TestDataDragonClient_GetProfileIcons(t *testing.T) {
+func TestClient_GetProfileIcons(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.ProfileIcon
+		want    []ProfileIcon
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.ProfileIcon{
+			doer: dataDragonResponseDoer(map[string]ProfileIcon{
 				"icon": {},
 			}),
-			want: []model.ProfileIcon{{}},
+			want: []ProfileIcon{{}},
 		},
 		{
 			name:    "known error",
@@ -158,20 +157,20 @@ func TestDataDragonClient_GetProfileIcons(t *testing.T) {
 	}
 }
 
-func TestDataDragonClient_GetItems(t *testing.T) {
+func TestClient_GetItems(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.Item
+		want    []Item
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.Item{
+			doer: dataDragonResponseDoer(map[string]Item{
 				"item": {},
 			}),
-			want: []model.Item{{ID: "item"}},
+			want: []Item{{ID: "item"}},
 		},
 		{
 			name:    "known error",
@@ -202,20 +201,20 @@ func TestDataDragonClient_GetItems(t *testing.T) {
 	}
 }
 
-func TestDataDragonClient_GetRunes(t *testing.T) {
+func TestClient_GetRunes(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.Item
+		want    []Item
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.Item{
+			doer: dataDragonResponseDoer(map[string]Item{
 				"rune": {},
 			}),
-			want: []model.Item{{ID: "rune"}},
+			want: []Item{{ID: "rune"}},
 		},
 		{
 			name:    "known error",
@@ -246,20 +245,20 @@ func TestDataDragonClient_GetRunes(t *testing.T) {
 	}
 }
 
-func TestDataDragonClient_GetMasteries(t *testing.T) {
+func TestClient_GetMasteries(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.Mastery
+		want    []Mastery
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.Mastery{
+			doer: dataDragonResponseDoer(map[string]Mastery{
 				"mastery": {},
 			}),
-			want: []model.Mastery{{}},
+			want: []Mastery{{}},
 		},
 		{
 			name:    "known error",
@@ -290,20 +289,20 @@ func TestDataDragonClient_GetMasteries(t *testing.T) {
 	}
 }
 
-func TestDataDragonClient_GetSummonerSpells(t *testing.T) {
+func TestClient_GetSummonerSpells(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
 		doer    internal.Doer
-		want    []model.SummonerSpell
+		want    []SummonerSpell
 		wantErr error
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]model.SummonerSpell{
+			doer: dataDragonResponseDoer(map[string]SummonerSpell{
 				"summoner": {},
 			}),
-			want: []model.SummonerSpell{{}},
+			want: []SummonerSpell{{}},
 		},
 		{
 			name:    "known error",
@@ -334,13 +333,259 @@ func TestDataDragonClient_GetSummonerSpells(t *testing.T) {
 	}
 }
 
-func TestDataDragonClient_ClearCaches(t *testing.T) {
+func TestClient_ClearCaches(t *testing.T) {
 	t.Parallel()
 	c := NewClient(http.DefaultClient, api.RegionKorea, log.StandardLogger())
 	c.ClearCaches()
 }
 
-func TestDataDragonClient_doRequest(t *testing.T) {
+func TestClient_GetChampionByID(t *testing.T) {
+	type test struct {
+		name    string
+		doer    internal.Doer
+		id      string
+		want    ChampionDataExtended
+		wantErr error
+	}
+	tests := []test{
+		{
+			name: "get response",
+			doer: dataDragonResponseDoer(map[string]ChampionData{
+				"champion": {Name: "champion", ID: "id"},
+			}),
+			id:   "id",
+			want: ChampionDataExtended{ChampionData: ChampionData{Name: "champion", ID: "id"}},
+		},
+		{
+			name:    "not found",
+			doer:    dataDragonResponseDoer(map[string]ChampionData{}),
+			wantErr: api.ErrNotFound,
+		},
+		{
+			name: "unknown error",
+			doer: mock.NewStatusMockDoer(999),
+			wantErr: api.Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			client := NewClient(test.doer, api.RegionEuropeWest, log.StandardLogger())
+			got, err := client.GetChampionByID(test.id)
+			assert.Equal(t, test.wantErr, err)
+			assert.Equal(t, test.want, got)
+		})
+	}
+}
+
+func TestClient_GetProfileIcon(t *testing.T) {
+	type test struct {
+		name    string
+		doer    internal.Doer
+		id      int
+		want    ProfileIcon
+		wantErr error
+	}
+	tests := []test{
+		{
+			name: "get response",
+			doer: dataDragonResponseDoer(map[string]ProfileIcon{
+				"icon": {ID: 1},
+			}),
+			id:   1,
+			want: ProfileIcon{ID: 1},
+		},
+		{
+			name:    "not found",
+			doer:    dataDragonResponseDoer(map[string]ProfileIcon{}),
+			wantErr: api.ErrNotFound,
+		},
+		{
+			name: "unknown error",
+			doer: mock.NewStatusMockDoer(999),
+			wantErr: api.Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			client := NewClient(test.doer, api.RegionEuropeWest, log.StandardLogger())
+			got, err := client.GetProfileIcon(test.id)
+			assert.Equal(t, test.wantErr, err)
+			assert.Equal(t, test.want, got)
+		})
+	}
+}
+
+func TestClient_GetItem(t *testing.T) {
+	type test struct {
+		name    string
+		doer    internal.Doer
+		id      string
+		want    Item
+		wantErr error
+	}
+	tests := []test{
+		{
+			name: "get response",
+			doer: dataDragonResponseDoer(map[string]Item{
+				"id": {},
+			}),
+			id:   "id",
+			want: Item{ID: "id"},
+		},
+		{
+			name:    "not found",
+			doer:    dataDragonResponseDoer(map[string]Item{}),
+			wantErr: api.ErrNotFound,
+		},
+		{
+			name: "unknown error",
+			doer: mock.NewStatusMockDoer(999),
+			wantErr: api.Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			client := NewClient(test.doer, api.RegionEuropeWest, log.StandardLogger())
+			got, err := client.GetItem(test.id)
+			assert.Equal(t, test.wantErr, err)
+			assert.Equal(t, test.want, got)
+		})
+	}
+}
+
+func TestClient_GetMastery(t *testing.T) {
+	type test struct {
+		name    string
+		doer    internal.Doer
+		id      int
+		want    Mastery
+		wantErr error
+	}
+	tests := []test{
+		{
+			name: "get response",
+			doer: dataDragonResponseDoer(map[string]Mastery{
+				"icon": {ID: 1},
+			}),
+			id:   1,
+			want: Mastery{ID: 1},
+		},
+		{
+			name:    "not found",
+			doer:    dataDragonResponseDoer(map[string]Mastery{}),
+			wantErr: api.ErrNotFound,
+		},
+		{
+			name: "unknown error",
+			doer: mock.NewStatusMockDoer(999),
+			wantErr: api.Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			client := NewClient(test.doer, api.RegionEuropeWest, log.StandardLogger())
+			got, err := client.GetMastery(test.id)
+			assert.Equal(t, test.wantErr, err)
+			assert.Equal(t, test.want, got)
+		})
+	}
+}
+
+func TestClient_GetRune(t *testing.T) {
+	type test struct {
+		name    string
+		doer    internal.Doer
+		id      string
+		want    Item
+		wantErr error
+	}
+	tests := []test{
+		{
+			name: "get response",
+			doer: dataDragonResponseDoer(map[string]Item{
+				"id": {},
+			}),
+			id:   "id",
+			want: Item{ID: "id"},
+		},
+		{
+			name:    "not found",
+			doer:    dataDragonResponseDoer(map[string]Item{}),
+			wantErr: api.ErrNotFound,
+		},
+		{
+			name: "unknown error",
+			doer: mock.NewStatusMockDoer(999),
+			wantErr: api.Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			client := NewClient(test.doer, api.RegionEuropeWest, log.StandardLogger())
+			got, err := client.GetRune(test.id)
+			assert.Equal(t, test.wantErr, err)
+			assert.Equal(t, test.want, got)
+		})
+	}
+}
+
+func TestClient_GetSummonerSpell(t *testing.T) {
+	type test struct {
+		name    string
+		doer    internal.Doer
+		id      string
+		want    SummonerSpell
+		wantErr error
+	}
+	tests := []test{
+		{
+			name: "get response",
+			doer: dataDragonResponseDoer(map[string]SummonerSpell{
+				"id": {ID: "id"},
+			}),
+			id:   "id",
+			want: SummonerSpell{ID: "id"},
+		},
+		{
+			name:    "not found",
+			doer:    dataDragonResponseDoer(map[string]SummonerSpell{}),
+			wantErr: api.ErrNotFound,
+		},
+		{
+			name: "unknown error",
+			doer: mock.NewStatusMockDoer(999),
+			wantErr: api.Error{
+				Message:    "unknown error reason",
+				StatusCode: 999,
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			client := NewClient(test.doer, api.RegionEuropeWest, log.StandardLogger())
+			got, err := client.GetSummonerSpell(test.id)
+			assert.Equal(t, test.wantErr, err)
+			assert.Equal(t, test.want, got)
+		})
+	}
+}
+
+func TestClient_doRequest(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name     string
@@ -376,7 +621,7 @@ func TestDataDragonClient_doRequest(t *testing.T) {
 	}
 }
 
-func TestDataDragonClient_init(t *testing.T) {
+func TestClient_init(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
@@ -399,13 +644,13 @@ func TestDataDragonClient_init(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewClient(tt.doer, api.RegionOceania, log.StandardLogger())
 			if err := c.init(api.RegionOceania); (err != nil) != tt.wantErr {
-				t.Errorf("DataDragonClient.init() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Client.init() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
 }
 
-func TestDataDragonClient_getInto(t *testing.T) {
+func TestClient_getInto(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
