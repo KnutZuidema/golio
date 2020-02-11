@@ -56,7 +56,7 @@ type ChampionMastery struct {
 
 // GetSummoner returns the summoner of this mastery
 func (m *ChampionMastery) GetSummoner(client *Client) (*Summoner, error) {
-	return client.GetSummonerBySummonerID(m.SummonerID)
+	return client.Summoner.GetByID(m.SummonerID)
 }
 
 // GetChampion returns the champion of this mastery
@@ -104,7 +104,7 @@ type LeagueItem struct {
 
 // GetSummoner returns the summoner of this league item
 func (i *LeagueItem) GetSummoner(client *Client) (*Summoner, error) {
-	return client.GetSummonerBySummonerID(i.SummonerID)
+	return client.Summoner.GetByID(i.SummonerID)
 }
 
 // MiniSeries represents a mini series when playing to ascend to the next ranked tier
@@ -195,7 +195,7 @@ type Player struct {
 
 // GetSummoner returns the summoner info for this player
 func (p *Player) GetSummoner(client *Client) (*Summoner, error) {
-	return client.GetSummonerBySummonerID(p.SummonerID)
+	return client.Summoner.GetByID(p.SummonerID)
 }
 
 // GetProfileIcon returns the profile icon data for this player
@@ -524,7 +524,7 @@ func (r *MatchReference) GetQueue(client *static.Client) (static.Queue, error) {
 
 // GetGame returns more information about this match
 func (r *MatchReference) GetGame(client *Client) (*Match, error) {
-	return client.GetMatch(r.GameID)
+	return client.Match.Get(r.GameID)
 }
 
 // MatchTimeline contains timeline frames for a match
@@ -609,7 +609,7 @@ type GameInfo struct {
 
 // GetMatch returns information about the finished match
 func (i *GameInfo) GetMatch(client *Client) (*Match, error) {
-	return client.GetMatch(i.GameID)
+	return client.Match.Get(i.GameID)
 }
 
 // BannedChampion represents a champion ban during pack/ban phase
