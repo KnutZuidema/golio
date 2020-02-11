@@ -18,13 +18,15 @@ import (
 	"fmt"
 	"net/http"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/KnutZuidema/golio"
+    "github.com/KnutZuidema/golio/api"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
-	client := golio.NewClient(api.RegionEuropeWest, "API KEY", http.DefaultClient, log.StandardLogger())
+	client := golio.NewClient("API KEY",
+                golio.WithRegion(api.RegionNorthAmerica),
+                golio.WithLogger(logrus.New().WithField("foo", "bar")))
 	summoner, _ := client.Riot.GetSummonerByName("SK Jenax")
 	fmt.Printf("%s is a level %d summoner\n", summoner.Name, summoner.SummonerLevel)
 	champion, _ := client.DataDragon.GetChampion("Ashe")
