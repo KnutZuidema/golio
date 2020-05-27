@@ -97,6 +97,7 @@ type LeagueItem struct {
 	Losses       int         `json:"losses"`
 	FreshBlood   bool        `json:"freshBlood"`
 	Inactive     bool        `json:"inactive"`
+	Tier         string      `json:"tier"`
 	Rank         string      `json:"rank"`
 	SummonerID   string      `json:"summonerId"`
 	LeaguePoints int         `json:"leaguePoints"`
