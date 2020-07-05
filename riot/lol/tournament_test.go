@@ -1,4 +1,4 @@
-package riot
+package lol
 
 import (
 	"fmt"
@@ -58,8 +58,8 @@ func TestTournamentClient_CreateCodes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Tournament.CreateCodes(0, 0, &TournamentCodeParameters{}, true)
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&TournamentClient{Client: client}).CreateCodes(0, 0, &TournamentCodeParameters{}, true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -112,8 +112,8 @@ func TestTournamentClient_ListLobbyEvents(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Tournament.ListLobbyEvents("code", true)
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&TournamentClient{Client: client}).ListLobbyEvents("code", true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -166,8 +166,8 @@ func TestTournamentClient_CreateProvider(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Tournament.CreateProvider(&ProviderRegistrationParameters{}, true)
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&TournamentClient{Client: client}).CreateProvider(&ProviderRegistrationParameters{}, true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -220,8 +220,8 @@ func TestTournamentClient_Create(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Tournament.Create(&TournamentRegistrationParameters{}, true)
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&TournamentClient{Client: client}).Create(&TournamentRegistrationParameters{}, true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -274,8 +274,8 @@ func TestTournamentClient_Get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Tournament.Get("code")
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&TournamentClient{Client: client}).Get("code")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -324,8 +324,8 @@ func TestTournamentClient_Update(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			err := client.Tournament.Update("code", TournamentUpdateParameters{})
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			err := (&TournamentClient{Client: client}).Update("code", TournamentUpdateParameters{})
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 		})
 	}

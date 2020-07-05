@@ -1,4 +1,4 @@
-package riot
+package lol
 
 import (
 	"fmt"
@@ -59,8 +59,8 @@ func TestMatchClient_List(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Match.List("id", 0, 1)
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&MatchClient{Client: client}).List("id", 0, 1)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -120,8 +120,8 @@ func TestMatchClient_ListStream(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got := client.Match.ListStream("id")
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got := (&MatchClient{Client: client}).ListStream("id")
 			for res := range got {
 				if res.Error != nil && tt.wantErr != nil {
 					require.Equal(t, res.Error, tt.wantErr)
@@ -179,8 +179,8 @@ func TestMatchClient_Get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Match.Get(1)
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&MatchClient{Client: client}).Get(1)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -233,8 +233,8 @@ func TestMatchClient_GetTimeline(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Match.GetTimeline(0)
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&MatchClient{Client: client}).GetTimeline(0)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -287,8 +287,8 @@ func TestMatchClient_ListIDsByTournamentCode(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Match.ListIDsByTournamentCode("tournamentCode")
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&MatchClient{Client: client}).ListIDsByTournamentCode("tournamentCode")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -341,8 +341,8 @@ func TestMatchClient_GetForTournament(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Match.GetForTournament(0, "tournamentCode")
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&MatchClient{Client: client}).GetForTournament(0, "tournamentCode")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)

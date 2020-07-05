@@ -1,4 +1,4 @@
-package riot
+package lol
 
 import (
 	"net/http"
@@ -57,8 +57,8 @@ func TestSummonerClient_GetByName(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Summoner.GetByName("name")
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&SummonerClient{Client: client}).GetByName("name")
 			assert.Equal(t, err, tt.wantErr)
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -112,8 +112,8 @@ func TestSummonerClient_GetByAccountID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Summoner.GetByAccountID("accountID")
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&SummonerClient{Client: client}).GetByAccountID("accountID")
 			assert.Equal(t, err, tt.wantErr)
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -167,8 +167,8 @@ func TestSummonerClient_GetByPUUID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Summoner.GetByPUUID("puuid")
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&SummonerClient{Client: client}).GetByPUUID("puuid")
 			assert.Equal(t, err, tt.wantErr)
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -222,8 +222,8 @@ func TestSummonerClient_GetByID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Summoner.GetByID("id")
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&SummonerClient{Client: client}).GetByID("id")
 			assert.Equal(t, err, tt.wantErr)
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)

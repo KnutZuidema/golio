@@ -1,4 +1,4 @@
-package riot
+package lol
 
 import (
 	"fmt"
@@ -14,18 +14,18 @@ import (
 	"github.com/KnutZuidema/golio/internal/mock"
 )
 
-func TestStatusClient_Get(t *testing.T) {
+func TestThirdPartyCodeClient_Get(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *Status
+		want    string
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &Status{},
-			doer: mock.NewJSONMockDoer(Status{}, 200),
+			want: "code",
+			doer: mock.NewJSONMockDoer("code", 200),
 		},
 		{
 			name: "unknown error status",
@@ -42,13 +42,13 @@ func TestStatusClient_Get(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			want: &Status{},
-			doer: rateLimitDoer(Status{}),
+			want: "code",
+			doer: rateLimitDoer("code"),
 		},
 		{
 			name: "unavailable once",
-			want: &Status{},
-			doer: unavailableOnceDoer(Status{}),
+			want: "code",
+			doer: unavailableOnceDoer("code"),
 		},
 		{
 			name:    "unavailable twice",
@@ -58,8 +58,8 @@ func TestStatusClient_Get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Status.Get()
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&ThirdPartyCodeClient{Client: client}).Get("id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)

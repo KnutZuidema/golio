@@ -1,4 +1,4 @@
-package riot
+package internal
 
 import (
 	"fmt"
@@ -10,11 +10,10 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/KnutZuidema/golio/api"
-	"github.com/KnutZuidema/golio/internal"
 	"github.com/KnutZuidema/golio/internal/mock"
 )
 
-func TestClient_doRequest(t *testing.T) {
+func TestClient_DoRequest(t *testing.T) {
 	t.Parallel()
 	type args struct {
 		method   string
@@ -24,7 +23,7 @@ func TestClient_doRequest(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		doer    internal.Doer
+		doer    Doer
 		wantErr bool
 	}{
 		{
@@ -67,13 +66,13 @@ func TestClient_doRequest(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewClient(api.RegionEuropeNorthEast, "", tt.doer, logrus.StandardLogger())
-			_, err := c.doRequest(tt.args.method, tt.args.endpoint, tt.args.body)
+			_, err := c.DoRequest(tt.args.method, tt.args.endpoint, tt.args.body)
 			assert.Equal(t, err != nil, tt.wantErr)
 		})
 	}
 }
 
-func TestClient_getInto(t *testing.T) {
+func TestClient_GetInto(t *testing.T) {
 	tests := []struct {
 		name    string
 		target  interface{}
@@ -88,13 +87,13 @@ func TestClient_getInto(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewClient(api.RegionOceania, "API_KEY", mock.NewJSONMockDoer(0, 200), logrus.StandardLogger())
-			err := c.getInto("endpoint", tt.target)
+			err := c.GetInto("endpoint", tt.target)
 			assert.Equal(t, tt.wantErr, err != nil)
 		})
 	}
 }
 
-func TestClient_postInto(t *testing.T) {
+func TestClient_PostInto(t *testing.T) {
 	tests := []struct {
 		name    string
 		target  interface{}
@@ -109,7 +108,7 @@ func TestClient_postInto(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewClient(api.RegionOceania, "API_KEY", mock.NewJSONMockDoer(0, 200), logrus.StandardLogger())
-			err := c.postInto("endpoint", struct{}{}, tt.target)
+			err := c.PostInto("endpoint", struct{}{}, tt.target)
 			assert.Equal(t, tt.wantErr, err != nil)
 		})
 	}
@@ -130,7 +129,7 @@ func TestClient_post(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewClient(api.RegionOceania, "API_KEY", mock.NewStatusMockDoer(200), logrus.StandardLogger())
-			_, err := c.post("endpoint", tt.target)
+			_, err := c.Post("endpoint", tt.target)
 			assert.Equal(t, tt.wantErr, err != nil)
 		})
 	}
@@ -151,41 +150,13 @@ func TestClient_put(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewClient(api.RegionOceania, "API_KEY", mock.NewStatusMockDoer(200), logrus.StandardLogger())
-			err := c.put("endpoint", tt.target)
+			err := c.Put("endpoint", tt.target)
 			assert.Equal(t, tt.wantErr, err != nil)
 		})
 	}
 }
 
-func rateLimitDoer(object interface{}) internal.Doer {
-	rateLimitCount := 0
-	return &mock.Doer{
-		Custom: func(r *http.Request) (*http.Response, error) {
-			if rateLimitCount == 1 {
-				return mock.NewJSONMockDoer(object, 200).Do(r)
-			}
-			rateLimitCount++
-			return mock.NewHeaderMockDoer(http.StatusTooManyRequests, http.Header{
-				"Retry-After": []string{"1"},
-			}).Do(r)
-		},
-	}
-}
-
-func unavailableOnceDoer(object interface{}) internal.Doer {
-	unavailableCount := 0
-	return &mock.Doer{
-		Custom: func(r *http.Request) (*http.Response, error) {
-			if unavailableCount == 1 {
-				return mock.NewJSONMockDoer(object, 200).Do(r)
-			}
-			unavailableCount++
-			return mock.NewStatusMockDoer(http.StatusServiceUnavailable).Do(r)
-		},
-	}
-}
-
-func failOnSecondDoer() internal.Doer {
+func failOnSecondDoer() Doer {
 	count := 0
 	return &mock.Doer{
 		Custom: func(r *http.Request) (*http.Response, error) {
@@ -198,7 +169,7 @@ func failOnSecondDoer() internal.Doer {
 	}
 }
 
-func invalidHeaderDoer() internal.Doer {
+func invalidHeaderDoer() Doer {
 	return mock.NewHeaderMockDoer(http.StatusTooManyRequests, http.Header{
 		"Retry-After": []string{"abc"},
 	})
