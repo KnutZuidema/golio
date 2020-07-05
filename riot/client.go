@@ -19,19 +19,28 @@ import (
 
 // Client provides access to all Riot API endpoints
 type Client struct {
-	l               log.FieldLogger
-	Region          api.Region
-	apiKey          string
-	client          internal.Doer
-	ChampionMastery *championMasteryClient
-	Champion        *championClient
-	League          *leagueClient
-	Status          *statusClient
-	Match           *matchClient
-	Spectator       *spectatorClient
-	Summoner        *summonerClient
-	ThirdPartyCode  *thirdPartyCodeClient
-	Tournament      *tournamentClient
+	l      log.FieldLogger
+	Region api.Region
+	apiKey string
+	client internal.Doer
+	// Deprecated: Use Client.LoL.ChampionMastery instead. Will be removed in a future release.
+	ChampionMastery *ChampionMasteryClient
+	// Deprecated: Use Client.LoL.Champion instead. Will be removed in a future release.
+	Champion *ChampionClient
+	// Deprecated: Use Client.LoL.League instead. Will be removed in a future release.
+	League *LeagueClient
+	// Deprecated: Use Client.LoL.Status instead. Will be removed in a future release.
+	Status *StatusClient
+	// Deprecated: Use Client.LoL.Match instead. Will be removed in a future release.
+	Match *MatchClient
+	// Deprecated: Use Client.LoL.Spectator instead. Will be removed in a future release.
+	Spectator *SpectatorClient
+	// Deprecated: Use Client.LoL.Summoner instead. Will be removed in a future release.
+	Summoner *SummonerClient
+	// Deprecated: Use Client.LoL.ThirdPartyCode instead. Will be removed in a future release.
+	ThirdPartyCode *ThirdPartyCodeClient
+	// Deprecated: Use Client.LoL.Tournament instead. Will be removed in a future release.
+	Tournament *TournamentClient
 }
 
 // NewClient returns a new api client for the Riot API
