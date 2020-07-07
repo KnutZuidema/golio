@@ -1,19 +1,22 @@
-package riot
+package lol
 
 import (
 	"fmt"
 
 	log "github.com/sirupsen/logrus"
+
+	"github.com/KnutZuidema/golio/internal"
 )
 
-type tournamentClient struct {
-	c *Client
+// TournamentClient provides methods for the tournament endpoints of the League of Legends API.
+type TournamentClient struct {
+	c *internal.Client
 }
 
 // CreateCodes creates a specified amount of codes for a tournament.
 // For more information about the parameters see the documentation for TournamentCodeParameters.
 // Set the useStub flag to true to use the stub endpoints for mocking an implementation
-func (t *tournamentClient) CreateCodes(id, count int, params *TournamentCodeParameters, stub bool) ([]string, error) {
+func (t *TournamentClient) CreateCodes(id, count int, params *TournamentCodeParameters, stub bool) ([]string, error) {
 	logger := t.logger().WithFields(log.Fields{
 		"method": "CreateCodes",
 		"stub":   stub,
@@ -23,7 +26,7 @@ func (t *tournamentClient) CreateCodes(id, count int, params *TournamentCodePara
 		endpoint = endpointCreateStubTournamentCodes
 	}
 	var codes []string
-	if err := t.c.postInto(fmt.Sprintf(endpoint, count, id), params, &codes); err != nil {
+	if err := t.c.PostInto(fmt.Sprintf(endpoint, count, id), params, &codes); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -32,7 +35,7 @@ func (t *tournamentClient) CreateCodes(id, count int, params *TournamentCodePara
 
 // ListLobbyEvents returns the lobby events for a lobby specified by the tournament code
 // Set the useStub flag to true to use the stub endpoints for mocking an implementation
-func (t *tournamentClient) ListLobbyEvents(code string, useStub bool) (*LobbyEventList, error) {
+func (t *TournamentClient) ListLobbyEvents(code string, useStub bool) (*LobbyEventList, error) {
 	logger := t.logger().WithFields(log.Fields{
 		"method": "ListLobbyEvents",
 		"stub":   useStub,
@@ -42,7 +45,7 @@ func (t *tournamentClient) ListLobbyEvents(code string, useStub bool) (*LobbyEve
 		endpoint = endpointGetStubLobbyEvents
 	}
 	var events LobbyEventList
-	if err := t.c.getInto(fmt.Sprintf(endpoint, code), &events); err != nil {
+	if err := t.c.GetInto(fmt.Sprintf(endpoint, code), &events); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -52,7 +55,7 @@ func (t *tournamentClient) ListLobbyEvents(code string, useStub bool) (*LobbyEve
 // CreateProvider creates a tournament provider and returns the ID.
 // For more information about the parameters see the documentation for ProviderRegistrationParameters.
 // Set the useStub flag to true to use the stub endpoints for mocking an implementation
-func (t *tournamentClient) CreateProvider(parameters *ProviderRegistrationParameters, useStub bool) (int, error) {
+func (t *TournamentClient) CreateProvider(parameters *ProviderRegistrationParameters, useStub bool) (int, error) {
 	logger := t.logger().WithFields(log.Fields{
 		"method": "CreateProvider",
 		"stub":   useStub,
@@ -62,7 +65,7 @@ func (t *tournamentClient) CreateProvider(parameters *ProviderRegistrationParame
 		endpoint = endpointCreateStubTournamentProvider
 	}
 	var id int
-	if err := t.c.postInto(endpoint, parameters, &id); err != nil {
+	if err := t.c.PostInto(endpoint, parameters, &id); err != nil {
 		logger.Debug(err)
 		return 0, err
 	}
@@ -72,7 +75,7 @@ func (t *tournamentClient) CreateProvider(parameters *ProviderRegistrationParame
 // Create creates a tournament and returns the ID.
 // For more information about the parameters see the documentation for TournamentRegistrationParameters.
 // Set the useStub flag to true to use the stub endpoints for mocking an implementation
-func (t *tournamentClient) Create(parameters *TournamentRegistrationParameters, useStub bool) (int, error) {
+func (t *TournamentClient) Create(parameters *TournamentRegistrationParameters, useStub bool) (int, error) {
 	logger := t.logger().WithFields(log.Fields{
 		"method": "Create",
 		"stub":   useStub,
@@ -82,7 +85,7 @@ func (t *tournamentClient) Create(parameters *TournamentRegistrationParameters, 
 		endpoint = endpointCreateStubTournament
 	}
 	var id int
-	if err := t.c.postInto(endpoint, parameters, &id); err != nil {
+	if err := t.c.PostInto(endpoint, parameters, &id); err != nil {
 		logger.Debug(err)
 		return 0, err
 	}
@@ -90,12 +93,12 @@ func (t *tournamentClient) Create(parameters *TournamentRegistrationParameters, 
 }
 
 // Get returns an existing tournament
-func (t *tournamentClient) Get(code string) (*Tournament, error) {
+func (t *TournamentClient) Get(code string) (*Tournament, error) {
 	logger := t.logger().WithFields(log.Fields{
 		"method": "Get",
 	})
 	var tournament Tournament
-	if err := t.c.getInto(fmt.Sprintf(endpointGetTournament, code), &tournament); err != nil {
+	if err := t.c.GetInto(fmt.Sprintf(endpointGetTournament, code), &tournament); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -103,17 +106,17 @@ func (t *tournamentClient) Get(code string) (*Tournament, error) {
 }
 
 // Update updates an existing tournament
-func (t *tournamentClient) Update(code string, parameters TournamentUpdateParameters) error {
+func (t *TournamentClient) Update(code string, parameters TournamentUpdateParameters) error {
 	logger := t.logger().WithFields(log.Fields{
 		"method": "Update",
 	})
-	if err := t.c.put(fmt.Sprintf(endpointUpdateTournament, code), parameters); err != nil {
+	if err := t.c.Put(fmt.Sprintf(endpointUpdateTournament, code), parameters); err != nil {
 		logger.Debug(err)
 		return err
 	}
 	return nil
 }
 
-func (t *tournamentClient) logger() log.FieldLogger {
-	return t.c.logger().WithField("category", "tournament")
+func (t *TournamentClient) logger() log.FieldLogger {
+	return t.c.Logger().WithField("category", "tournament")
 }

@@ -1,4 +1,4 @@
-package riot
+package lol
 
 import (
 	"fmt"
@@ -28,38 +28,15 @@ func TestStatusClient_Get(t *testing.T) {
 			doer: mock.NewJSONMockDoer(Status{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
-		{
-			name: "rate limited",
-			want: &Status{},
-			doer: rateLimitDoer(Status{}),
-		},
-		{
-			name: "unavailable once",
-			want: &Status{},
-			doer: unavailableOnceDoer(Status{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client := NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := client.Status.Get()
+			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+			got, err := (&StatusClient{c: client}).Get()
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)

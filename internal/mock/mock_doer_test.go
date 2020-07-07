@@ -171,3 +171,73 @@ func TestFailJSONEncoding_MarshalJSON(t *testing.T) {
 		t.Errorf("should return error")
 	}
 }
+
+func TestNewRateLimitDoer(t *testing.T) {
+	type args struct {
+		object interface{}
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "construct",
+			args: args{
+				object: 1,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := NewRateLimitDoer(tt.args.object)
+			if got == nil {
+				t.Fatal("returned nil")
+			}
+			if r, err := got.Do(nil); err != nil {
+				t.Error(err)
+			} else if r.StatusCode != http.StatusTooManyRequests {
+				t.Errorf("expected status %d, got %d", http.StatusTooManyRequests, r.StatusCode)
+			}
+			if r, err := got.Do(nil); err != nil {
+				t.Error(err)
+			} else if r.StatusCode != http.StatusOK {
+				t.Errorf("expected status %d, got %d", http.StatusOK, r.StatusCode)
+			}
+		})
+	}
+}
+
+func TestNewUnavailableOnceDoer(t *testing.T) {
+	type args struct {
+		object interface{}
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "construct",
+			args: args{
+				object: 1,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := NewUnavailableOnceDoer(tt.args.object)
+			if got == nil {
+				t.Fatal("returned nil")
+			}
+			if r, err := got.Do(nil); err != nil {
+				t.Error(err)
+			} else if r.StatusCode != http.StatusServiceUnavailable {
+				t.Errorf("expected status %d, got %d", http.StatusServiceUnavailable, r.StatusCode)
+			}
+			if r, err := got.Do(nil); err != nil {
+				t.Error(err)
+			} else if r.StatusCode != http.StatusOK {
+				t.Errorf("expected status %d, got %d", http.StatusOK, r.StatusCode)
+			}
+		})
+	}
+}

@@ -1,20 +1,23 @@
-package riot
+package lol
 
 import (
 	"fmt"
 
 	log "github.com/sirupsen/logrus"
+
+	"github.com/KnutZuidema/golio/internal"
 )
 
-type leagueClient struct {
-	c *Client
+// LeagueClient provides methods for league endpoints of the League of Legends API.
+type LeagueClient struct {
+	c *internal.Client
 }
 
 // GetChallenger returns the current Challenger league for the Region
-func (l *leagueClient) GetChallenger(queue queue) (*LeagueList, error) {
+func (l *LeagueClient) GetChallenger(queue queue) (*LeagueList, error) {
 	logger := l.logger().WithField("method", "GetChallenger")
 	var list *LeagueList
-	if err := l.c.getInto(fmt.Sprintf(endpointGetChallengerLeague, queue), &list); err != nil {
+	if err := l.c.GetInto(fmt.Sprintf(endpointGetChallengerLeague, queue), &list); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -22,10 +25,10 @@ func (l *leagueClient) GetChallenger(queue queue) (*LeagueList, error) {
 }
 
 // GetGrandmaster returns the current Grandmaster league for the Region
-func (l *leagueClient) GetGrandmaster(queue queue) (*LeagueList, error) {
+func (l *LeagueClient) GetGrandmaster(queue queue) (*LeagueList, error) {
 	logger := l.logger().WithField("method", "GetGrandmaster")
 	var list *LeagueList
-	if err := l.c.getInto(fmt.Sprintf(endpointGetGrandmasterLeague, queue), &list); err != nil {
+	if err := l.c.GetInto(fmt.Sprintf(endpointGetGrandmasterLeague, queue), &list); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -33,10 +36,10 @@ func (l *leagueClient) GetGrandmaster(queue queue) (*LeagueList, error) {
 }
 
 // GetMaster returns the current Master league for the Region
-func (l *leagueClient) GetMaster(queue queue) (*LeagueList, error) {
+func (l *LeagueClient) GetMaster(queue queue) (*LeagueList, error) {
 	logger := l.logger().WithField("method", "GetMaster")
 	var list *LeagueList
-	if err := l.c.getInto(fmt.Sprintf(endpointGetMasterLeague, queue), &list); err != nil {
+	if err := l.c.GetInto(fmt.Sprintf(endpointGetMasterLeague, queue), &list); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -44,10 +47,10 @@ func (l *leagueClient) GetMaster(queue queue) (*LeagueList, error) {
 }
 
 // ListBySummoner returns all leagues a summoner with the given ID is in
-func (l *leagueClient) ListBySummoner(summonerID string) ([]*LeagueItem, error) {
+func (l *LeagueClient) ListBySummoner(summonerID string) ([]*LeagueItem, error) {
 	logger := l.logger().WithField("method", "ListBySummoner")
 	var leagues []*LeagueItem
-	if err := l.c.getInto(fmt.Sprintf(endpointGetLeaguesBySummoner, summonerID), &leagues); err != nil {
+	if err := l.c.GetInto(fmt.Sprintf(endpointGetLeaguesBySummoner, summonerID), &leagues); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -55,10 +58,10 @@ func (l *leagueClient) ListBySummoner(summonerID string) ([]*LeagueItem, error) 
 }
 
 // ListPlayers returns all players with a league specified by its queue, tier and division
-func (l *leagueClient) ListPlayers(queue queue, tier tier, division division) ([]*LeagueItem, error) {
+func (l *LeagueClient) ListPlayers(queue queue, tier tier, division division) ([]*LeagueItem, error) {
 	logger := l.logger().WithField("method", "ListPlayers")
 	var leagues []*LeagueItem
-	if err := l.c.getInto(fmt.Sprintf(endpointGetLeagues, queue, tier, division), &leagues); err != nil {
+	if err := l.c.GetInto(fmt.Sprintf(endpointGetLeagues, queue, tier, division), &leagues); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -66,16 +69,16 @@ func (l *leagueClient) ListPlayers(queue queue, tier tier, division division) ([
 }
 
 // Get returns a ranked league with the specified ID
-func (l *leagueClient) Get(leagueID string) (*LeagueList, error) {
+func (l *LeagueClient) Get(leagueID string) (*LeagueList, error) {
 	logger := l.logger().WithField("method", "Get")
 	var leagues *LeagueList
-	if err := l.c.getInto(fmt.Sprintf(endpointGetLeague, leagueID), &leagues); err != nil {
+	if err := l.c.GetInto(fmt.Sprintf(endpointGetLeague, leagueID), &leagues); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
 	return leagues, nil
 }
 
-func (l *leagueClient) logger() log.FieldLogger {
-	return l.c.logger().WithField("category", "league")
+func (l *LeagueClient) logger() log.FieldLogger {
+	return l.c.Logger().WithField("category", "league")
 }

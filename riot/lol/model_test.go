@@ -1,4 +1,4 @@
-package riot
+package lol
 
 import (
 	"testing"
@@ -155,8 +155,8 @@ func TestChampionMastery_GetSummoner(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			client := NewClient(api.RegionKorea, "key", test.doer, log.StandardLogger())
-			got, err := test.model.GetSummoner(client)
+			client := internal.NewClient(api.RegionKorea, "key", test.doer, log.StandardLogger())
+			got, err := test.model.GetSummoner(NewClient(client))
 			assert.Equal(t, test.wantErr, err)
 			assert.Equal(t, test.want, got)
 		})
@@ -209,8 +209,8 @@ func TestLeagueItem_GetSummoner(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			client := NewClient(api.RegionKorea, "key", test.doer, log.StandardLogger())
-			got, err := test.model.GetSummoner(client)
+			client := internal.NewClient(api.RegionKorea, "key", test.doer, log.StandardLogger())
+			got, err := test.model.GetSummoner(NewClient(client))
 			assert.Equal(t, test.wantErr, err)
 			assert.Equal(t, test.want, got)
 		})
@@ -365,8 +365,8 @@ func TestPlayer_GetSummoner(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			client := NewClient(api.RegionKorea, "key", test.doer, log.StandardLogger())
-			got, err := test.model.GetSummoner(client)
+			client := internal.NewClient(api.RegionKorea, "key", test.doer, log.StandardLogger())
+			got, err := test.model.GetSummoner(NewClient(client))
 			assert.Equal(t, test.wantErr, err)
 			assert.Equal(t, test.want, got)
 		})
@@ -839,8 +839,8 @@ func TestGameInfo_GetMatch(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			client := NewClient(api.RegionKorea, "key", test.doer, log.StandardLogger())
-			got, err := test.model.GetMatch(client)
+			client := internal.NewClient(api.RegionKorea, "key", test.doer, log.StandardLogger())
+			got, err := test.model.GetMatch(NewClient(client))
 			assert.Equal(t, test.wantErr, err)
 			assert.Equal(t, test.want, got)
 		})
@@ -921,8 +921,8 @@ func TestMatchReference_GetGame(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			client := NewClient(api.RegionKorea, "key", test.doer, log.StandardLogger())
-			got, err := test.model.GetGame(client)
+			client := internal.NewClient(api.RegionKorea, "key", test.doer, log.StandardLogger())
+			got, err := test.model.GetGame(NewClient(client))
 			assert.Equal(t, test.wantErr, err)
 			assert.Equal(t, test.want, got)
 		})
