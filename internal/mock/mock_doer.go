@@ -75,3 +75,31 @@ type FailJSONEncoding struct{}
 func (f FailJSONEncoding) MarshalJSON() ([]byte, error) {
 	return nil, fmt.Errorf("error")
 }
+
+func NewRateLimitDoer(object interface{}) *Doer {
+	rateLimitCount := 0
+	return &Doer{
+		Custom: func(r *http.Request) (*http.Response, error) {
+			if rateLimitCount == 1 {
+				return NewJSONMockDoer(object, 200).Do(r)
+			}
+			rateLimitCount++
+			return NewHeaderMockDoer(http.StatusTooManyRequests, http.Header{
+				"Retry-After": []string{"1"},
+			}).Do(r)
+		},
+	}
+}
+
+func NewUnavailableOnceDoer(object interface{}) *Doer {
+	unavailableCount := 0
+	return &Doer{
+		Custom: func(r *http.Request) (*http.Response, error) {
+			if unavailableCount == 1 {
+				return NewJSONMockDoer(object, 200).Do(r)
+			}
+			unavailableCount++
+			return NewStatusMockDoer(http.StatusServiceUnavailable).Do(r)
+		},
+	}
+}
