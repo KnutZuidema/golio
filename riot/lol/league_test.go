@@ -43,12 +43,12 @@ func TestLeagueClient_GetChallenger(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &LeagueList{},
-			doer: rateLimitDoer(LeagueList{}),
+			doer: mock.NewRateLimitDoer(LeagueList{}),
 		},
 		{
 			name: "unavailable once",
 			want: &LeagueList{},
-			doer: unavailableOnceDoer(LeagueList{}),
+			doer: mock.NewUnavailableOnceDoer(LeagueList{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -59,7 +59,7 @@ func TestLeagueClient_GetChallenger(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&LeagueClient{Client: client}).GetChallenger(QueueRankedSolo)
+			got, err := (&LeagueClient{c: client}).GetChallenger(QueueRankedSolo)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -97,12 +97,12 @@ func TestLeagueClient_GetGrandmaster(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &LeagueList{},
-			doer: rateLimitDoer(LeagueList{}),
+			doer: mock.NewRateLimitDoer(LeagueList{}),
 		},
 		{
 			name: "unavailable once",
 			want: &LeagueList{},
-			doer: unavailableOnceDoer(LeagueList{}),
+			doer: mock.NewUnavailableOnceDoer(LeagueList{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -113,7 +113,7 @@ func TestLeagueClient_GetGrandmaster(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&LeagueClient{Client: client}).GetGrandmaster(QueueRankedSolo)
+			got, err := (&LeagueClient{c: client}).GetGrandmaster(QueueRankedSolo)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -151,12 +151,12 @@ func TestLeagueClient_GetMaster(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &LeagueList{},
-			doer: rateLimitDoer(LeagueList{}),
+			doer: mock.NewRateLimitDoer(LeagueList{}),
 		},
 		{
 			name: "unavailable once",
 			want: &LeagueList{},
-			doer: unavailableOnceDoer(LeagueList{}),
+			doer: mock.NewUnavailableOnceDoer(LeagueList{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -167,7 +167,7 @@ func TestLeagueClient_GetMaster(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&LeagueClient{Client: client}).GetMaster(QueueRankedSolo)
+			got, err := (&LeagueClient{c: client}).GetMaster(QueueRankedSolo)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -205,12 +205,12 @@ func TestLeagueClient_ListPlayers(t *testing.T) {
 		{
 			name: "rate limited",
 			want: []*LeagueItem{},
-			doer: rateLimitDoer([]*LeagueItem{}),
+			doer: mock.NewRateLimitDoer([]*LeagueItem{}),
 		},
 		{
 			name: "unavailable once",
 			want: []*LeagueItem{},
-			doer: unavailableOnceDoer([]*LeagueItem{}),
+			doer: mock.NewUnavailableOnceDoer([]*LeagueItem{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -221,7 +221,7 @@ func TestLeagueClient_ListPlayers(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&LeagueClient{Client: client}).ListPlayers(QueueRankedSolo, TierGold, DivisionOne)
+			got, err := (&LeagueClient{c: client}).ListPlayers(QueueRankedSolo, TierGold, DivisionOne)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -259,12 +259,12 @@ func TestLeagueClient_ListBySummoner(t *testing.T) {
 		{
 			name: "rate limited",
 			want: []*LeagueItem{},
-			doer: rateLimitDoer([]*LeagueItem{}),
+			doer: mock.NewRateLimitDoer([]*LeagueItem{}),
 		},
 		{
 			name: "unavailable once",
 			want: []*LeagueItem{},
-			doer: unavailableOnceDoer([]*LeagueItem{}),
+			doer: mock.NewUnavailableOnceDoer([]*LeagueItem{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -275,7 +275,7 @@ func TestLeagueClient_ListBySummoner(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&LeagueClient{Client: client}).ListBySummoner("id")
+			got, err := (&LeagueClient{c: client}).ListBySummoner("id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -313,12 +313,12 @@ func TestLeagueClient_Get(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &LeagueList{},
-			doer: rateLimitDoer(LeagueList{}),
+			doer: mock.NewRateLimitDoer(LeagueList{}),
 		},
 		{
 			name: "unavailable once",
 			want: &LeagueList{},
-			doer: unavailableOnceDoer(LeagueList{}),
+			doer: mock.NewUnavailableOnceDoer(LeagueList{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -329,7 +329,7 @@ func TestLeagueClient_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&LeagueClient{Client: client}).Get("id")
+			got, err := (&LeagueClient{c: client}).Get("id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)

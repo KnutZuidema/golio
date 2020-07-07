@@ -43,12 +43,12 @@ func TestThirdPartyCodeClient_Get(t *testing.T) {
 		{
 			name: "rate limited",
 			want: "code",
-			doer: rateLimitDoer("code"),
+			doer: mock.NewRateLimitDoer("code"),
 		},
 		{
 			name: "unavailable once",
 			want: "code",
-			doer: unavailableOnceDoer("code"),
+			doer: mock.NewUnavailableOnceDoer("code"),
 		},
 		{
 			name:    "unavailable twice",
@@ -59,7 +59,7 @@ func TestThirdPartyCodeClient_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&ThirdPartyCodeClient{Client: client}).Get("id")
+			got, err := (&ThirdPartyCodeClient{c: client}).Get("id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)

@@ -8,14 +8,14 @@ import (
 
 // ChampionClient provides methods for the champions endpoints of the League of Legends API.
 type ChampionClient struct {
-	Client *internal.Client
+	c *internal.Client
 }
 
 // GetFreeRotation returns information about the current free champion rotation
 func (c *ChampionClient) GetFreeRotation() (*ChampionInfo, error) {
 	logger := c.logger().WithField("method", "GetFreeRotation")
 	var info *ChampionInfo
-	if err := c.Client.GetInto(endpointGetFreeChampionRotation, &info); err != nil {
+	if err := c.c.GetInto(endpointGetFreeChampionRotation, &info); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -23,5 +23,5 @@ func (c *ChampionClient) GetFreeRotation() (*ChampionInfo, error) {
 }
 
 func (c *ChampionClient) logger() log.FieldLogger {
-	return c.Client.Logger().WithField("category", "champion")
+	return c.c.Logger().WithField("category", "champion")
 }

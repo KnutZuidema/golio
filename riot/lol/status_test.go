@@ -43,12 +43,12 @@ func TestStatusClient_Get(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &Status{},
-			doer: rateLimitDoer(Status{}),
+			doer: mock.NewRateLimitDoer(Status{}),
 		},
 		{
 			name: "unavailable once",
 			want: &Status{},
-			doer: unavailableOnceDoer(Status{}),
+			doer: mock.NewUnavailableOnceDoer(Status{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -59,7 +59,7 @@ func TestStatusClient_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&StatusClient{Client: client}).Get()
+			got, err := (&StatusClient{c: client}).Get()
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)

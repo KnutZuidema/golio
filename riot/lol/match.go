@@ -11,14 +11,14 @@ import (
 
 // MatchClient provides methods for the match endpoints of the League of Legends API.
 type MatchClient struct {
-	Client *internal.Client
+	c *internal.Client
 }
 
 // Get returns a match specified by its ID
 func (m *MatchClient) Get(id int) (*Match, error) {
 	logger := m.logger().WithField("method", "Get")
 	var match *Match
-	if err := m.Client.GetInto(fmt.Sprintf(endpointGetMatch, id), &match); err != nil {
+	if err := m.c.GetInto(fmt.Sprintf(endpointGetMatch, id), &match); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -29,7 +29,7 @@ func (m *MatchClient) Get(id int) (*Match, error) {
 func (m *MatchClient) List(accountID string, beginIndex, endIndex int) (*Matchlist, error) {
 	logger := m.logger().WithField("method", "List")
 	var matches *Matchlist
-	if err := m.Client.GetInto(
+	if err := m.c.GetInto(
 		fmt.Sprintf(endpointGetMatchesByAccount, accountID, beginIndex, endIndex),
 		&matches,
 	); err != nil {
@@ -77,7 +77,7 @@ func (m *MatchClient) ListStream(accountID string) <-chan MatchStreamValue {
 func (m *MatchClient) GetTimeline(matchID int) (*MatchTimeline, error) {
 	logger := m.logger().WithField("method", "GetTimeline")
 	var timeline MatchTimeline
-	if err := m.Client.GetInto(fmt.Sprintf(endpointGetMatchTimeline, matchID), &timeline); err != nil {
+	if err := m.c.GetInto(fmt.Sprintf(endpointGetMatchTimeline, matchID), &timeline); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func (m *MatchClient) GetTimeline(matchID int) (*MatchTimeline, error) {
 func (m *MatchClient) ListIDsByTournamentCode(tournamentCode string) ([]int, error) {
 	logger := m.logger().WithField("method", "ListIDsByTournamentCode")
 	var ids []int
-	if err := m.Client.GetInto(fmt.Sprintf(endpointGetMatchIDsByTournamentCode, tournamentCode), &ids); err != nil {
+	if err := m.c.GetInto(fmt.Sprintf(endpointGetMatchIDsByTournamentCode, tournamentCode), &ids); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (m *MatchClient) ListIDsByTournamentCode(tournamentCode string) ([]int, err
 func (m *MatchClient) GetForTournament(matchID int, tournamentCode string) (*Match, error) {
 	logger := m.logger().WithField("method", "GetForTournament")
 	var match Match
-	if err := m.Client.GetInto(
+	if err := m.c.GetInto(
 		fmt.Sprintf(endpointGetMatchForTournament, matchID, tournamentCode),
 		&match,
 	); err != nil {
@@ -110,5 +110,5 @@ func (m *MatchClient) GetForTournament(matchID int, tournamentCode string) (*Mat
 }
 
 func (m *MatchClient) logger() log.FieldLogger {
-	return m.Client.Logger().WithField("category", "match")
+	return m.c.Logger().WithField("category", "match")
 }

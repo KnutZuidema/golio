@@ -11,7 +11,7 @@ import (
 // ThirdPartyCodeClient provides methods for the third party code endpoints of the
 // League of Legends API.
 type ThirdPartyCodeClient struct {
-	Client *internal.Client
+	c *internal.Client
 }
 
 // Get returns the third party code for the given summoner id
@@ -20,7 +20,7 @@ func (t *ThirdPartyCodeClient) Get(summonerID string) (string, error) {
 		"method": "Get",
 	})
 	var code string
-	if err := t.Client.GetInto(fmt.Sprintf(endpointGetThirdPartyCode, summonerID), &code); err != nil {
+	if err := t.c.GetInto(fmt.Sprintf(endpointGetThirdPartyCode, summonerID), &code); err != nil {
 		logger.Debug(err)
 		return "", err
 	}
@@ -28,5 +28,5 @@ func (t *ThirdPartyCodeClient) Get(summonerID string) (string, error) {
 }
 
 func (t *ThirdPartyCodeClient) logger() log.FieldLogger {
-	return t.Client.Logger().WithField("category", "third party code")
+	return t.c.Logger().WithField("category", "third party code")
 }

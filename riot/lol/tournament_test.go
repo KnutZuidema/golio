@@ -43,12 +43,12 @@ func TestTournamentClient_CreateCodes(t *testing.T) {
 		{
 			name: "rate limited",
 			want: []string{},
-			doer: rateLimitDoer([]string{}),
+			doer: mock.NewRateLimitDoer([]string{}),
 		},
 		{
 			name: "unavailable once",
 			want: []string{},
-			doer: unavailableOnceDoer([]string{}),
+			doer: mock.NewUnavailableOnceDoer([]string{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -59,7 +59,7 @@ func TestTournamentClient_CreateCodes(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&TournamentClient{Client: client}).CreateCodes(0, 0, &TournamentCodeParameters{}, true)
+			got, err := (&TournamentClient{c: client}).CreateCodes(0, 0, &TournamentCodeParameters{}, true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -97,12 +97,12 @@ func TestTournamentClient_ListLobbyEvents(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &LobbyEventList{},
-			doer: rateLimitDoer(LobbyEventList{}),
+			doer: mock.NewRateLimitDoer(LobbyEventList{}),
 		},
 		{
 			name: "unavailable once",
 			want: &LobbyEventList{},
-			doer: unavailableOnceDoer(LobbyEventList{}),
+			doer: mock.NewUnavailableOnceDoer(LobbyEventList{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -113,7 +113,7 @@ func TestTournamentClient_ListLobbyEvents(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&TournamentClient{Client: client}).ListLobbyEvents("code", true)
+			got, err := (&TournamentClient{c: client}).ListLobbyEvents("code", true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -151,12 +151,12 @@ func TestTournamentClient_CreateProvider(t *testing.T) {
 		{
 			name: "rate limited",
 			want: 1,
-			doer: rateLimitDoer(1),
+			doer: mock.NewRateLimitDoer(1),
 		},
 		{
 			name: "unavailable once",
 			want: 1,
-			doer: unavailableOnceDoer(1),
+			doer: mock.NewUnavailableOnceDoer(1),
 		},
 		{
 			name:    "unavailable twice",
@@ -167,7 +167,7 @@ func TestTournamentClient_CreateProvider(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&TournamentClient{Client: client}).CreateProvider(&ProviderRegistrationParameters{}, true)
+			got, err := (&TournamentClient{c: client}).CreateProvider(&ProviderRegistrationParameters{}, true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -205,12 +205,12 @@ func TestTournamentClient_Create(t *testing.T) {
 		{
 			name: "rate limited",
 			want: 1,
-			doer: rateLimitDoer(1),
+			doer: mock.NewRateLimitDoer(1),
 		},
 		{
 			name: "unavailable once",
 			want: 1,
-			doer: unavailableOnceDoer(1),
+			doer: mock.NewUnavailableOnceDoer(1),
 		},
 		{
 			name:    "unavailable twice",
@@ -221,7 +221,7 @@ func TestTournamentClient_Create(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&TournamentClient{Client: client}).Create(&TournamentRegistrationParameters{}, true)
+			got, err := (&TournamentClient{c: client}).Create(&TournamentRegistrationParameters{}, true)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -259,12 +259,12 @@ func TestTournamentClient_Get(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &Tournament{},
-			doer: rateLimitDoer(Tournament{}),
+			doer: mock.NewRateLimitDoer(Tournament{}),
 		},
 		{
 			name: "unavailable once",
 			want: &Tournament{},
-			doer: unavailableOnceDoer(Tournament{}),
+			doer: mock.NewUnavailableOnceDoer(Tournament{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -275,7 +275,7 @@ func TestTournamentClient_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&TournamentClient{Client: client}).Get("code")
+			got, err := (&TournamentClient{c: client}).Get("code")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -310,11 +310,11 @@ func TestTournamentClient_Update(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			doer: rateLimitDoer(1),
+			doer: mock.NewRateLimitDoer(1),
 		},
 		{
 			name: "unavailable once",
-			doer: unavailableOnceDoer(1),
+			doer: mock.NewUnavailableOnceDoer(1),
 		},
 		{
 			name:    "unavailable twice",
@@ -325,7 +325,7 @@ func TestTournamentClient_Update(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			err := (&TournamentClient{Client: client}).Update("code", TournamentUpdateParameters{})
+			err := (&TournamentClient{c: client}).Update("code", TournamentUpdateParameters{})
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 		})
 	}

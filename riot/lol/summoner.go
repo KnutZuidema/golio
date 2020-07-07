@@ -10,7 +10,7 @@ import (
 
 // SummonerClient provides methods for the summoner endpoints of the League of Legends API.
 type SummonerClient struct {
-	Client *internal.Client
+	c *internal.Client
 }
 
 // GetByName returns the summoner with the given summoner name
@@ -42,7 +42,7 @@ func (s *SummonerClient) getBy(by identification, value string, logger log.Field
 		endpoint = fmt.Sprintf(endpointGetSummonerBy, by, value)
 	}
 	var summoner *Summoner
-	if err := s.Client.GetInto(endpoint, &summoner); err != nil {
+	if err := s.c.GetInto(endpoint, &summoner); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -50,5 +50,5 @@ func (s *SummonerClient) getBy(by identification, value string, logger log.Field
 }
 
 func (s *SummonerClient) logger() log.FieldLogger {
-	return s.Client.Logger().WithField("category", "summoner")
+	return s.c.Logger().WithField("category", "summoner")
 }

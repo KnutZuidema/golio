@@ -10,7 +10,7 @@ import (
 
 // TournamentClient provides methods for the tournament endpoints of the League of Legends API.
 type TournamentClient struct {
-	Client *internal.Client
+	c *internal.Client
 }
 
 // CreateCodes creates a specified amount of codes for a tournament.
@@ -26,7 +26,7 @@ func (t *TournamentClient) CreateCodes(id, count int, params *TournamentCodePara
 		endpoint = endpointCreateStubTournamentCodes
 	}
 	var codes []string
-	if err := t.Client.PostInto(fmt.Sprintf(endpoint, count, id), params, &codes); err != nil {
+	if err := t.c.PostInto(fmt.Sprintf(endpoint, count, id), params, &codes); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (t *TournamentClient) ListLobbyEvents(code string, useStub bool) (*LobbyEve
 		endpoint = endpointGetStubLobbyEvents
 	}
 	var events LobbyEventList
-	if err := t.Client.GetInto(fmt.Sprintf(endpoint, code), &events); err != nil {
+	if err := t.c.GetInto(fmt.Sprintf(endpoint, code), &events); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -65,7 +65,7 @@ func (t *TournamentClient) CreateProvider(parameters *ProviderRegistrationParame
 		endpoint = endpointCreateStubTournamentProvider
 	}
 	var id int
-	if err := t.Client.PostInto(endpoint, parameters, &id); err != nil {
+	if err := t.c.PostInto(endpoint, parameters, &id); err != nil {
 		logger.Debug(err)
 		return 0, err
 	}
@@ -85,7 +85,7 @@ func (t *TournamentClient) Create(parameters *TournamentRegistrationParameters, 
 		endpoint = endpointCreateStubTournament
 	}
 	var id int
-	if err := t.Client.PostInto(endpoint, parameters, &id); err != nil {
+	if err := t.c.PostInto(endpoint, parameters, &id); err != nil {
 		logger.Debug(err)
 		return 0, err
 	}
@@ -98,7 +98,7 @@ func (t *TournamentClient) Get(code string) (*Tournament, error) {
 		"method": "Get",
 	})
 	var tournament Tournament
-	if err := t.Client.GetInto(fmt.Sprintf(endpointGetTournament, code), &tournament); err != nil {
+	if err := t.c.GetInto(fmt.Sprintf(endpointGetTournament, code), &tournament); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -110,7 +110,7 @@ func (t *TournamentClient) Update(code string, parameters TournamentUpdateParame
 	logger := t.logger().WithFields(log.Fields{
 		"method": "Update",
 	})
-	if err := t.Client.Put(fmt.Sprintf(endpointUpdateTournament, code), parameters); err != nil {
+	if err := t.c.Put(fmt.Sprintf(endpointUpdateTournament, code), parameters); err != nil {
 		logger.Debug(err)
 		return err
 	}
@@ -118,5 +118,5 @@ func (t *TournamentClient) Update(code string, parameters TournamentUpdateParame
 }
 
 func (t *TournamentClient) logger() log.FieldLogger {
-	return t.Client.Logger().WithField("category", "tournament")
+	return t.c.Logger().WithField("category", "tournament")
 }

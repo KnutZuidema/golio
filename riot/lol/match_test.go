@@ -44,12 +44,12 @@ func TestMatchClient_List(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &Matchlist{},
-			doer: rateLimitDoer(Matchlist{}),
+			doer: mock.NewRateLimitDoer(Matchlist{}),
 		},
 		{
 			name: "unavailable once",
 			want: &Matchlist{},
-			doer: unavailableOnceDoer(Matchlist{}),
+			doer: mock.NewUnavailableOnceDoer(Matchlist{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -60,7 +60,7 @@ func TestMatchClient_List(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&MatchClient{Client: client}).List("id", 0, 1)
+			got, err := (&MatchClient{c: client}).List("id", 0, 1)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -106,11 +106,11 @@ func TestMatchClient_ListStream(t *testing.T) {
 		},
 		{
 			name: "rate limited",
-			doer: rateLimitDoer(Matchlist{}),
+			doer: mock.NewRateLimitDoer(Matchlist{}),
 		},
 		{
 			name: "unavailable once",
-			doer: unavailableOnceDoer(Matchlist{}),
+			doer: mock.NewUnavailableOnceDoer(Matchlist{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -121,7 +121,7 @@ func TestMatchClient_ListStream(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got := (&MatchClient{Client: client}).ListStream("id")
+			got := (&MatchClient{c: client}).ListStream("id")
 			for res := range got {
 				if res.Error != nil && tt.wantErr != nil {
 					require.Equal(t, res.Error, tt.wantErr)
@@ -164,12 +164,12 @@ func TestMatchClient_Get(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &Match{},
-			doer: rateLimitDoer(Match{}),
+			doer: mock.NewRateLimitDoer(Match{}),
 		},
 		{
 			name: "unavailable once",
 			want: &Match{},
-			doer: unavailableOnceDoer(Match{}),
+			doer: mock.NewUnavailableOnceDoer(Match{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -180,7 +180,7 @@ func TestMatchClient_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&MatchClient{Client: client}).Get(1)
+			got, err := (&MatchClient{c: client}).Get(1)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -218,12 +218,12 @@ func TestMatchClient_GetTimeline(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &MatchTimeline{},
-			doer: rateLimitDoer(MatchTimeline{}),
+			doer: mock.NewRateLimitDoer(MatchTimeline{}),
 		},
 		{
 			name: "unavailable once",
 			want: &MatchTimeline{},
-			doer: unavailableOnceDoer(MatchTimeline{}),
+			doer: mock.NewUnavailableOnceDoer(MatchTimeline{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -234,7 +234,7 @@ func TestMatchClient_GetTimeline(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&MatchClient{Client: client}).GetTimeline(0)
+			got, err := (&MatchClient{c: client}).GetTimeline(0)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -272,12 +272,12 @@ func TestMatchClient_ListIDsByTournamentCode(t *testing.T) {
 		{
 			name: "rate limited",
 			want: []int{},
-			doer: rateLimitDoer([]int{}),
+			doer: mock.NewRateLimitDoer([]int{}),
 		},
 		{
 			name: "unavailable once",
 			want: []int{},
-			doer: unavailableOnceDoer([]int{}),
+			doer: mock.NewUnavailableOnceDoer([]int{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -288,7 +288,7 @@ func TestMatchClient_ListIDsByTournamentCode(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&MatchClient{Client: client}).ListIDsByTournamentCode("tournamentCode")
+			got, err := (&MatchClient{c: client}).ListIDsByTournamentCode("tournamentCode")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -326,12 +326,12 @@ func TestMatchClient_GetForTournament(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &Match{},
-			doer: rateLimitDoer(Match{}),
+			doer: mock.NewRateLimitDoer(Match{}),
 		},
 		{
 			name: "unavailable once",
 			want: &Match{},
-			doer: unavailableOnceDoer(Match{}),
+			doer: mock.NewUnavailableOnceDoer(Match{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -342,7 +342,7 @@ func TestMatchClient_GetForTournament(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&MatchClient{Client: client}).GetForTournament(0, "tournamentCode")
+			got, err := (&MatchClient{c: client}).GetForTournament(0, "tournamentCode")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)

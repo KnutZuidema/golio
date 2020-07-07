@@ -11,14 +11,14 @@ import (
 // ChampionMasteryClient provides methods for the champion mastery endpoints of the
 // League of Legends API.
 type ChampionMasteryClient struct {
-	Client *internal.Client
+	c *internal.Client
 }
 
 // List returns information about masteries for the summoner with the given ID
 func (c *ChampionMasteryClient) List(summonerID string) ([]*ChampionMastery, error) {
 	logger := c.logger().WithField("method", "List")
 	var masteries []*ChampionMastery
-	if err := c.Client.GetInto(
+	if err := c.c.GetInto(
 		fmt.Sprintf(endpointGetChampionMasteries, summonerID),
 		&masteries,
 	); err != nil {
@@ -33,7 +33,7 @@ func (c *ChampionMasteryClient) List(summonerID string) ([]*ChampionMastery, err
 func (c *ChampionMasteryClient) Get(summonerID, championID string) (*ChampionMastery, error) {
 	logger := c.logger().WithField("method", "Get")
 	var mastery *ChampionMastery
-	if err := c.Client.GetInto(
+	if err := c.c.GetInto(
 		fmt.Sprintf(endpointGetChampionMastery, summonerID, championID),
 		&mastery,
 	); err != nil {
@@ -48,7 +48,7 @@ func (c *ChampionMasteryClient) Get(summonerID, championID string) (*ChampionMas
 func (c *ChampionMasteryClient) GetTotal(summonerID string) (int, error) {
 	logger := c.logger().WithField("method", "GetTotal")
 	var score int
-	if err := c.Client.GetInto(fmt.Sprintf(endpointGetChampionMasteryTotalScore, summonerID), &score); err != nil {
+	if err := c.c.GetInto(fmt.Sprintf(endpointGetChampionMasteryTotalScore, summonerID), &score); err != nil {
 		logger.Debug(err)
 		return 0, err
 	}
@@ -56,5 +56,5 @@ func (c *ChampionMasteryClient) GetTotal(summonerID string) (int, error) {
 }
 
 func (c *ChampionMasteryClient) logger() log.FieldLogger {
-	return c.Client.Logger().WithField("category", "champion mastery")
+	return c.c.Logger().WithField("category", "champion mastery")
 }

@@ -41,12 +41,12 @@ func TestSummonerClient_GetByName(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &Summoner{},
-			doer: rateLimitDoer(&Summoner{}),
+			doer: mock.NewRateLimitDoer(&Summoner{}),
 		},
 		{
 			name: "unavailable once",
 			want: &Summoner{},
-			doer: unavailableOnceDoer(&Summoner{}),
+			doer: mock.NewUnavailableOnceDoer(&Summoner{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -58,7 +58,7 @@ func TestSummonerClient_GetByName(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&SummonerClient{Client: client}).GetByName("name")
+			got, err := (&SummonerClient{c: client}).GetByName("name")
 			assert.Equal(t, err, tt.wantErr)
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -96,12 +96,12 @@ func TestSummonerClient_GetByAccountID(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &Summoner{},
-			doer: rateLimitDoer(&Summoner{}),
+			doer: mock.NewRateLimitDoer(&Summoner{}),
 		},
 		{
 			name: "unavailable once",
 			want: &Summoner{},
-			doer: unavailableOnceDoer(&Summoner{}),
+			doer: mock.NewUnavailableOnceDoer(&Summoner{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -113,7 +113,7 @@ func TestSummonerClient_GetByAccountID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&SummonerClient{Client: client}).GetByAccountID("accountID")
+			got, err := (&SummonerClient{c: client}).GetByAccountID("accountID")
 			assert.Equal(t, err, tt.wantErr)
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -151,12 +151,12 @@ func TestSummonerClient_GetByPUUID(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &Summoner{},
-			doer: rateLimitDoer(&Summoner{}),
+			doer: mock.NewRateLimitDoer(&Summoner{}),
 		},
 		{
 			name: "unavailable once",
 			want: &Summoner{},
-			doer: unavailableOnceDoer(&Summoner{}),
+			doer: mock.NewUnavailableOnceDoer(&Summoner{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -168,7 +168,7 @@ func TestSummonerClient_GetByPUUID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&SummonerClient{Client: client}).GetByPUUID("puuid")
+			got, err := (&SummonerClient{c: client}).GetByPUUID("puuid")
 			assert.Equal(t, err, tt.wantErr)
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -206,12 +206,12 @@ func TestSummonerClient_GetByID(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &Summoner{},
-			doer: rateLimitDoer(&Summoner{}),
+			doer: mock.NewRateLimitDoer(&Summoner{}),
 		},
 		{
 			name: "unavailable once",
 			want: &Summoner{},
-			doer: unavailableOnceDoer(&Summoner{}),
+			doer: mock.NewUnavailableOnceDoer(&Summoner{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -223,7 +223,7 @@ func TestSummonerClient_GetByID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			var err error
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&SummonerClient{Client: client}).GetByID("id")
+			got, err := (&SummonerClient{c: client}).GetByID("id")
 			assert.Equal(t, err, tt.wantErr)
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)

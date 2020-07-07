@@ -18,14 +18,14 @@ type Client struct {
 // NewClient returns a new instance of a League of Legends client.
 func NewClient(base *internal.Client) *Client {
 	return &Client{
-		ChampionMastery: &ChampionMasteryClient{Client: base},
-		Summoner:        &SummonerClient{Client: base},
-		Champion:        &ChampionClient{Client: base},
-		League:          &LeagueClient{Client: base},
-		Status:          &StatusClient{Client: base},
-		Match:           &MatchClient{Client: base},
-		Spectator:       &SpectatorClient{Client: base},
-		Tournament:      &TournamentClient{Client: base},
-		ThirdPartyCode:  &ThirdPartyCodeClient{Client: base},
+		ChampionMastery: &ChampionMasteryClient{c: base},
+		Summoner:        &SummonerClient{c: base},
+		Champion:        &ChampionClient{c: base},
+		League:          &LeagueClient{c: base},
+		Status:          &StatusClient{c: base},
+		Match:           &MatchClient{c: base},
+		Spectator:       &SpectatorClient{c: base},
+		Tournament:      &TournamentClient{c: base},
+		ThirdPartyCode:  &ThirdPartyCodeClient{c: base},
 	}
 }

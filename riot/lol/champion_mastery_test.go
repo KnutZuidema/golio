@@ -43,12 +43,12 @@ func TestChampionMasteryClient_List(t *testing.T) {
 		{
 			name: "rate limited",
 			want: []*ChampionMastery{},
-			doer: rateLimitDoer([]*ChampionMastery{}),
+			doer: mock.NewRateLimitDoer([]*ChampionMastery{}),
 		},
 		{
 			name: "unavailable once",
 			want: []*ChampionMastery{},
-			doer: unavailableOnceDoer([]*ChampionMastery{}),
+			doer: mock.NewUnavailableOnceDoer([]*ChampionMastery{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -59,7 +59,7 @@ func TestChampionMasteryClient_List(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&ChampionMasteryClient{Client: client}).List("id")
+			got, err := (&ChampionMasteryClient{c: client}).List("id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -97,12 +97,12 @@ func TestChampionMasteryClient_Get(t *testing.T) {
 		{
 			name: "rate limited",
 			want: &ChampionMastery{},
-			doer: rateLimitDoer(&ChampionMastery{}),
+			doer: mock.NewRateLimitDoer(&ChampionMastery{}),
 		},
 		{
 			name: "unavailable once",
 			want: &ChampionMastery{},
-			doer: unavailableOnceDoer(&ChampionMastery{}),
+			doer: mock.NewUnavailableOnceDoer(&ChampionMastery{}),
 		},
 		{
 			name:    "unavailable twice",
@@ -113,7 +113,7 @@ func TestChampionMasteryClient_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&ChampionMasteryClient{Client: client}).Get("id", "id")
+			got, err := (&ChampionMasteryClient{c: client}).Get("id", "id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -151,12 +151,12 @@ func TestChampionMasteryClient_GetTotal(t *testing.T) {
 		{
 			name: "rate limited",
 			want: 1,
-			doer: rateLimitDoer(1),
+			doer: mock.NewRateLimitDoer(1),
 		},
 		{
 			name: "unavailable once",
 			want: 1,
-			doer: unavailableOnceDoer(1),
+			doer: mock.NewUnavailableOnceDoer(1),
 		},
 		{
 			name:    "unavailable twice",
@@ -167,39 +167,11 @@ func TestChampionMasteryClient_GetTotal(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&ChampionMasteryClient{Client: client}).GetTotal("id")
+			got, err := (&ChampionMasteryClient{c: client}).GetTotal("id")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
 			}
 		})
-	}
-}
-
-func rateLimitDoer(object interface{}) internal.Doer {
-	rateLimitCount := 0
-	return &mock.Doer{
-		Custom: func(r *http.Request) (*http.Response, error) {
-			if rateLimitCount == 1 {
-				return mock.NewJSONMockDoer(object, 200).Do(r)
-			}
-			rateLimitCount++
-			return mock.NewHeaderMockDoer(http.StatusTooManyRequests, http.Header{
-				"Retry-After": []string{"1"},
-			}).Do(r)
-		},
-	}
-}
-
-func unavailableOnceDoer(object interface{}) internal.Doer {
-	unavailableCount := 0
-	return &mock.Doer{
-		Custom: func(r *http.Request) (*http.Response, error) {
-			if unavailableCount == 1 {
-				return mock.NewJSONMockDoer(object, 200).Do(r)
-			}
-			unavailableCount++
-			return mock.NewStatusMockDoer(http.StatusServiceUnavailable).Do(r)
-		},
 	}
 }
