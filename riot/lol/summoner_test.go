@@ -26,32 +26,9 @@ func TestSummonerClient_GetByName(t *testing.T) {
 			doer: mock.NewJSONMockDoer(&Summoner{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &Summoner{},
-			doer: mock.NewRateLimitDoer(&Summoner{}),
-		},
-		{
-			name: "unavailable once",
-			want: &Summoner{},
-			doer: mock.NewUnavailableOnceDoer(&Summoner{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -81,32 +58,9 @@ func TestSummonerClient_GetByAccountID(t *testing.T) {
 			doer: mock.NewJSONMockDoer(&Summoner{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &Summoner{},
-			doer: mock.NewRateLimitDoer(&Summoner{}),
-		},
-		{
-			name: "unavailable once",
-			want: &Summoner{},
-			doer: mock.NewUnavailableOnceDoer(&Summoner{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -136,32 +90,9 @@ func TestSummonerClient_GetByPUUID(t *testing.T) {
 			doer: mock.NewJSONMockDoer(&Summoner{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &Summoner{},
-			doer: mock.NewRateLimitDoer(&Summoner{}),
-		},
-		{
-			name: "unavailable once",
-			want: &Summoner{},
-			doer: mock.NewUnavailableOnceDoer(&Summoner{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -191,32 +122,9 @@ func TestSummonerClient_GetByID(t *testing.T) {
 			doer: mock.NewJSONMockDoer(&Summoner{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &Summoner{},
-			doer: mock.NewRateLimitDoer(&Summoner{}),
-		},
-		{
-			name: "unavailable once",
-			want: &Summoner{},
-			doer: mock.NewUnavailableOnceDoer(&Summoner{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {

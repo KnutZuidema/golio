@@ -28,32 +28,9 @@ func TestThirdPartyCodeClient_Get(t *testing.T) {
 			doer: mock.NewJSONMockDoer("code", 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: "code",
-			doer: mock.NewRateLimitDoer("code"),
-		},
-		{
-			name: "unavailable once",
-			want: "code",
-			doer: mock.NewUnavailableOnceDoer("code"),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {

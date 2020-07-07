@@ -28,32 +28,9 @@ func TestLeagueClient_GetChallenger(t *testing.T) {
 			doer: mock.NewJSONMockDoer(LeagueList{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &LeagueList{},
-			doer: mock.NewRateLimitDoer(LeagueList{}),
-		},
-		{
-			name: "unavailable once",
-			want: &LeagueList{},
-			doer: mock.NewUnavailableOnceDoer(LeagueList{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -82,32 +59,9 @@ func TestLeagueClient_GetGrandmaster(t *testing.T) {
 			doer: mock.NewJSONMockDoer(LeagueList{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &LeagueList{},
-			doer: mock.NewRateLimitDoer(LeagueList{}),
-		},
-		{
-			name: "unavailable once",
-			want: &LeagueList{},
-			doer: mock.NewUnavailableOnceDoer(LeagueList{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -136,32 +90,9 @@ func TestLeagueClient_GetMaster(t *testing.T) {
 			doer: mock.NewJSONMockDoer(LeagueList{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &LeagueList{},
-			doer: mock.NewRateLimitDoer(LeagueList{}),
-		},
-		{
-			name: "unavailable once",
-			want: &LeagueList{},
-			doer: mock.NewUnavailableOnceDoer(LeagueList{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -190,32 +121,9 @@ func TestLeagueClient_ListPlayers(t *testing.T) {
 			doer: mock.NewJSONMockDoer([]*LeagueItem{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: []*LeagueItem{},
-			doer: mock.NewRateLimitDoer([]*LeagueItem{}),
-		},
-		{
-			name: "unavailable once",
-			want: []*LeagueItem{},
-			doer: mock.NewUnavailableOnceDoer([]*LeagueItem{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -244,32 +152,9 @@ func TestLeagueClient_ListBySummoner(t *testing.T) {
 			doer: mock.NewJSONMockDoer([]*LeagueItem{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: []*LeagueItem{},
-			doer: mock.NewRateLimitDoer([]*LeagueItem{}),
-		},
-		{
-			name: "unavailable once",
-			want: []*LeagueItem{},
-			doer: mock.NewUnavailableOnceDoer([]*LeagueItem{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -298,32 +183,9 @@ func TestLeagueClient_Get(t *testing.T) {
 			doer: mock.NewJSONMockDoer(LeagueList{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &LeagueList{},
-			doer: mock.NewRateLimitDoer(LeagueList{}),
-		},
-		{
-			name: "unavailable once",
-			want: &LeagueList{},
-			doer: mock.NewUnavailableOnceDoer(LeagueList{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {

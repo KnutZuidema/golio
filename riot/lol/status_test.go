@@ -28,32 +28,9 @@ func TestStatusClient_Get(t *testing.T) {
 			doer: mock.NewJSONMockDoer(Status{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &Status{},
-			doer: mock.NewRateLimitDoer(Status{}),
-		},
-		{
-			name: "unavailable once",
-			want: &Status{},
-			doer: mock.NewUnavailableOnceDoer(Status{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {

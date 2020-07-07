@@ -29,32 +29,9 @@ func TestMatchClient_List(t *testing.T) {
 			doer: mock.NewJSONMockDoer(Matchlist{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &Matchlist{},
-			doer: mock.NewRateLimitDoer(Matchlist{}),
-		},
-		{
-			name: "unavailable once",
-			want: &Matchlist{},
-			doer: mock.NewUnavailableOnceDoer(Matchlist{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -92,30 +69,9 @@ func TestMatchClient_ListStream(t *testing.T) {
 			},
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			doer: mock.NewRateLimitDoer(Matchlist{}),
-		},
-		{
-			name: "unavailable once",
-			doer: mock.NewUnavailableOnceDoer(Matchlist{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -149,32 +105,9 @@ func TestMatchClient_Get(t *testing.T) {
 			doer: mock.NewJSONMockDoer(Match{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &Match{},
-			doer: mock.NewRateLimitDoer(Match{}),
-		},
-		{
-			name: "unavailable once",
-			want: &Match{},
-			doer: mock.NewUnavailableOnceDoer(Match{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -203,32 +136,9 @@ func TestMatchClient_GetTimeline(t *testing.T) {
 			doer: mock.NewJSONMockDoer(MatchTimeline{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &MatchTimeline{},
-			doer: mock.NewRateLimitDoer(MatchTimeline{}),
-		},
-		{
-			name: "unavailable once",
-			want: &MatchTimeline{},
-			doer: mock.NewUnavailableOnceDoer(MatchTimeline{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -257,32 +167,9 @@ func TestMatchClient_ListIDsByTournamentCode(t *testing.T) {
 			doer: mock.NewJSONMockDoer([]int{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: []int{},
-			doer: mock.NewRateLimitDoer([]int{}),
-		},
-		{
-			name: "unavailable once",
-			want: []int{},
-			doer: mock.NewUnavailableOnceDoer([]int{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -311,32 +198,9 @@ func TestMatchClient_GetForTournament(t *testing.T) {
 			doer: mock.NewJSONMockDoer(Match{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &Match{},
-			doer: mock.NewRateLimitDoer(Match{}),
-		},
-		{
-			name: "unavailable once",
-			want: &Match{},
-			doer: mock.NewUnavailableOnceDoer(Match{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {

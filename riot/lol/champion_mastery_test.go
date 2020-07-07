@@ -28,32 +28,9 @@ func TestChampionMasteryClient_List(t *testing.T) {
 			doer: mock.NewJSONMockDoer([]*ChampionMastery{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: []*ChampionMastery{},
-			doer: mock.NewRateLimitDoer([]*ChampionMastery{}),
-		},
-		{
-			name: "unavailable once",
-			want: []*ChampionMastery{},
-			doer: mock.NewUnavailableOnceDoer([]*ChampionMastery{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -82,32 +59,9 @@ func TestChampionMasteryClient_Get(t *testing.T) {
 			doer: mock.NewJSONMockDoer(&ChampionMastery{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &ChampionMastery{},
-			doer: mock.NewRateLimitDoer(&ChampionMastery{}),
-		},
-		{
-			name: "unavailable once",
-			want: &ChampionMastery{},
-			doer: mock.NewUnavailableOnceDoer(&ChampionMastery{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
@@ -136,32 +90,9 @@ func TestChampionMasteryClient_GetTotal(t *testing.T) {
 			doer: mock.NewJSONMockDoer(1, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: 1,
-			doer: mock.NewRateLimitDoer(1),
-		},
-		{
-			name: "unavailable once",
-			want: 1,
-			doer: mock.NewUnavailableOnceDoer(1),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {

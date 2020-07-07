@@ -40,21 +40,6 @@ func TestRankedClient_GetMasters(t *testing.T) {
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
 		},
-		{
-			name: "rate limited",
-			want: []*Player{},
-			doer: mock.NewRateLimitDoer([]*Player{}),
-		},
-		{
-			name: "unavailable once",
-			want: []*Player{},
-			doer: mock.NewUnavailableOnceDoer([]*Player{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

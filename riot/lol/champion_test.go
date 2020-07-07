@@ -28,32 +28,9 @@ func TestChampionClient_GetFreeRotation(t *testing.T) {
 			doer: mock.NewJSONMockDoer(ChampionInfo{}, 200),
 		},
 		{
-			name: "unknown error status",
-			wantErr: api.Error{
-				Message:    "unknown error reason",
-				StatusCode: 999,
-			},
-			doer: mock.NewStatusMockDoer(999),
-		},
-		{
 			name:    "not found",
 			wantErr: api.ErrNotFound,
 			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
-		},
-		{
-			name: "rate limited",
-			want: &ChampionInfo{},
-			doer: mock.NewRateLimitDoer(ChampionInfo{}),
-		},
-		{
-			name: "unavailable once",
-			want: &ChampionInfo{},
-			doer: mock.NewUnavailableOnceDoer(ChampionInfo{}),
-		},
-		{
-			name:    "unavailable twice",
-			wantErr: api.ErrServiceUnavailable,
-			doer:    mock.NewStatusMockDoer(http.StatusServiceUnavailable),
 		},
 	}
 	for _, tt := range tests {
