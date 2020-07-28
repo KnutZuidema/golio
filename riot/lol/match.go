@@ -7,7 +7,7 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-	
+
 	"github.com/KnutZuidema/golio/internal"
 )
 
