@@ -2,11 +2,12 @@ package lol
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"io"
 	"strconv"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+	
 	"github.com/KnutZuidema/golio/internal"
 )
 
