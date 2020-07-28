@@ -40,11 +40,11 @@ func (mo *MatchListOptions) buildParam() string {
 			param += "&queue=" + strconv.Itoa(queue)
 		}
 	}
-	if mo.BeginTime.Unix() != -62135596800 {
-		param += "&beginTime=" + strconv.FormatInt(mo.BeginTime.UnixNano()/int64(time.Millisecond), 10)
+	if mo.BeginTime.IsZero() {
+		param += "&beginTime=" + strconv.Itoa(int(mo.BeginTime.UnixNano()/1000/1000))
 	}
-	if mo.EndTime.Unix() != -62135596800 {
-		param += "&endTime=" + strconv.FormatInt(mo.EndTime.UnixNano()/int64(time.Millisecond), 10)
+	if mo.EndTime.IsZero() {
+		param += "&endTime=" + strconv.Itoa(int(mo.EndTime.UnixNano()/1000/1000))
 	}
 	return param
 }
