@@ -5,6 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"io"
 	"strconv"
+	"time"
 
 	"github.com/KnutZuidema/golio/internal"
 )
@@ -14,31 +15,35 @@ type MatchClient struct {
 	c *internal.Client
 }
 
-// MatchListOptions
+// MatchListOptions providing additional options for List
 type MatchListOptions struct {
 	// Set of champion IDs for filtering the matchlist.
-	Champion int
+	Champion []int
 	// Set of queue IDs for filtering the matchlist.
-	Queue int
-	// The begin time to use for filtering matchlist specified as epoch milliseconds.
-	BeginTime int64
-	// The end time to use for filtering matchlist specified as epoch milliseconds.
-	EndTime int64
+	Queue []int
+	// The begin time to use for filtering matchlist
+	BeginTime time.Time
+	// The end time to use for filtering matchlist
+	EndTime time.Time
 }
 
 func (mo *MatchListOptions) buildParam() string {
 	var param string
-	if mo.Champion != 0 {
-		param += "&champion=" + strconv.Itoa(mo.Champion)
+	if len(mo.Champion) != 0 {
+		for _, champion := range mo.Champion {
+			param += "&champion=" + strconv.Itoa(champion)
+		}
 	}
-	if mo.Queue != 0 {
-		param += "&queue=" + strconv.Itoa(mo.Queue)
+	if len(mo.Queue) != 0 {
+		for _, queue := range mo.Queue {
+			param += "&queue=" + strconv.Itoa(queue)
+		}
 	}
-	if mo.BeginTime != 0 {
-		param += "&beginTime=" + strconv.FormatInt(mo.BeginTime, 10)
+	if mo.BeginTime.Unix() != -62135596800 {
+		param += "&beginTime=" + strconv.FormatInt(mo.BeginTime.UnixNano()/int64(time.Millisecond), 10)
 	}
-	if mo.EndTime != 0 {
-		param += "&endTime=" + strconv.FormatInt(mo.EndTime, 10)
+	if mo.EndTime.Unix() != -62135596800 {
+		param += "&endTime=" + strconv.FormatInt(mo.EndTime.UnixNano()/int64(time.Millisecond), 10)
 	}
 	return param
 }
