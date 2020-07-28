@@ -60,7 +60,8 @@ func (m *MatchClient) Get(id int) (*Match, error) {
 }
 
 // List returns a specified range of matches played on the account
-func (m *MatchClient) List(accountID string, beginIndex, endIndex int, options ...*MatchListOptions) (*Matchlist, error) {
+func (m *MatchClient) List(accountID string, beginIndex, endIndex int, options ...*MatchListOptions) (
+	*Matchlist, error) {
 	logger := m.logger().WithField("method", "List")
 	var matches *Matchlist
 	endpoint := fmt.Sprintf(endpointGetMatchesByAccount, accountID, beginIndex, endIndex)
