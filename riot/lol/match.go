@@ -40,10 +40,10 @@ func (mo *MatchListOptions) buildParam() string {
 			param += "&queue=" + strconv.Itoa(queue)
 		}
 	}
-	if mo.BeginTime.IsZero() {
+	if !mo.BeginTime.IsZero() {
 		param += "&beginTime=" + strconv.Itoa(int(mo.BeginTime.UnixNano()/1000/1000))
 	}
-	if mo.EndTime.IsZero() {
+	if !mo.EndTime.IsZero() {
 		param += "&endTime=" + strconv.Itoa(int(mo.EndTime.UnixNano()/1000/1000))
 	}
 	return param

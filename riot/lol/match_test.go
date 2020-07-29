@@ -41,8 +41,8 @@ func TestMatchClient_List(t *testing.T) {
 			got, err := (&MatchClient{c: client}).List("id", 0, 1, &MatchListOptions{
 				Champion:  []int{1},
 				Queue:     []int{200},
-				BeginTime: time.Time{},
-				EndTime:   time.Time{},
+				BeginTime: time.Now(),
+				EndTime:   time.Now(),
 			})
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
