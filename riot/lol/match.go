@@ -3,6 +3,8 @@ package lol
 import (
 	"fmt"
 	"io"
+	"strconv"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 
@@ -12,6 +14,39 @@ import (
 // MatchClient provides methods for the match endpoints of the League of Legends API.
 type MatchClient struct {
 	c *internal.Client
+}
+
+// MatchListOptions providing additional options for List
+type MatchListOptions struct {
+	// Set of champion IDs for filtering the matchlist.
+	Champion []int
+	// Set of queue IDs for filtering the matchlist.
+	Queue []int
+	// The begin time to use for filtering matchlist
+	BeginTime time.Time
+	// The end time to use for filtering matchlist
+	EndTime time.Time
+}
+
+func (mo *MatchListOptions) buildParam() string {
+	var param string
+	if len(mo.Champion) != 0 {
+		for _, champion := range mo.Champion {
+			param += "&champion=" + strconv.Itoa(champion)
+		}
+	}
+	if len(mo.Queue) != 0 {
+		for _, queue := range mo.Queue {
+			param += "&queue=" + strconv.Itoa(queue)
+		}
+	}
+	if !mo.BeginTime.IsZero() {
+		param += "&beginTime=" + strconv.Itoa(int(mo.BeginTime.UnixNano()/1000/1000))
+	}
+	if !mo.EndTime.IsZero() {
+		param += "&endTime=" + strconv.Itoa(int(mo.EndTime.UnixNano()/1000/1000))
+	}
+	return param
 }
 
 // Get returns a match specified by its ID
@@ -26,13 +61,15 @@ func (m *MatchClient) Get(id int) (*Match, error) {
 }
 
 // List returns a specified range of matches played on the account
-func (m *MatchClient) List(accountID string, beginIndex, endIndex int) (*Matchlist, error) {
+func (m *MatchClient) List(accountID string, beginIndex, endIndex int, options ...*MatchListOptions) (
+	*Matchlist, error) {
 	logger := m.logger().WithField("method", "List")
 	var matches *Matchlist
-	if err := m.c.GetInto(
-		fmt.Sprintf(endpointGetMatchesByAccount, accountID, beginIndex, endIndex),
-		&matches,
-	); err != nil {
+	endpoint := fmt.Sprintf(endpointGetMatchesByAccount, accountID, beginIndex, endIndex)
+	if len(options) != 0 {
+		endpoint += options[0].buildParam()
+	}
+	if err := m.c.GetInto(endpoint, &matches); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
