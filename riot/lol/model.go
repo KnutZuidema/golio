@@ -812,7 +812,7 @@ type TournamentCodeParameters struct {
 	// Optional list of encrypted summonerIds in order to validate the players eligible to join the lobby.
 	// NOTE: We currently do not enforce participants at the team level, but rather the aggregate of teamOne and
 	// teamTwo. We may add the ability to enforce at the team level in the future.
-	AllowedSummonerIDs []string `json:"allowedSummonerIds"`
+	AllowedSummonerIDs []string `json:"allowedSummonerIds,omitempty"`
 	// The map type of the game. (Legal values: SUMMONERS_RIFT, TWISTED_TREELINE, HOWLING_ABYSS)
 	MapType string `json:"mapType"`
 	// Optional string that may contain any data in any format, if specified at all. Used to denote any custom
