@@ -531,7 +531,7 @@ func (r *MatchReference) GetGame(client *Client) (*Match, error) {
 // MatchTimeline contains timeline frames for a match
 type MatchTimeline struct {
 	Frames   []*MatchFrame `json:"frames"`
-	Interval int           `json:"interval"`
+	Interval int           `json:"frameInterval"`
 }
 
 // MatchFrame is a single frame in the timeline of a game
