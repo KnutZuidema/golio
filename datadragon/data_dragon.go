@@ -47,7 +47,7 @@ type Client struct {
 	Language           languageCode
 	client             internal.Doer
 	championsMu        sync.RWMutex
-	championsByName    map[string]ChampionDataExtended
+	championsByID      map[string]ChampionDataExtended
 	getChampionsToggle uint32
 	profileIconsMu     sync.RWMutex
 	profileIcons       []ProfileIcon
@@ -64,9 +64,9 @@ type Client struct {
 // NewClient returns a new client for the Data Dragon service.
 func NewClient(client internal.Doer, region api.Region, logger log.FieldLogger) *Client {
 	c := &Client{
-		client:          client,
-		logger:          logger.WithField("client", "data dragon"),
-		championsByName: map[string]ChampionDataExtended{},
+		client:        client,
+		logger:        logger.WithField("client", "data dragon"),
+		championsByID: map[string]ChampionDataExtended{},
 	}
 	if err := c.init(regionToRealmRegion[region]); err != nil {
 		c.Version = fallbackVersion
@@ -107,11 +107,11 @@ func (c *Client) GetChampions() ([]ChampionData, error) {
 		}
 		for _, champion := range champions {
 			data := ChampionDataExtended{ChampionData: champion}
-			c.championsByName[champion.Name] = data
+			c.championsByID[champion.ID] = data
 		}
 	}
-	res := make([]ChampionData, 0, len(c.championsByName))
-	for _, champion := range c.championsByName {
+	res := make([]ChampionData, 0, len(c.championsByID))
+	for _, champion := range c.championsByID {
 		res = append(res, champion.ChampionData)
 	}
 	return res, nil
@@ -119,36 +119,36 @@ func (c *Client) GetChampions() ([]ChampionData, error) {
 
 // GetChampionByID returns information about the champion with the given id
 func (c *Client) GetChampionByID(id string) (ChampionDataExtended, error) {
+	unlock, toggle := internal.RWLockToggle(&c.championsMu)
+	defer unlock()
+	champion, ok := c.championsByID[id]
+	if !ok || champion.Lore == "" {
+		toggle()
+		var data map[string]ChampionDataExtended
+		if err := c.getInto(fmt.Sprintf("/champion/%s.json", id), &data); err != nil {
+			return ChampionDataExtended{}, err
+		}
+		champion, ok = data[id]
+		if !ok {
+			return ChampionDataExtended{}, api.ErrNotFound
+		}
+		c.championsByID[id] = champion
+	}
+	return champion, nil
+}
+
+// GetChampion returns information about the champion with the given name
+func (c *Client) GetChampion(name string) (ChampionDataExtended, error) {
 	champions, err := c.GetChampions()
 	if err != nil {
 		return ChampionDataExtended{}, err
 	}
 	for _, champion := range champions {
-		if champion.ID == id {
-			return c.GetChampion(champion.Name)
+		if champion.Name == name {
+			return c.GetChampionByID(champion.ID)
 		}
 	}
 	return ChampionDataExtended{}, api.ErrNotFound
-}
-
-// GetChampion returns information about the champion with the given name
-func (c *Client) GetChampion(name string) (ChampionDataExtended, error) {
-	unlock, toggle := internal.RWLockToggle(&c.championsMu)
-	defer unlock()
-	champion, ok := c.championsByName[name]
-	if !ok || champion.Lore == "" {
-		toggle()
-		var data map[string]ChampionDataExtended
-		if err := c.getInto(fmt.Sprintf("/champion/%s.json", name), &data); err != nil {
-			return ChampionDataExtended{}, err
-		}
-		champion, ok = data[name]
-		if !ok {
-			return ChampionDataExtended{}, api.ErrNotFound
-		}
-		c.championsByName[name] = champion
-	}
-	return champion, nil
 }
 
 // GetProfileIcons returns all existing profile icons
@@ -328,7 +328,7 @@ func (c *Client) GetSummonerSpell(id string) (SummonerSpell, error) {
 // ClearCaches resets all caches of the data dragon client
 func (c *Client) ClearCaches() {
 	c.championsMu.Lock()
-	c.championsByName = map[string]ChampionDataExtended{}
+	c.championsByID = map[string]ChampionDataExtended{}
 	atomic.StoreUint32(&c.getChampionsToggle, 0)
 	c.championsMu.Unlock()
 	c.masteriesMu.Lock()

@@ -75,9 +75,9 @@ func TestClient_GetChampion(t *testing.T) {
 		{
 			name: "get response",
 			doer: dataDragonResponseDoer(map[string]ChampionDataExtended{
-				"champion": {},
+				"champion": {ChampionData: ChampionData{Name: "champion", ID: "champion"}},
 			}),
-			want: ChampionDataExtended{},
+			want: ChampionDataExtended{ChampionData: ChampionData{Name: "champion", ID: "champion"}},
 		},
 		{
 			name:    "not found",
@@ -350,11 +350,11 @@ func TestClient_GetChampionByID(t *testing.T) {
 	tests := []test{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(map[string]ChampionData{
-				"champion": {Name: "champion", ID: "id"},
+			doer: dataDragonResponseDoer(map[string]ChampionDataExtended{
+				"champion": {ChampionData: ChampionData{Name: "champion", ID: "champion"}},
 			}),
-			id:   "id",
-			want: ChampionDataExtended{ChampionData: ChampionData{Name: "champion", ID: "id"}},
+			id:   "champion",
+			want: ChampionDataExtended{ChampionData: ChampionData{Name: "champion", ID: "champion"}},
 		},
 		{
 			name:    "not found",
