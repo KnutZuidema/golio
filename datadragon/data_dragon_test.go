@@ -351,10 +351,10 @@ func TestClient_GetChampionByID(t *testing.T) {
 		{
 			name: "get response",
 			doer: dataDragonResponseDoer(map[string]ChampionData{
-				"champion": {Name: "champion", ID: "id"},
+				"champion": {Name: "champion", Key: "id"},
 			}),
 			id:   "id",
-			want: ChampionDataExtended{ChampionData: ChampionData{Name: "champion", ID: "id"}},
+			want: ChampionDataExtended{ChampionData: ChampionData{Name: "champion", Key: "id"}},
 		},
 		{
 			name:    "not found",
@@ -556,10 +556,10 @@ func TestClient_GetSummonerSpell(t *testing.T) {
 		{
 			name: "get response",
 			doer: dataDragonResponseDoer(map[string]SummonerSpell{
-				"id": {ID: "id"},
+				"id": {Key: "id"},
 			}),
 			id:   "id",
-			want: SummonerSpell{ID: "id"},
+			want: SummonerSpell{Key: "id"},
 		},
 		{
 			name:    "not found",
@@ -643,7 +643,7 @@ func TestClient_init(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewClient(tt.doer, api.RegionOceania, log.StandardLogger())
-			if err := c.init(api.RegionOceania); (err != nil) != tt.wantErr {
+			if err := c.init(string(api.RegionOceania)); (err != nil) != tt.wantErr {
 				t.Errorf("Client.init() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

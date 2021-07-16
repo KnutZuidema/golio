@@ -1,5 +1,10 @@
 package datadragon
 
+import (
+	"strconv"
+	"strings"
+)
+
 // ChampionData contains information about a champion
 type ChampionData struct {
 	Version string            `json:"version"`
@@ -272,8 +277,18 @@ type Mastery struct {
 
 // ProfileIcon represents a profile icon
 type ProfileIcon struct {
-	ID    int       `json:"id"`
+	ID    Integer   `json:"id"`
 	Image ImageData `json:"image"`
+}
+
+// Integer is an int that can be unmarshalled from a json number OR string
+type Integer int
+
+func (i *Integer) UnmarshalJSON(in []byte) error {
+	val := strings.Trim(string(in), "\"")
+	num, err := strconv.Atoi(val)
+	*i = Integer(num)
+	return err
 }
 
 // SummonerSpell represents a summoner spell

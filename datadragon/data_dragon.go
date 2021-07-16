@@ -124,7 +124,7 @@ func (c *Client) GetChampionByID(id string) (ChampionDataExtended, error) {
 		return ChampionDataExtended{}, err
 	}
 	for _, champion := range champions {
-		if champion.ID == id {
+		if champion.Key == id {
 			return c.GetChampion(champion.Name)
 		}
 	}
@@ -178,7 +178,7 @@ func (c *Client) GetProfileIcon(id int) (ProfileIcon, error) {
 		return ProfileIcon{}, err
 	}
 	for _, icon := range icons {
-		if icon.ID == id {
+		if int(icon.ID) == id {
 			return icon, nil
 		}
 	}
@@ -318,7 +318,7 @@ func (c *Client) GetSummonerSpell(id string) (SummonerSpell, error) {
 		return SummonerSpell{}, err
 	}
 	for _, summonerSpell := range summonerSpells {
-		if summonerSpell.ID == id {
+		if summonerSpell.Key == id {
 			return summonerSpell, nil
 		}
 	}
