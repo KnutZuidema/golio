@@ -28,7 +28,7 @@ func (mo *MatchListOptions) buildParam() string {
 	if mo.Queue != nil {
 		param += "&queue=" + strconv.Itoa(*mo.Queue)
 	}
-	if len(mo.Type) > 0 {
+	if mo.Type != "" {
 		param += "&type=" + mo.Type
 	}
 	return param
@@ -77,6 +77,16 @@ func (m *MatchClient) ListStream(puuid string, options ...*MatchListOptions) <-c
 	logger := m.logger().WithField("method", "ListStream")
 	cMatches := make(chan MatchStreamValue, 100)
 
+	// Copy the input options to prevent caller modification while streaming
+	opts := make([]*MatchListOptions, 0)
+	for _, o := range options {
+		// Copy the value in case the caller modifies it after we return
+		queue := *options[0].Queue
+		// Shallow copy the other values
+		newOpt := *o
+		newOpt.Queue = &queue
+		opts = append(opts, &newOpt)
+	}
 	if len(options) != 0 && options[0].Queue != nil {
 		// Copy the value in case the caller modifies it after we return
 		queue := *options[0].Queue
@@ -86,7 +96,7 @@ func (m *MatchClient) ListStream(puuid string, options ...*MatchListOptions) <-c
 		defer close(cMatches)
 		start := 0
 		for {
-			matches, err := m.List(puuid, start, 100, options...)
+			matches, err := m.List(puuid, start, 100, opts...)
 			if err != nil {
 				logger.Debug(err)
 				cMatches <- MatchStreamValue{Error: err}
