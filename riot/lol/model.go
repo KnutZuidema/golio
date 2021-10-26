@@ -120,33 +120,47 @@ type MiniSeries struct {
 
 // Match contains information about a match
 type Match struct {
+	// Match metadata
 	Metadata *MatchMetadata `json:"metadata"`
-	Info     *MatchInfo     `json:"info"`
+	// Match info
+	Info *MatchInfo `json:"info"`
 }
 
 // MatchMetadata contains metadata for a specific match
 type MatchMetadata struct {
+	// Match data version
 	DataVersion string `json:"dataVersion"`
-	MatchID     string `json:"matchId"`
-	// List of PUUIDS
+	// Match ID
+	MatchID string `json:"matchId"`
+	// List of participant PUUIDs
 	Participants []string `json:"participants"`
 }
 
 // MatchInfo contains the data for a specific match
 type MatchInfo struct {
-	// Designates the timestamp when champion select ended and the loading screen appeared, NOT when the game timer was
-	// at 0:00.
+	// Unix timestamp for when the game is created on the game server (i.e., the loading screen).
 	GameCreation int64 `json:"gameCreation"`
-	// Match duration in seconds.
-	GameDuration int   `json:"gameDuration"`
-	GameID       int64 `json:"gameId"`
+	// Prior to patch 11.20, this field returns the game length in milliseconds calculated
+	// from gameEndTimestamp - gameStartTimestamp. Post patch 11.20, this field returns the max
+	// timePlayed of any participant in the game in seconds, which makes the behavior of this
+	// field consistent with that of match-v4. The best way to handling the change in this field
+	// is to treat the value as milliseconds if the gameEndTimestamp field isn't in the response
+	// and to treat the value as seconds if gameEndTimestamp is in the response.
+	GameDuration int `json:"gameDuration"`
+	// Unix timestamp for when match ends on the game server. This timestamp can occasionally
+	// be significantly longer than when the match "ends". The most reliable way of determining
+	// the timestamp for the end of the match would be to add the max time played of any
+	// participant to the gameStartTimestamp. This field was added to match-v5 in patch 11.20 on Oct 5th, 2021.
+	GameEndTimestamp int64 `json:"gameEndTimestamp"`
+	GameID           int64 `json:"gameId"`
 	// Please refer to the Game Constants documentation.
-	GameMode           string `json:"gameMode"`
-	GameName           string `json:"gameName"`
-	GameStartTimestamp int64  `json:"gameStartTimestamp"`
+	GameMode string `json:"gameMode"`
+	GameName string `json:"gameName"`
+	// Unix timestamp for when match starts on the game server.
+	GameStartTimestamp int64 `json:"gameStartTimestamp"`
 	// Please refer to the Game Constants documentation.
 	GameType string `json:"gameType"`
-	// The major.minor version typically indicates the patch the match was played on.
+	// The first two parts can be used to determine the patch a game was played on.
 	GameVersion string `json:"gameVersion"`
 	// Please refer to the Game Constants documentation.
 	MapID int `json:"mapId"`
@@ -157,8 +171,9 @@ type MatchInfo struct {
 	// Please refer to the Game Constants documentation.
 	QueueID int `json:"queueId"`
 	// Team information.
-	Teams          []*Team `json:"teams"`
-	TournamentCode string  `json:"tournamentCode"`
+	Teams []*Team `json:"teams"`
+	// Tournament code used to generate the match. This field was added to match-v5 in patch 11.13 on June 23rd, 2021.
+	TournamentCode string `json:"tournamentCode"`
 }
 
 // GetQueue returns the queue this match was played in
@@ -181,53 +196,70 @@ func (m *MatchInfo) GetGameMode(client *static.Client) (static.GameMode, error) 
 	return client.GetGameMode(m.GameMode)
 }
 
+// StatPerks hold stats for a perk
 type StatPerks struct {
 	Defense int `json:"defense"`
 	Flex    int `json:"flex"`
 	Offense int `json:"offense"`
 }
+
+// Selections contains information about perk selections
 type Selections struct {
 	Perk int `json:"perk"`
 	Var1 int `json:"var1"`
 	Var2 int `json:"var2"`
 	Var3 int `json:"var3"`
 }
+
+// Styles holds perk style information
 type Styles struct {
 	Description string       `json:"description"`
 	Selections  []Selections `json:"selections"`
 	Style       int          `json:"style"`
 }
+
+// ParticipantPerks holds the perks for a participant in a match
 type ParticipantPerks struct {
 	StatPerks *StatPerks `json:"statPerks"`
 	Styles    []Styles   `json:"styles"`
 }
 
+// Participant hold information for a participant of a match
 type Participant struct {
-	Assists                        int               `json:"assists"`
-	BaronKills                     int               `json:"baronKills"`
-	BountyLevel                    int               `json:"bountyLevel"`
-	ChampExperience                int               `json:"champExperience"`
-	ChampLevel                     int               `json:"champLevel"`
-	ChampionID                     int               `json:"championId"`
-	ChampionName                   string            `json:"championName"`
-	ChampionTransform              int               `json:"championTransform"`
-	ConsumablesPurchased           int               `json:"consumablesPurchased"`
-	DamageDealtToBuildings         int               `json:"damageDealtToBuildings"`
-	DamageDealtToObjectives        int               `json:"damageDealtToObjectives"`
-	DamageDealtToTurrets           int               `json:"damageDealtToTurrets"`
-	DamageSelfMitigated            int               `json:"damageSelfMitigated"`
-	Deaths                         int               `json:"deaths"`
-	DetectorWardsPlaced            int               `json:"detectorWardsPlaced"`
-	DoubleKills                    int               `json:"doubleKills"`
-	DragonKills                    int               `json:"dragonKills"`
-	FirstBloodAssist               bool              `json:"firstBloodAssist"`
-	FirstBloodKill                 bool              `json:"firstBloodKill"`
-	FirstTowerAssist               bool              `json:"firstTowerAssist"`
-	FirstTowerKill                 bool              `json:"firstTowerKill"`
-	GameEndedInEarlySurrender      bool              `json:"gameEndedInEarlySurrender"`
-	GameEndedInSurrender           bool              `json:"gameEndedInSurrender"`
-	GoldEarned                     int               `json:"goldEarned"`
-	GoldSpent                      int               `json:"goldSpent"`
+	Assists         int `json:"assists"`
+	BaronKills      int `json:"baronKills"`
+	BountyLevel     int `json:"bountyLevel"`
+	ChampExperience int `json:"champExperience"`
+	ChampLevel      int `json:"champLevel"`
+	// Prior to patch 11.4, on Feb 18th, 2021, this field returned invalid championIds.
+	// We recommend determining the champion based on the championName field for matches played prior to patch 11.4.
+	ChampionID   int    `json:"championId"`
+	ChampionName string `json:"championName"`
+	// This field is currently only utilized for Kayn's transformations. (Legal values: 0 - None, 1 - Slayer, 2 - Assassin)
+	ChampionTransform         int  `json:"championTransform"`
+	ConsumablesPurchased      int  `json:"consumablesPurchased"`
+	DamageDealtToBuildings    int  `json:"damageDealtToBuildings"`
+	DamageDealtToObjectives   int  `json:"damageDealtToObjectives"`
+	DamageDealtToTurrets      int  `json:"damageDealtToTurrets"`
+	DamageSelfMitigated       int  `json:"damageSelfMitigated"`
+	Deaths                    int  `json:"deaths"`
+	DetectorWardsPlaced       int  `json:"detectorWardsPlaced"`
+	DoubleKills               int  `json:"doubleKills"`
+	DragonKills               int  `json:"dragonKills"`
+	FirstBloodAssist          bool `json:"firstBloodAssist"`
+	FirstBloodKill            bool `json:"firstBloodKill"`
+	FirstTowerAssist          bool `json:"firstTowerAssist"`
+	FirstTowerKill            bool `json:"firstTowerKill"`
+	GameEndedInEarlySurrender bool `json:"gameEndedInEarlySurrender"`
+	GameEndedInSurrender      bool `json:"gameEndedInSurrender"`
+	GoldEarned                int  `json:"goldEarned"`
+	GoldSpent                 int  `json:"goldSpent"`
+	// Both individualPosition and teamPosition are computed by the game server and are
+	// different versions of the most likely position played by a player. The individualPosition
+	// is the best guess for which position the player actually played in isolation of
+	// anything else. The teamPosition is the best guess for which position the player
+	// actually played if we add the constraint that each team must have one top player, one
+	// jungle, one middle, etc. Generally the recommendation is to use the teamPosition field over the individualPosition field.
 	IndividualPosition             string            `json:"individualPosition"`
 	InhibitorKills                 int               `json:"inhibitorKills"`
 	InhibitorTakedowns             int               `json:"inhibitorTakedowns"`
@@ -282,32 +314,38 @@ type Participant struct {
 	SummonerName                   string            `json:"summonerName"`
 	TeamEarlySurrendered           bool              `json:"teamEarlySurrendered"`
 	TeamID                         int               `json:"teamId"`
-	TeamPosition                   string            `json:"teamPosition"`
-	TimeCCingOthers                int               `json:"timeCCingOthers"`
-	TimePlayed                     int               `json:"timePlayed"`
-	TotalDamageDealt               int               `json:"totalDamageDealt"`
-	TotalDamageDealtToChampions    int               `json:"totalDamageDealtToChampions"`
-	TotalDamageShieldedOnTeammates int               `json:"totalDamageShieldedOnTeammates"`
-	TotalDamageTaken               int               `json:"totalDamageTaken"`
-	TotalHeal                      int               `json:"totalHeal"`
-	TotalHealsOnTeammates          int               `json:"totalHealsOnTeammates"`
-	TotalMinionsKilled             int               `json:"totalMinionsKilled"`
-	TotalTimeCCDealt               int               `json:"totalTimeCCDealt"`
-	TotalTimeSpentDead             int               `json:"totalTimeSpentDead"`
-	TotalUnitsHealed               int               `json:"totalUnitsHealed"`
-	TripleKills                    int               `json:"tripleKills"`
-	TrueDamageDealt                int               `json:"trueDamageDealt"`
-	TrueDamageDealtToChampions     int               `json:"trueDamageDealtToChampions"`
-	TrueDamageTaken                int               `json:"trueDamageTaken"`
-	TurretKills                    int               `json:"turretKills"`
-	TurretTakedowns                int               `json:"turretTakedowns"`
-	TurretsLost                    int               `json:"turretsLost"`
-	UnrealKills                    int               `json:"unrealKills"`
-	VisionScore                    int               `json:"visionScore"`
-	VisionWardsBoughtInGame        int               `json:"visionWardsBoughtInGame"`
-	WardsKilled                    int               `json:"wardsKilled"`
-	WardsPlaced                    int               `json:"wardsPlaced"`
-	Win                            bool              `json:"win"`
+	// Both individualPosition and teamPosition are computed by the game server and are
+	// different versions of the most likely position played by a player. The individualPosition
+	// is the best guess for which position the player actually played in isolation of
+	// anything else. The teamPosition is the best guess for which position the player
+	// actually played if we add the constraint that each team must have one top player, one
+	// jungle, one middle, etc. Generally the recommendation is to use the teamPosition field over the individualPosition field.
+	TeamPosition                   string `json:"teamPosition"`
+	TimeCCingOthers                int    `json:"timeCCingOthers"`
+	TimePlayed                     int    `json:"timePlayed"`
+	TotalDamageDealt               int    `json:"totalDamageDealt"`
+	TotalDamageDealtToChampions    int    `json:"totalDamageDealtToChampions"`
+	TotalDamageShieldedOnTeammates int    `json:"totalDamageShieldedOnTeammates"`
+	TotalDamageTaken               int    `json:"totalDamageTaken"`
+	TotalHeal                      int    `json:"totalHeal"`
+	TotalHealsOnTeammates          int    `json:"totalHealsOnTeammates"`
+	TotalMinionsKilled             int    `json:"totalMinionsKilled"`
+	TotalTimeCCDealt               int    `json:"totalTimeCCDealt"`
+	TotalTimeSpentDead             int    `json:"totalTimeSpentDead"`
+	TotalUnitsHealed               int    `json:"totalUnitsHealed"`
+	TripleKills                    int    `json:"tripleKills"`
+	TrueDamageDealt                int    `json:"trueDamageDealt"`
+	TrueDamageDealtToChampions     int    `json:"trueDamageDealtToChampions"`
+	TrueDamageTaken                int    `json:"trueDamageTaken"`
+	TurretKills                    int    `json:"turretKills"`
+	TurretTakedowns                int    `json:"turretTakedowns"`
+	TurretsLost                    int    `json:"turretsLost"`
+	UnrealKills                    int    `json:"unrealKills"`
+	VisionScore                    int    `json:"visionScore"`
+	VisionWardsBoughtInGame        int    `json:"visionWardsBoughtInGame"`
+	WardsKilled                    int    `json:"wardsKilled"`
+	WardsPlaced                    int    `json:"wardsPlaced"`
+	Win                            bool   `json:"win"`
 }
 
 // GetSummoner returns the summoner info for this player
@@ -383,38 +421,23 @@ func (b *TeamBan) GetChampion(client *datadragon.Client) (datadragon.ChampionDat
 	return client.GetChampionByID(strconv.Itoa(b.ChampionID))
 }
 
-type Baron struct {
+// Objective holds information for a single objective
+type Objective struct {
 	First bool `json:"first"`
 	Kills int  `json:"kills"`
 }
-type Champion struct {
-	First bool `json:"first"`
-	Kills int  `json:"kills"`
-}
-type Dragon struct {
-	First bool `json:"first"`
-	Kills int  `json:"kills"`
-}
-type Inhibitor struct {
-	First bool `json:"first"`
-	Kills int  `json:"kills"`
-}
-type RiftHerald struct {
-	First bool `json:"first"`
-	Kills int  `json:"kills"`
-}
-type Tower struct {
-	First bool `json:"first"`
-	Kills int  `json:"kills"`
-}
+
+// Objectives holds info for a teeam's objeectives
 type Objectives struct {
-	Baron      Baron      `json:"baron"`
-	Champion   Champion   `json:"champion"`
-	Dragon     Dragon     `json:"dragon"`
-	Inhibitor  Inhibitor  `json:"inhibitor"`
-	RiftHerald RiftHerald `json:"riftHerald"`
-	Tower      Tower      `json:"tower"`
+	Baron      Objective `json:"baron"`
+	Champion   Objective `json:"champion"`
+	Dragon     Objective `json:"dragon"`
+	Inhibitor  Objective `json:"inhibitor"`
+	RiftHerald Objective `json:"riftHerald"`
+	Tower      Objective `json:"tower"`
 }
+
+// Team holds information for a team in a match
 type Team struct {
 	Bans       []*TeamBan `json:"bans"`
 	Objectives Objectives `json:"objectives"`

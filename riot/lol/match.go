@@ -2,7 +2,7 @@ package lol
 
 import (
 	"fmt"
-	"strconv"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 
@@ -17,19 +17,31 @@ type MatchClient struct {
 
 // MatchListOptions providing additional options for List
 type MatchListOptions struct {
-	// The queue ID for filtering the matchlist.
+	// Filter the list of match ids by a specific queue id. This filter is mutually inclusive
+	// of the type filter meaning any match ids returned must match both the queue and type filters.
 	Queue *int
-	// The game type for filtering the matchlist (see static.GameType.Type).
+	// Filter the list of match ids by the type of match. This filter is mutually inclusive of
+	// the queue filter meaning any match ids returned must match both the queue and type filters. (see static.GameType.Type).
 	Type string
+
+	// Filter the list of matches by start and/or end time. The matchlist started storing timestamps
+	// on June 16th, 2021. Any matches played before June 16th, 2021 won't be included in the results if the StartTime filter is set.
+	StartTime, EndTime time.Time
 }
 
 func (mo *MatchListOptions) buildParam() string {
 	var param string
 	if mo.Queue != nil {
-		param += "&queue=" + strconv.Itoa(*mo.Queue)
+		param += "&queue=" + fmt.Sprint(*mo.Queue)
 	}
 	if mo.Type != "" {
 		param += "&type=" + mo.Type
+	}
+	if !mo.StartTime.IsZero() {
+		param += "&startTime=" + fmt.Sprint(mo.StartTime.Unix())
+	}
+	if !mo.EndTime.IsZero() {
+		param += "&endTime=" + fmt.Sprint(mo.EndTime.Unix())
 	}
 	return param
 }
@@ -47,7 +59,7 @@ func (m *MatchClient) Get(id string) (*Match, error) {
 	return match, nil
 }
 
-// List returns a specified list of match IDs played on the account
+// List returns  a list of match ids by puuid
 func (m *MatchClient) List(puuid string, start, count int, options ...*MatchListOptions) (
 	[]string, error) {
 	logger := m.logger().WithField("method", "List")
