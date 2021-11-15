@@ -235,7 +235,8 @@ type Participant struct {
 	// We recommend determining the champion based on the championName field for matches played prior to patch 11.4.
 	ChampionID   int    `json:"championId"`
 	ChampionName string `json:"championName"`
-	// This field is currently only utilized for Kayn's transformations. (Legal values: 0 - None, 1 - Slayer, 2 - Assassin)
+	// This field is currently only utilized for Kayn's transformations.
+	// (Legal values: 0 - None, 1 - Slayer, 2 - Assassin)
 	ChampionTransform         int  `json:"championTransform"`
 	ConsumablesPurchased      int  `json:"consumablesPurchased"`
 	DamageDealtToBuildings    int  `json:"damageDealtToBuildings"`
@@ -259,7 +260,8 @@ type Participant struct {
 	// is the best guess for which position the player actually played in isolation of
 	// anything else. The teamPosition is the best guess for which position the player
 	// actually played if we add the constraint that each team must have one top player, one
-	// jungle, one middle, etc. Generally the recommendation is to use the teamPosition field over the individualPosition field.
+	// jungle, one middle, etc. Generally the recommendation is to use the teamPosition field
+	// over the individualPosition field.
 	IndividualPosition             string            `json:"individualPosition"`
 	InhibitorKills                 int               `json:"inhibitorKills"`
 	InhibitorTakedowns             int               `json:"inhibitorTakedowns"`
@@ -319,7 +321,8 @@ type Participant struct {
 	// is the best guess for which position the player actually played in isolation of
 	// anything else. The teamPosition is the best guess for which position the player
 	// actually played if we add the constraint that each team must have one top player, one
-	// jungle, one middle, etc. Generally the recommendation is to use the teamPosition field over the individualPosition field.
+	// jungle, one middle, etc. Generally the recommendation is to use the teamPosition field
+	// over the individualPosition field.
 	TeamPosition                   string `json:"teamPosition"`
 	TimeCCingOthers                int    `json:"timeCCingOthers"`
 	TimePlayed                     int    `json:"timePlayed"`
@@ -374,38 +377,38 @@ func (p *Participant) GetSpell2(client *datadragon.Client) (datadragon.SummonerS
 }
 
 // GetItem0 returns the item in slot 0
-func (s *Participant) GetItem0(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(s.Item0))
+func (p *Participant) GetItem0(client *datadragon.Client) (datadragon.Item, error) {
+	return client.GetItem(strconv.Itoa(p.Item0))
 }
 
 // GetItem1 returns the item in slot 1
-func (s *Participant) GetItem1(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(s.Item1))
+func (p *Participant) GetItem1(client *datadragon.Client) (datadragon.Item, error) {
+	return client.GetItem(strconv.Itoa(p.Item1))
 }
 
 // GetItem2 returns the item in slot 2
-func (s *Participant) GetItem2(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(s.Item2))
+func (p *Participant) GetItem2(client *datadragon.Client) (datadragon.Item, error) {
+	return client.GetItem(strconv.Itoa(p.Item2))
 }
 
 // GetItem3 returns the item in slot 3
-func (s *Participant) GetItem3(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(s.Item3))
+func (p *Participant) GetItem3(client *datadragon.Client) (datadragon.Item, error) {
+	return client.GetItem(strconv.Itoa(p.Item3))
 }
 
 // GetItem4 returns the item in slot 4
-func (s *Participant) GetItem4(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(s.Item4))
+func (p *Participant) GetItem4(client *datadragon.Client) (datadragon.Item, error) {
+	return client.GetItem(strconv.Itoa(p.Item4))
 }
 
 // GetItem5 returns the item in slot 5
-func (s *Participant) GetItem5(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(s.Item5))
+func (p *Participant) GetItem5(client *datadragon.Client) (datadragon.Item, error) {
+	return client.GetItem(strconv.Itoa(p.Item5))
 }
 
 // GetItem6 returns the item in slot 6
-func (s *Participant) GetItem6(client *datadragon.Client) (datadragon.Item, error) {
-	return client.GetItem(strconv.Itoa(s.Item6))
+func (p *Participant) GetItem6(client *datadragon.Client) (datadragon.Item, error) {
+	return client.GetItem(strconv.Itoa(p.Item6))
 }
 
 // TeamBan is a champion banned by a team

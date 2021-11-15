@@ -284,6 +284,7 @@ type ProfileIcon struct {
 // Integer is an int that can be unmarshalled from a json number OR string
 type Integer int
 
+// UnmarshalJSON unmarshals a JSON string or number into i
 func (i *Integer) UnmarshalJSON(in []byte) error {
 	val := strings.Trim(string(in), "\"")
 	num, err := strconv.Atoi(val)

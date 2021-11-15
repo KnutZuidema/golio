@@ -21,11 +21,13 @@ type MatchListOptions struct {
 	// of the type filter meaning any match ids returned must match both the queue and type filters.
 	Queue *int
 	// Filter the list of match ids by the type of match. This filter is mutually inclusive of
-	// the queue filter meaning any match ids returned must match both the queue and type filters. (see static.GameType.Type).
+	// the queue filter meaning any match ids returned must match both the queue and type
+	// filters. (see static.GameType.Type).
 	Type string
 
 	// Filter the list of matches by start and/or end time. The matchlist started storing timestamps
-	// on June 16th, 2021. Any matches played before June 16th, 2021 won't be included in the results if the StartTime filter is set.
+	// on June 16th, 2021. Any matches played before June 16th, 2021 won't be included in the results
+	// if the StartTime filter is set.
 	StartTime, EndTime time.Time
 }
 

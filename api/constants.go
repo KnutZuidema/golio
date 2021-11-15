@@ -19,6 +19,7 @@ const (
 	RegionPBE               Region = "pbe1"
 )
 
+// Route represents a server region's route
 type Route string
 
 // All existing routes
@@ -45,6 +46,7 @@ var (
 		RegionPBE,
 	}
 
+	// RegionToRoute maps each region to its route
 	RegionToRoute = map[Region]Route{
 		RegionBrasil:            RouteAmericas,
 		RegionEuropeNorthEast:   RouteEurope,
