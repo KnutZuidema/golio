@@ -59,15 +59,15 @@ func TestChampionInfo_GetChampionsForNewPlayers(t *testing.T) {
 		{
 			name: "valid",
 			doer: dataDragonResponseDoer(map[string]datadragon.ChampionData{
-				"champion1": {ID: "1", Name: "champion1"},
-				"champion2": {ID: "2", Name: "champion2"},
+				"champion1": {Key: "1", Name: "champion1"},
+				"champion2": {Key: "2", Name: "champion2"},
 			}),
 			model: ChampionInfo{
 				FreeChampionIDsForNewPlayers: []int{1, 2},
 			},
 			want: []datadragon.ChampionDataExtended{
-				{ChampionData: datadragon.ChampionData{Name: "champion1", ID: "1"}},
-				{ChampionData: datadragon.ChampionData{Name: "champion2", ID: "2"}},
+				{ChampionData: datadragon.ChampionData{Name: "champion1", Key: "1"}},
+				{ChampionData: datadragon.ChampionData{Name: "champion2", Key: "2"}},
 			},
 		},
 		{
@@ -104,15 +104,15 @@ func TestChampionInfo_GetChampions(t *testing.T) {
 		{
 			name: "valid",
 			doer: dataDragonResponseDoer(map[string]datadragon.ChampionData{
-				"champion1": {ID: "1", Name: "champion1"},
-				"champion2": {ID: "2", Name: "champion2"},
+				"champion1": {Key: "1", Name: "champion1"},
+				"champion2": {Key: "2", Name: "champion2"},
 			}),
 			model: ChampionInfo{
 				FreeChampionIDs: []int{1, 2},
 			},
 			want: []datadragon.ChampionDataExtended{
-				{ChampionData: datadragon.ChampionData{Name: "champion1", ID: "1"}},
-				{ChampionData: datadragon.ChampionData{Name: "champion2", ID: "2"}},
+				{ChampionData: datadragon.ChampionData{Name: "champion1", Key: "1"}},
+				{ChampionData: datadragon.ChampionData{Name: "champion2", Key: "2"}},
 			},
 		},
 		{
@@ -175,10 +175,10 @@ func TestChampionMastery_GetChampion(t *testing.T) {
 		{
 			name: "valid",
 			doer: dataDragonResponseDoer(map[string]datadragon.ChampionData{
-				"champion": {Name: "champion", ID: "1"},
+				"champion": {Name: "champion", Key: "1"},
 			}),
 			model: ChampionMastery{ChampionID: 1},
-			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", ID: "1"}},
+			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", Key: "1"}},
 		},
 	}
 	for _, test := range tests {
@@ -217,37 +217,11 @@ func TestLeagueItem_GetSummoner(t *testing.T) {
 	}
 }
 
-func TestMatch_GetSeason(t *testing.T) {
+func TestMatchInfo_GetQueue(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		model   Match
-		want    static.Season
-		wantErr error
-	}
-	tests := []test{
-		{
-			name:  "valid",
-			doer:  mock.NewJSONMockDoer([]static.Season{{ID: 1}}, 200),
-			model: Match{SeasonID: 1},
-			want:  static.Season{ID: 1},
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			client := static.NewClient(test.doer, log.StandardLogger())
-			got, err := test.model.GetSeason(client)
-			assert.Equal(t, test.wantErr, err)
-			assert.Equal(t, test.want, got)
-		})
-	}
-}
-
-func TestMatch_GetQueue(t *testing.T) {
-	type test struct {
-		name    string
-		doer    internal.Doer
-		model   Match
+		model   MatchInfo
 		want    static.Queue
 		wantErr error
 	}
@@ -255,7 +229,7 @@ func TestMatch_GetQueue(t *testing.T) {
 		{
 			name:  "valid",
 			doer:  mock.NewJSONMockDoer([]static.Queue{{ID: 1}}, 200),
-			model: Match{QueueID: 1},
+			model: MatchInfo{QueueID: 1},
 			want:  static.Queue{ID: 1},
 		},
 	}
@@ -269,11 +243,11 @@ func TestMatch_GetQueue(t *testing.T) {
 	}
 }
 
-func TestMatch_GetMap(t *testing.T) {
+func TestMatchInfo_GetMap(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		model   Match
+		model   MatchInfo
 		want    static.Map
 		wantErr error
 	}
@@ -281,7 +255,7 @@ func TestMatch_GetMap(t *testing.T) {
 		{
 			name:  "valid",
 			doer:  mock.NewJSONMockDoer([]static.Map{{ID: 1}}, 200),
-			model: Match{MapID: 1},
+			model: MatchInfo{MapID: 1},
 			want:  static.Map{ID: 1},
 		},
 	}
@@ -295,11 +269,11 @@ func TestMatch_GetMap(t *testing.T) {
 	}
 }
 
-func TestMatch_GetGameType(t *testing.T) {
+func TestMatchInfo_GetGameType(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		model   Match
+		model   MatchInfo
 		want    static.GameType
 		wantErr error
 	}
@@ -307,7 +281,7 @@ func TestMatch_GetGameType(t *testing.T) {
 		{
 			name:  "valid",
 			doer:  mock.NewJSONMockDoer([]static.GameType{{Type: "type"}}, 200),
-			model: Match{GameType: "type"},
+			model: MatchInfo{GameType: "type"},
 			want:  static.GameType{Type: "type"},
 		},
 	}
@@ -321,11 +295,11 @@ func TestMatch_GetGameType(t *testing.T) {
 	}
 }
 
-func TestMatch_GetGameMode(t *testing.T) {
+func TestMatchInfo_GetGameMode(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		model   Match
+		model   MatchInfo
 		want    static.GameMode
 		wantErr error
 	}
@@ -333,7 +307,7 @@ func TestMatch_GetGameMode(t *testing.T) {
 		{
 			name:  "valid",
 			doer:  mock.NewJSONMockDoer([]static.GameMode{{Mode: "type"}}, 200),
-			model: Match{GameMode: "type"},
+			model: MatchInfo{GameMode: "type"},
 			want:  static.GameMode{Mode: "type"},
 		},
 	}
@@ -347,11 +321,11 @@ func TestMatch_GetGameMode(t *testing.T) {
 	}
 }
 
-func TestPlayer_GetSummoner(t *testing.T) {
+func TestParticipant_GetSummoner(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		model   Player
+		model   Participant
 		want    *Summoner
 		wantErr error
 	}
@@ -359,7 +333,7 @@ func TestPlayer_GetSummoner(t *testing.T) {
 		{
 			name:  "valid",
 			doer:  mock.NewJSONMockDoer(Summoner{ID: "id"}, 200),
-			model: Player{SummonerID: "id"},
+			model: Participant{SummonerID: "id"},
 			want:  &Summoner{ID: "id"},
 		},
 	}
@@ -373,11 +347,11 @@ func TestPlayer_GetSummoner(t *testing.T) {
 	}
 }
 
-func TestPlayer_GetProfileIcon(t *testing.T) {
+func TestParticipant_GetProfileIcon(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		model   Player
+		model   Participant
 		want    datadragon.ProfileIcon
 		wantErr error
 	}
@@ -387,7 +361,7 @@ func TestPlayer_GetProfileIcon(t *testing.T) {
 			doer: dataDragonResponseDoer(map[string]datadragon.ProfileIcon{
 				"champion": {ID: 1},
 			}),
-			model: Player{ProfileIcon: 1},
+			model: Participant{ProfileIcon: 1},
 			want:  datadragon.ProfileIcon{ID: 1},
 		},
 	}
@@ -413,10 +387,10 @@ func TestTeamBan_GetChampion(t *testing.T) {
 		{
 			name: "valid",
 			doer: dataDragonResponseDoer(map[string]datadragon.ChampionData{
-				"champion": {Name: "champion", ID: "1"},
+				"champion": {Name: "champion", Key: "1"},
 			}),
 			model: TeamBan{ChampionID: 1},
-			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", ID: "1"}},
+			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", Key: "1"}},
 		},
 	}
 	for _, test := range tests {
@@ -441,10 +415,10 @@ func TestParticipant_GetChampion(t *testing.T) {
 		{
 			name: "valid",
 			doer: dataDragonResponseDoer(map[string]datadragon.ChampionData{
-				"champion": {Name: "champion", ID: "1"},
+				"champion": {Name: "champion", Key: "1"},
 			}),
 			model: Participant{ChampionID: 1},
-			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", ID: "1"}},
+			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", Key: "1"}},
 		},
 	}
 	for _, test := range tests {
@@ -469,10 +443,10 @@ func TestParticipant_GetSpell1(t *testing.T) {
 		{
 			name: "valid",
 			doer: dataDragonResponseDoer(map[string]datadragon.SummonerSpell{
-				"champion": {ID: "1"},
+				"champion": {Key: "1"},
 			}),
-			model: Participant{Spell1ID: 1},
-			want:  datadragon.SummonerSpell{ID: "1"},
+			model: Participant{Summoner1ID: 1},
+			want:  datadragon.SummonerSpell{Key: "1"},
 		},
 	}
 	for _, test := range tests {
@@ -497,10 +471,10 @@ func TestParticipant_GetSpell2(t *testing.T) {
 		{
 			name: "valid",
 			doer: dataDragonResponseDoer(map[string]datadragon.SummonerSpell{
-				"champion": {ID: "2"},
+				"champion": {Key: "2"},
 			}),
-			model: Participant{Spell2ID: 2},
-			want:  datadragon.SummonerSpell{ID: "2"},
+			model: Participant{Summoner2ID: 2},
+			want:  datadragon.SummonerSpell{Key: "2"},
 		},
 	}
 	for _, test := range tests {
@@ -513,11 +487,11 @@ func TestParticipant_GetSpell2(t *testing.T) {
 	}
 }
 
-func TestParticipantStats_GetItem0(t *testing.T) {
+func TestParticipant_GetItem0(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		model   ParticipantStats
+		model   Participant
 		want    datadragon.Item
 		wantErr error
 	}
@@ -527,7 +501,7 @@ func TestParticipantStats_GetItem0(t *testing.T) {
 			doer: dataDragonResponseDoer(map[string]datadragon.Item{
 				"1": {},
 			}),
-			model: ParticipantStats{Item0: 1},
+			model: Participant{Item0: 1},
 			want:  datadragon.Item{ID: "1"},
 		},
 	}
@@ -541,11 +515,11 @@ func TestParticipantStats_GetItem0(t *testing.T) {
 	}
 }
 
-func TestParticipantStats_GetItem1(t *testing.T) {
+func TestParticipant_GetItem1(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		model   ParticipantStats
+		model   Participant
 		want    datadragon.Item
 		wantErr error
 	}
@@ -555,7 +529,7 @@ func TestParticipantStats_GetItem1(t *testing.T) {
 			doer: dataDragonResponseDoer(map[string]datadragon.Item{
 				"1": {},
 			}),
-			model: ParticipantStats{Item1: 1},
+			model: Participant{Item1: 1},
 			want:  datadragon.Item{ID: "1"},
 		},
 	}
@@ -569,11 +543,11 @@ func TestParticipantStats_GetItem1(t *testing.T) {
 	}
 }
 
-func TestParticipantStats_GetItem2(t *testing.T) {
+func TestParticipant_GetItem2(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		model   ParticipantStats
+		model   Participant
 		want    datadragon.Item
 		wantErr error
 	}
@@ -583,7 +557,7 @@ func TestParticipantStats_GetItem2(t *testing.T) {
 			doer: dataDragonResponseDoer(map[string]datadragon.Item{
 				"1": {},
 			}),
-			model: ParticipantStats{Item2: 1},
+			model: Participant{Item2: 1},
 			want:  datadragon.Item{ID: "1"},
 		},
 	}
@@ -597,11 +571,11 @@ func TestParticipantStats_GetItem2(t *testing.T) {
 	}
 }
 
-func TestParticipantStats_GetItem3(t *testing.T) {
+func TestParticipant_GetItem3(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		model   ParticipantStats
+		model   Participant
 		want    datadragon.Item
 		wantErr error
 	}
@@ -611,7 +585,7 @@ func TestParticipantStats_GetItem3(t *testing.T) {
 			doer: dataDragonResponseDoer(map[string]datadragon.Item{
 				"1": {},
 			}),
-			model: ParticipantStats{Item3: 1},
+			model: Participant{Item3: 1},
 			want:  datadragon.Item{ID: "1"},
 		},
 	}
@@ -625,11 +599,11 @@ func TestParticipantStats_GetItem3(t *testing.T) {
 	}
 }
 
-func TestParticipantStats_GetItem4(t *testing.T) {
+func TestParticipant_GetItem4(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		model   ParticipantStats
+		model   Participant
 		want    datadragon.Item
 		wantErr error
 	}
@@ -639,7 +613,7 @@ func TestParticipantStats_GetItem4(t *testing.T) {
 			doer: dataDragonResponseDoer(map[string]datadragon.Item{
 				"1": {},
 			}),
-			model: ParticipantStats{Item4: 1},
+			model: Participant{Item4: 1},
 			want:  datadragon.Item{ID: "1"},
 		},
 	}
@@ -653,11 +627,11 @@ func TestParticipantStats_GetItem4(t *testing.T) {
 	}
 }
 
-func TestParticipantStats_GetItem5(t *testing.T) {
+func TestParticipant_GetItem5(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		model   ParticipantStats
+		model   Participant
 		want    datadragon.Item
 		wantErr error
 	}
@@ -667,7 +641,7 @@ func TestParticipantStats_GetItem5(t *testing.T) {
 			doer: dataDragonResponseDoer(map[string]datadragon.Item{
 				"1": {},
 			}),
-			model: ParticipantStats{Item5: 1},
+			model: Participant{Item5: 1},
 			want:  datadragon.Item{ID: "1"},
 		},
 	}
@@ -681,11 +655,11 @@ func TestParticipantStats_GetItem5(t *testing.T) {
 	}
 }
 
-func TestParticipantStats_GetItem6(t *testing.T) {
+func TestParticipant_GetItem6(t *testing.T) {
 	type test struct {
 		name    string
 		doer    internal.Doer
-		model   ParticipantStats
+		model   Participant
 		want    datadragon.Item
 		wantErr error
 	}
@@ -695,7 +669,7 @@ func TestParticipantStats_GetItem6(t *testing.T) {
 			doer: dataDragonResponseDoer(map[string]datadragon.Item{
 				"1": {},
 			}),
-			model: ParticipantStats{Item6: 1},
+			model: Participant{Item6: 1},
 			want:  datadragon.Item{ID: "1"},
 		},
 	}
@@ -721,10 +695,10 @@ func TestBannedChampion_GetChampion(t *testing.T) {
 		{
 			name: "valid",
 			doer: dataDragonResponseDoer(map[string]datadragon.ChampionData{
-				"champion": {Name: "champion", ID: "1"},
+				"champion": {Name: "champion", Key: "1"},
 			}),
 			model: BannedChampion{ChampionID: 1},
-			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", ID: "1"}},
+			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", Key: "1"}},
 		},
 	}
 	for _, test := range tests {
@@ -749,10 +723,10 @@ func TestCurrentGameParticipant_GetChampion(t *testing.T) {
 		{
 			name: "valid",
 			doer: dataDragonResponseDoer(map[string]datadragon.ChampionData{
-				"champion": {Name: "champion", ID: "1"},
+				"champion": {Name: "champion", Key: "1"},
 			}),
 			model: CurrentGameParticipant{ChampionID: 1},
-			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", ID: "1"}},
+			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", Key: "1"}},
 		},
 	}
 	for _, test := range tests {
@@ -777,10 +751,10 @@ func TestCurrentGameParticipant_GetSpell1(t *testing.T) {
 		{
 			name: "valid",
 			doer: dataDragonResponseDoer(map[string]datadragon.SummonerSpell{
-				"champion": {ID: "1"},
+				"champion": {Key: "1"},
 			}),
 			model: CurrentGameParticipant{Spell1ID: 1},
-			want:  datadragon.SummonerSpell{ID: "1"},
+			want:  datadragon.SummonerSpell{Key: "1"},
 		},
 	}
 	for _, test := range tests {
@@ -805,10 +779,10 @@ func TestCurrentGameParticipant_GetSpell2(t *testing.T) {
 		{
 			name: "valid",
 			doer: dataDragonResponseDoer(map[string]datadragon.SummonerSpell{
-				"champion": {ID: "2"},
+				"champion": {Key: "2"},
 			}),
 			model: CurrentGameParticipant{Spell2ID: 2},
-			want:  datadragon.SummonerSpell{ID: "2"},
+			want:  datadragon.SummonerSpell{Key: "2"},
 		},
 	}
 	for _, test := range tests {
@@ -832,9 +806,9 @@ func TestGameInfo_GetMatch(t *testing.T) {
 	tests := []test{
 		{
 			name:  "valid",
-			doer:  mock.NewJSONMockDoer(Match{GameID: 1}, 200),
+			doer:  mock.NewJSONMockDoer(Match{Metadata: &MatchMetadata{MatchID: "NA1_1"}}, 200),
 			model: GameInfo{GameID: 1},
-			want:  &Match{GameID: 1},
+			want:  &Match{Metadata: &MatchMetadata{MatchID: "NA1_1"}},
 		},
 	}
 	for _, test := range tests {
@@ -869,112 +843,6 @@ func TestMatchEvent_GetItem(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			client := datadragon.NewClient(test.doer, api.RegionKorea, log.StandardLogger())
 			got, err := test.model.GetItem(client)
-			assert.Equal(t, test.wantErr, err)
-			assert.Equal(t, test.want, got)
-		})
-	}
-}
-
-func TestMatchReference_GetChampion(t *testing.T) {
-	type test struct {
-		name    string
-		doer    internal.Doer
-		model   MatchReference
-		want    datadragon.ChampionDataExtended
-		wantErr error
-	}
-	tests := []test{
-		{
-			name: "valid",
-			doer: dataDragonResponseDoer(map[string]datadragon.ChampionData{
-				"champion": {Name: "champion", ID: "1"},
-			}),
-			model: MatchReference{Champion: 1},
-			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", ID: "1"}},
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			client := datadragon.NewClient(test.doer, api.RegionKorea, log.StandardLogger())
-			got, err := test.model.GetChampion(client)
-			assert.Equal(t, test.wantErr, err)
-			assert.Equal(t, test.want, got)
-		})
-	}
-}
-
-func TestMatchReference_GetGame(t *testing.T) {
-	type test struct {
-		name    string
-		doer    internal.Doer
-		model   MatchReference
-		want    *Match
-		wantErr error
-	}
-	tests := []test{
-		{
-			name:  "valid",
-			doer:  mock.NewJSONMockDoer(Match{GameID: 1}, 200),
-			model: MatchReference{GameID: 1},
-			want:  &Match{GameID: 1},
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			client := internal.NewClient(api.RegionKorea, "key", test.doer, log.StandardLogger())
-			got, err := test.model.GetGame(NewClient(client))
-			assert.Equal(t, test.wantErr, err)
-			assert.Equal(t, test.want, got)
-		})
-	}
-}
-
-func TestMatchReference_GetQueue(t *testing.T) {
-	type test struct {
-		name    string
-		doer    internal.Doer
-		model   MatchReference
-		want    static.Queue
-		wantErr error
-	}
-	tests := []test{
-		{
-			name:  "valid",
-			doer:  mock.NewJSONMockDoer([]static.Queue{{ID: 1}}, 200),
-			model: MatchReference{Queue: 1},
-			want:  static.Queue{ID: 1},
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			client := static.NewClient(test.doer, log.StandardLogger())
-			got, err := test.model.GetQueue(client)
-			assert.Equal(t, test.wantErr, err)
-			assert.Equal(t, test.want, got)
-		})
-	}
-}
-
-func TestMatchReference_GetSeason(t *testing.T) {
-	type test struct {
-		name    string
-		doer    internal.Doer
-		model   MatchReference
-		want    static.Season
-		wantErr error
-	}
-	tests := []test{
-		{
-			name:  "valid",
-			doer:  mock.NewJSONMockDoer([]static.Season{{ID: 1}}, 200),
-			model: MatchReference{Season: 1},
-			want:  static.Season{ID: 1},
-		},
-	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			client := static.NewClient(test.doer, log.StandardLogger())
-			got, err := test.model.GetSeason(client)
 			assert.Equal(t, test.wantErr, err)
 			assert.Equal(t, test.want, got)
 		})
