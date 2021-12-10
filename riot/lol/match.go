@@ -131,10 +131,10 @@ func (m *MatchClient) ListStream(puuid string, options ...*MatchListOptions) <-c
 // GetTimeline returns the timeline for the given match
 // NOTE: timelines are not available for every match
 // TODO: update to v5 when struct is documented
-func (m *MatchClient) GetTimeline(matchID int) (*MatchTimeline, error) {
+func (m *MatchClient) GetTimeline(id string) (*MatchTimeline, error) {
 	logger := m.logger().WithField("method", "GetTimeline")
 	var timeline MatchTimeline
-	if err := m.c.GetInto(fmt.Sprintf(endpointGetMatchTimeline, fmt.Sprint(matchID)), &timeline); err != nil {
+	if err := m.c.GetInto(fmt.Sprintf(endpointGetMatchTimeline, id), &timeline); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
