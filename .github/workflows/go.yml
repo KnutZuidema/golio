@@ -1,0 +1,30 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v1
+        with:
+          go-version: 1.17
+      - uses: actions/checkout@v2
+      - run: go mod download
+      - run: go build .
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint golangci-lint run 2> /dev/null
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: go mod download
+      - run: go test -race -coverprofile=coverage.txt -covermode=atomic $(go list ./... | grep -v test)
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.txt
