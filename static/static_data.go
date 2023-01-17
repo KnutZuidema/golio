@@ -9,8 +9,8 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/KnutZuidema/golio/api"
-	"github.com/KnutZuidema/golio/internal"
+	"github.com/yigithanbalci/golio/api"
+	"github.com/yigithanbalci/golio/internal"
 )
 
 // Client provides access to static data provided by Riot

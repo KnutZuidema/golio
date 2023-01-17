@@ -3,7 +3,7 @@ package lol
 import (
 	log "github.com/sirupsen/logrus"
 
-	"github.com/KnutZuidema/golio/internal"
+	"github.com/yigithanbalci/golio/internal"
 )
 
 // ChampionClient provides methods for the champions endpoints of the League of Legends API.
