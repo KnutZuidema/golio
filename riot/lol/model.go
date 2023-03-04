@@ -771,3 +771,48 @@ type ProviderRegistrationParameters struct {
 	// (Legal values: BR, EUNE, EUW, JP, LAN, LAS, NA, OCE, PBE, RU, TR)
 	Region string `json:"region"`
 }
+
+type ChallengeConfigInfoDto struct {
+	ID             int64                        `json:"id"`
+	LocalizedNames map[string]map[string]string `json:"localizedNames"`
+	State          string                       `json:"state"`
+	Tracking       string                       `json:"tracking"`
+	StartTimeStamp int64                        `json:"startTimeStamp"`
+	EndTimeStamp   int64                        `json:"endTimeStamp"`
+	Leaderboard    bool                         `json:"leaderboard"`
+	Thresholds     map[string]float64           `json:"thresholds"`
+}
+
+type ChallengePoints struct {
+	Level      string  `json:"level"`
+	Current    float32 `json:"current"`
+	Max        int32   `json:"max"`
+	Percentile float32 `json:"percentile"`
+}
+
+type ChallengeInfo struct {
+	ChallengeId  int32   `json:"challengeid"`
+	Percentile   float32 `json:"percentile"`
+	Level        string  `json:"level"`
+	Value        float32 `json:"value"`
+	AchievedTime int64   `json:"achievedtime"`
+}
+
+type PlayerClientPreferences struct {
+	BannerAccent string  `json:"banneraccent"`
+	Title        string  `json:"title"`
+	ChallengeId  []int32 `json:"challengeids"`
+}
+
+type PlayerInfoDto struct {
+	TotalPoints    *ChallengePoints           `json:"totalpoints"`
+	CategoryPoints map[string]ChallengePoints `json:"categorypoints"`
+	Challenges     []*ChallengeInfo           `json:"challenges"`
+	Preferences    *PlayerClientPreferences   `json:"preferences"`
+}
+
+type ApexPlayerInfoDto struct {
+	PuuId    string  `json:"puuid"`
+	Value    float64 `json:"value"`
+	Position int32   `json:"position"`
+}
