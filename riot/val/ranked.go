@@ -1,0 +1,32 @@
+package val
+
+import (
+	"fmt"
+	log "github.com/sirupsen/logrus"
+	"github.com/yigithanbalci/golio/internal"
+)
+
+type RankedClient struct {
+	c *internal.Client
+}
+
+func (cc *RankedClient) GetLeaderboardByActId(actId string, startIndex int32, size int32) (*LeaderboardDto, error) {
+	logger := cc.logger().WithField("method", "GetLeaderboardByActId")
+	var leaderboard *LeaderboardDto
+	if startIndex < 0 {
+		startIndex = 0
+	}
+	if size < 1 {
+		size = 200
+	}
+	if err := cc.c.GetInto(fmt.Sprintf(endpointGetLeaderboardByActId+"?size=%d&startIndex=%d", actId, size, startIndex), &leaderboard); err != nil {
+		logger.Debug(err)
+		fmt.Println(err)
+		return nil, err
+	}
+	return leaderboard, nil
+}
+
+func (cc *RankedClient) logger() log.FieldLogger {
+	return cc.c.Logger().WithField("category", "ranked")
+}
