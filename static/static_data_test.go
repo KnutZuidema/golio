@@ -8,9 +8,9 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/yigithanbalci/golio/api"
-	"github.com/yigithanbalci/golio/internal"
-	"github.com/yigithanbalci/golio/internal/mock"
+	"github.com/KnutZuidema/golio/api"
+	"github.com/KnutZuidema/golio/internal"
+	"github.com/KnutZuidema/golio/internal/mock"
 )
 
 func TestClient_GetSeasons(t *testing.T) {

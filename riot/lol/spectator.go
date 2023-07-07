@@ -5,7 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/yigithanbalci/golio/internal"
+	"github.com/KnutZuidema/golio/internal"
 )
 
 // SpectatorClient provides methods for the spectator endpoints of the League of Legends API.

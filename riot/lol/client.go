@@ -1,6 +1,6 @@
 package lol
 
-import "github.com/yigithanbalci/golio/internal"
+import "github.com/KnutZuidema/golio/internal"
 
 // Client pools all methods for endpoints of the League of Legends API.
 type Client struct {

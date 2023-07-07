@@ -1,4 +1,4 @@
-module github.com/yigithanbalci/golio
+module github.com/KnutZuidema/golio
 
 go 1.19
 
