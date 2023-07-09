@@ -7,7 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
 
-	"github.com/yigithanbalci/golio/api"
+	"github.com/KnutZuidema/golio/api"
 )
 
 func TestNewClient(t *testing.T) {
