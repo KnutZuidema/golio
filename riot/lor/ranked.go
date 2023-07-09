@@ -1,6 +1,6 @@
 package lor
 
-import "github.com/KnutZuidema/golio/internal"
+import "github.com/yigithanbalci/golio/internal"
 
 // RankedClient provides methods for the ranked endpoints of the Legends of Runeterra API.
 type RankedClient struct {

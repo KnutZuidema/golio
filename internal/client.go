@@ -11,7 +11,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/KnutZuidema/golio/api"
+	"github.com/yigithanbalci/golio/api"
 )
 
 const (

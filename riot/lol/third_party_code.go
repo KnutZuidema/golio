@@ -5,7 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/KnutZuidema/golio/internal"
+	"github.com/yigithanbalci/golio/internal"
 )
 
 // ThirdPartyCodeClient provides methods for the third party code endpoints of the

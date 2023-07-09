@@ -5,7 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/KnutZuidema/golio/internal"
+	"github.com/yigithanbalci/golio/internal"
 )
 
 // LeagueClient provides methods for league endpoints of the League of Legends API.

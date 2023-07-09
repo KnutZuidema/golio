@@ -6,8 +6,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/KnutZuidema/golio/api"
-	"github.com/KnutZuidema/golio/internal"
+	"github.com/yigithanbalci/golio/api"
+	"github.com/yigithanbalci/golio/internal"
 )
 
 // MatchClient provides methods for the match endpoints of the League of Legends API.
