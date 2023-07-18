@@ -17,6 +17,7 @@ const (
 	RegionTurkey            Region = "tr1"
 	RegionRussia            Region = "ru"
 	RegionPBE               Region = "pbe1"
+	RegionVietNam           Region = "vn2"
 )
 
 // Route represents a server region's route
@@ -27,6 +28,7 @@ const (
 	RouteAmericas Route = "americas"
 	RouteAsia     Route = "asia"
 	RouteEurope   Route = "europe"
+	RouteSea      Route = "sea"
 )
 
 var (
@@ -44,6 +46,7 @@ var (
 		RegionTurkey,
 		RegionRussia,
 		RegionPBE,
+		RegionVietNam,
 	}
 
 	// RegionToRoute maps each region to its route
@@ -59,5 +62,6 @@ var (
 		RegionOceania:           RouteAmericas,
 		RegionTurkey:            RouteEurope,
 		RegionRussia:            RouteEurope,
+		RegionVietNam:           RouteSea,
 	}
 )
