@@ -2,12 +2,12 @@ package lol
 
 import (
 	"fmt"
+	"github.com/KnutZuidema/golio/api"
+	"github.com/KnutZuidema/golio/internal"
+	"github.com/KnutZuidema/golio/internal/mock"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/yigithanbalci/golio/api"
-	"github.com/yigithanbalci/golio/internal"
-	"github.com/yigithanbalci/golio/internal/mock"
 	"net/http"
 	"testing"
 )
@@ -16,14 +16,14 @@ func TestChallengesClient_GetConfig(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    []*ChallengeConfigInfoDto
+		want    []*ChallengeConfigInfo
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: []*ChallengeConfigInfoDto{{}},
-			doer: mock.NewJSONMockDoer([]ChallengeConfigInfoDto{{}}, 200),
+			want: []*ChallengeConfigInfo{{}},
+			doer: mock.NewJSONMockDoer([]ChallengeConfigInfo{{}}, 200),
 		},
 		{
 			name:    "not found",
@@ -78,14 +78,14 @@ func TestChallengesClient_GetConfigWithChallengeId(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *ChallengeConfigInfoDto
+		want    *ChallengeConfigInfo
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &ChallengeConfigInfoDto{},
-			doer: mock.NewJSONMockDoer(ChallengeConfigInfoDto{}, 200),
+			want: &ChallengeConfigInfo{},
+			doer: mock.NewJSONMockDoer(ChallengeConfigInfo{}, 200),
 		},
 		{
 			name:    "not found",
@@ -96,7 +96,7 @@ func TestChallengesClient_GetConfigWithChallengeId(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&ChallengesClient{c: client}).GetConfigWithChallengeId(1)
+			got, err := (&ChallengesClient{c: client}).GetConfigByChallengeID(1)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -109,14 +109,14 @@ func TestChallengesClient_GetLeaderBoardByChallengeIdAndLevel(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    []*ApexPlayerInfoDto
+		want    []*ApexPlayerInfo
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: []*ApexPlayerInfoDto{{}},
-			doer: mock.NewJSONMockDoer([]ApexPlayerInfoDto{{}}, 200),
+			want: []*ApexPlayerInfo{{}},
+			doer: mock.NewJSONMockDoer([]ApexPlayerInfo{{}}, 200),
 		},
 		{
 			name:    "not found",
@@ -127,7 +127,7 @@ func TestChallengesClient_GetLeaderBoardByChallengeIdAndLevel(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&ChallengesClient{c: client}).GetLeaderBoardByChallengeIdAndLevel(203102, TierMaster, 15)
+			got, err := (&ChallengesClient{c: client}).GetLeaderBoardByChallengeIDAndLevel(203102, TierMaster, 15)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -158,7 +158,7 @@ func TestChallengesClient_GetPercentilesWithChallengeId(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&ChallengesClient{c: client}).GetPercentilesWithChallengeId(1)
+			got, err := (&ChallengesClient{c: client}).GetPercentilesByChallengeID(1)
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)
@@ -171,14 +171,14 @@ func TestChallengesClient_GetPlayerDataWithPUUID(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *PlayerInfoDto
+		want    *PlayerInfo
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &PlayerInfoDto{},
-			doer: mock.NewJSONMockDoer(PlayerInfoDto{}, 200),
+			want: &PlayerInfo{},
+			doer: mock.NewJSONMockDoer(PlayerInfo{}, 200),
 		},
 		{
 			name:    "not found",
@@ -189,7 +189,7 @@ func TestChallengesClient_GetPlayerDataWithPUUID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&ChallengesClient{c: client}).GetPlayerDataWithPUUID("1")
+			got, err := (&ChallengesClient{c: client}).GetPlayerDataByPUUID("1")
 			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 			if tt.wantErr == nil {
 				assert.Equal(t, got, tt.want)

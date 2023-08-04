@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/yigithanbalci/golio/datadragon"
-	"github.com/yigithanbalci/golio/static"
+	"github.com/KnutZuidema/golio/datadragon"
+	"github.com/KnutZuidema/golio/static"
 )
 
 // ChampionInfo contains information about the free champion rotation
@@ -772,7 +772,7 @@ type ProviderRegistrationParameters struct {
 	Region string `json:"region"`
 }
 
-type ChallengeConfigInfoDto struct {
+type ChallengeConfigInfo struct {
 	ID             int64                        `json:"id"`
 	LocalizedNames map[string]map[string]string `json:"localizedNames"`
 	State          string                       `json:"state"`
@@ -804,14 +804,14 @@ type PlayerClientPreferences struct {
 	ChallengeId  []int32 `json:"challengeids"`
 }
 
-type PlayerInfoDto struct {
+type PlayerInfo struct {
 	TotalPoints    *ChallengePoints           `json:"totalpoints"`
 	CategoryPoints map[string]ChallengePoints `json:"categorypoints"`
 	Challenges     []*ChallengeInfo           `json:"challenges"`
 	Preferences    *PlayerClientPreferences   `json:"preferences"`
 }
 
-type ApexPlayerInfoDto struct {
+type ApexPlayerInfo struct {
 	PuuId    string  `json:"puuid"`
 	Value    float64 `json:"value"`
 	Position int32   `json:"position"`

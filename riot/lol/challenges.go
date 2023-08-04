@@ -2,74 +2,78 @@ package lol
 
 import (
 	"fmt"
+	"github.com/KnutZuidema/golio/internal"
 	log "github.com/sirupsen/logrus"
-	"github.com/yigithanbalci/golio/internal"
 )
 
 type ChallengesClient struct {
 	c *internal.Client
 }
 
-func (cc *ChallengesClient) GetConfig() ([]*ChallengeConfigInfoDto, error) {
+func (cc *ChallengesClient) GetConfig() ([]*ChallengeConfigInfo, error) {
 	logger := cc.logger().WithField("method", "GetConfig")
-	var challengeConfigs []*ChallengeConfigInfoDto
-	if err := cc.c.GetInto(endpointChallangesConfig, &challengeConfigs); err != nil {
+	var challengeConfigs []*ChallengeConfigInfo
+	if err := cc.c.GetInto(endpointChallengesConfig, &challengeConfigs); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
 	return challengeConfigs, nil
 }
 
-func (cc *ChallengesClient) GetPercentiles() (map[string]map[string]float64, error) {
+type Percentiles map[string]float64
+
+type PercentilesByChallenges map[string]Percentiles
+
+func (cc *ChallengesClient) GetPercentiles() (PercentilesByChallenges, error) {
 	logger := cc.logger().WithField("method", "GetPercentiles")
-	var percentiles map[string]map[string]float64
-	if err := cc.c.GetInto(endpointChallangesPercentiles, &percentiles); err != nil {
+	var percentiles PercentilesByChallenges
+	if err := cc.c.GetInto(endpointChallengesPercentiles, &percentiles); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
 	return percentiles, nil
 }
 
-func (cc *ChallengesClient) GetConfigWithChallengeId(challengeId int64) (*ChallengeConfigInfoDto, error) {
-	logger := cc.logger().WithField("method", "getConfigWithChallengeId")
-	var challengeConfig *ChallengeConfigInfoDto
-	if err := cc.c.GetInto(fmt.Sprintf(endpointChallangesConfigByChallengeId, challengeId), &challengeConfig); err != nil {
+func (cc *ChallengesClient) GetConfigByChallengeID(challengeID int64) (*ChallengeConfigInfo, error) {
+	logger := cc.logger().WithField("method", "GetConfigByChallengeID")
+	var challengeConfig *ChallengeConfigInfo
+	if err := cc.c.GetInto(fmt.Sprintf(endpointChallengesConfigByChallengeID, challengeID), &challengeConfig); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
 	return challengeConfig, nil
 }
 
-func (cc *ChallengesClient) GetLeaderBoardByChallengeIdAndLevel(challengeId int64, tier tier, limit int32) ([]*ApexPlayerInfoDto, error) {
-	logger := cc.logger().WithField("method", "GetLeaderBoardByChallengeIdAndLevel")
-	var apexPlayerInfo []*ApexPlayerInfoDto
+func (cc *ChallengesClient) GetLeaderBoardByChallengeIDAndLevel(challengeID int64, tier tier, limit int32) ([]*ApexPlayerInfo, error) {
+	logger := cc.logger().WithField("method", "GetLeaderBoardByChallengeIDAndLevel")
+	var apexPlayerInfo []*ApexPlayerInfo
 	if tier == "" {
 		tier = TierChallenger
 	}
 	if limit <= 0 {
 		limit = 50
 	}
-	if err := cc.c.GetInto(fmt.Sprintf(endpointChallangesLeaderboardsByChallengeIdAndLevel, challengeId, tier, limit), &apexPlayerInfo); err != nil {
+	if err := cc.c.GetInto(fmt.Sprintf(endpointChallengesLeaderboardsByChallengeIDAndLevel, challengeID, tier, limit), &apexPlayerInfo); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
 	return apexPlayerInfo, nil
 }
 
-func (cc *ChallengesClient) GetPercentilesWithChallengeId(challengeId int64) (map[string]float64, error) {
-	logger := cc.logger().WithField("method", "GetPercentilesWithChallengeId")
-	var percentiles map[string]float64
-	if err := cc.c.GetInto(fmt.Sprintf(endpointChallangesPercentilesByChallengeId, challengeId), &percentiles); err != nil {
+func (cc *ChallengesClient) GetPercentilesByChallengeID(challengeID int64) (Percentiles, error) {
+	logger := cc.logger().WithField("method", "GetPercentilesByChallengeID")
+	var percentiles Percentiles
+	if err := cc.c.GetInto(fmt.Sprintf(endpointChallengesPercentilesByChallengeID, challengeID), &percentiles); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
 	return percentiles, nil
 }
 
-func (cc *ChallengesClient) GetPlayerDataWithPUUID(puuid string) (*PlayerInfoDto, error) {
-	logger := cc.logger().WithField("method", "GetPlayerDataWithPUUID")
-	var playerData *PlayerInfoDto
-	if err := cc.c.GetInto(fmt.Sprintf(endpointChallangesPlayerdataByPuuid, puuid), &playerData); err != nil {
+func (cc *ChallengesClient) GetPlayerDataByPUUID(uuid string) (*PlayerInfo, error) {
+	logger := cc.logger().WithField("method", "GetPlayerDataByPUUID")
+	var playerData *PlayerInfo
+	if err := cc.c.GetInto(fmt.Sprintf(endpointChallengesPlayerDataByPUUID, uuid), &playerData); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}

@@ -1,6 +1,6 @@
 package val
 
-import "github.com/yigithanbalci/golio/internal"
+import "github.com/KnutZuidema/golio/internal"
 
 // Client pools all methods for endpoints of the Valorant API.
 type Client struct {

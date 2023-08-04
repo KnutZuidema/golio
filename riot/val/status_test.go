@@ -2,12 +2,12 @@ package val
 
 import (
 	"fmt"
+	"github.com/KnutZuidema/golio/api"
+	"github.com/KnutZuidema/golio/internal"
+	"github.com/KnutZuidema/golio/internal/mock"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/yigithanbalci/golio/api"
-	"github.com/yigithanbalci/golio/internal"
-	"github.com/yigithanbalci/golio/internal/mock"
 	"net/http"
 	"testing"
 )
@@ -16,14 +16,14 @@ func TestChallengesClient_GetPlatformData(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *PlatformDataDto
+		want    *PlatformData
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &PlatformDataDto{},
-			doer: mock.NewJSONMockDoer(PlatformDataDto{}, 200),
+			want: &PlatformData{},
+			doer: mock.NewJSONMockDoer(PlatformData{}, 200),
 		},
 		{
 			name:    "not found",

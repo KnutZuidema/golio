@@ -1,6 +1,6 @@
 package val
 
-import "github.com/yigithanbalci/golio/api"
+import "github.com/KnutZuidema/golio/api"
 
 const (
 	endpointBase                  = "/val"
@@ -10,6 +10,10 @@ const (
 	endpointGetPlatformData       = endpointStatusBase + "/platform-data"
 	endpointRankedBase            = endpointBase + "/ranked/v1"
 	endpointGetLeaderboardByActId = endpointRankedBase + "/leaderboards/by-act/%s"
+	endpointMatchBase             = endpointBase + "/match/v1"
+	endpointMatchByID             = endpointMatchBase + "/matches/%s"
+	endpointMatchListByPUUID      = endpointMatchBase + "/matchlists/by-puuid/%s"
+	endpointRecentMatchesByQueue  = endpointMatchBase + "/recent-matches/by-queue/%s"
 )
 
 // All existing regions
@@ -47,26 +51,26 @@ var (
 	}
 )
 
-type LocalizedNamesDto string
+type Locale string
 
 const (
-	AR_AE LocalizedNamesDto = "ar-AE"
-	DE_DE LocalizedNamesDto = "de-DE"
-	EN_GB LocalizedNamesDto = "en-GB"
-	EN_US LocalizedNamesDto = "en-US"
-	ES_ES LocalizedNamesDto = "es-ES"
-	ES_MX LocalizedNamesDto = "es-MX"
-	FR_FR LocalizedNamesDto = "fr-FR"
-	ID_ID LocalizedNamesDto = "id-ID"
-	IT_IT LocalizedNamesDto = "it-IT"
-	JA_JP LocalizedNamesDto = "ja-JP"
-	KO_KR LocalizedNamesDto = "ko-KR"
-	PL_PL LocalizedNamesDto = "pl-PL"
-	PT_BR LocalizedNamesDto = "pt-BR"
-	RU_RU LocalizedNamesDto = "ru-RU"
-	TH_TH LocalizedNamesDto = "th-TH"
-	TR_TR LocalizedNamesDto = "tr-TR"
-	VI_VN LocalizedNamesDto = "vi-VN"
-	ZH_CN LocalizedNamesDto = "zh-CN"
-	ZH_TW LocalizedNamesDto = "zh-TW"
+	LocaleUnitedArabEmirates Locale = "ar-AE"
+	LocaleGermany            Locale = "de-DE"
+	LocaleUnitedKingdom      Locale = "en-GB"
+	LocaleUnitedStates       Locale = "en-US"
+	LocaleSpain              Locale = "es-ES"
+	LocaleMexico             Locale = "es-MX"
+	LocaleFrance             Locale = "fr-FR"
+	LocaleIndonesia          Locale = "id-ID"
+	LocaleItaly              Locale = "it-IT"
+	LocaleJapan              Locale = "ja-JP"
+	LocaleSouthKorea         Locale = "ko-KR"
+	LocalePoland             Locale = "pl-PL"
+	LocaleBrazil             Locale = "pt-BR"
+	LocaleRussia             Locale = "ru-RU"
+	LocaleThailand           Locale = "th-TH"
+	LocaleTurkish            Locale = "tr-TR"
+	LocaleVietnam            Locale = "vi-VN"
+	LocaleChina              Locale = "zh-CN"
+	LocaleTaiwan             Locale = "zh-TW"
 )

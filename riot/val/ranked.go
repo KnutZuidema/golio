@@ -2,17 +2,17 @@ package val
 
 import (
 	"fmt"
+	"github.com/KnutZuidema/golio/internal"
 	log "github.com/sirupsen/logrus"
-	"github.com/yigithanbalci/golio/internal"
 )
 
 type RankedClient struct {
 	c *internal.Client
 }
 
-func (cc *RankedClient) GetLeaderboardByActId(actId string, startIndex int32, size int32) (*LeaderboardDto, error) {
+func (cc *RankedClient) GetLeaderboardByActId(actId string, startIndex int32, size int32) (*Leaderboard, error) {
 	logger := cc.logger().WithField("method", "GetLeaderboardByActId")
-	var leaderboard *LeaderboardDto
+	var leaderboard *Leaderboard
 	if startIndex < 0 {
 		startIndex = 0
 	}

@@ -5,7 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/yigithanbalci/golio/internal"
+	"github.com/KnutZuidema/golio/internal"
 )
 
 // SummonerClient provides methods for the summoner endpoints of the League of Legends API.
