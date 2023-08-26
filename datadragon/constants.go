@@ -35,7 +35,7 @@ const (
 	LanguageCodeRepublicOfThePhilippines              = "en_PH"
 	LanguageCodeSingapore                             = "en_SG"
 	LanguageCodeThailand                              = "th_TH"
-	LanguageCodeVietnam                               = "vn_VN"
+	LanguageCodeVietnam                               = "vi_VN"
 	LanguageCodeIndonesia                             = "id_ID"
 	LanguageCodeMalaysiaChinese                       = "zh_MY"
 	LanguageCodeChina                                 = "zh_CN"
