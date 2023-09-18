@@ -69,6 +69,7 @@ const (
 	TierSilver        = "SILVER"
 	TierGold          = "GOLD"
 	TierPlatinum      = "PLATINUM"
+	TierEmerald       = "EMERALD"
 	TierDiamond       = "DIAMOND"
 )
 
@@ -97,6 +98,7 @@ var (
 		TierSilver,
 		TierGold,
 		TierPlatinum,
+		TierEmerald,
 		TierDiamond,
 	}
 
