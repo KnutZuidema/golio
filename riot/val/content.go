@@ -6,10 +6,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// ContentClient provides methods for the content endpoints of the VALORANT API.
 type ContentClient struct {
 	c *internal.Client
 }
 
+// GetContent returns information about the in-game contents e.g. skins, maps, etc.
 func (cc *ContentClient) GetContent(locale Locale) (*ContentInfo, error) {
 	logger := cc.logger().WithField("method", "GetContent")
 	url := endPointGetContent

@@ -6,10 +6,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// ChallengesClient provides methods for the challenges endpoints of the League of Legends API.
 type ChallengesClient struct {
 	c *internal.Client
 }
 
+// GetConfig returns all basic challenge configuration information
 func (cc *ChallengesClient) GetConfig() ([]*ChallengeConfigInfo, error) {
 	logger := cc.logger().WithField("method", "GetConfig")
 	var challengeConfigs []*ChallengeConfigInfo
@@ -20,10 +22,13 @@ func (cc *ChallengesClient) GetConfig() ([]*ChallengeConfigInfo, error) {
 	return challengeConfigs, nil
 }
 
+// Percentiles a map of level to percentile used by PercentilesByChallenges as value
 type Percentiles map[string]float64
 
+// PercentilesByChallenges a map of level to percentile of players who have achieved it
 type PercentilesByChallenges map[string]Percentiles
 
+// GetPercentiles returns a map of level to percentile of players who have achieved it
 func (cc *ChallengesClient) GetPercentiles() (PercentilesByChallenges, error) {
 	logger := cc.logger().WithField("method", "GetPercentiles")
 	var percentiles PercentilesByChallenges
@@ -34,6 +39,7 @@ func (cc *ChallengesClient) GetPercentiles() (PercentilesByChallenges, error) {
 	return percentiles, nil
 }
 
+// GetConfigByChallengeID returns challenge configuration by ID
 func (cc *ChallengesClient) GetConfigByChallengeID(challengeID int64) (*ChallengeConfigInfo, error) {
 	logger := cc.logger().WithField("method", "GetConfigByChallengeID")
 	var challengeConfig *ChallengeConfigInfo
@@ -44,6 +50,7 @@ func (cc *ChallengesClient) GetConfigByChallengeID(challengeID int64) (*Challeng
 	return challengeConfig, nil
 }
 
+// GetLeaderBoardByChallengeIDAndLevel returns top players for each level; level must be MASTER, GRANDMASTER or CHALLENGER
 func (cc *ChallengesClient) GetLeaderBoardByChallengeIDAndLevel(challengeID int64, tier tier, limit int32) ([]*ApexPlayerInfo, error) {
 	logger := cc.logger().WithField("method", "GetLeaderBoardByChallengeIDAndLevel")
 	var apexPlayerInfo []*ApexPlayerInfo
@@ -60,6 +67,7 @@ func (cc *ChallengesClient) GetLeaderBoardByChallengeIDAndLevel(challengeID int6
 	return apexPlayerInfo, nil
 }
 
+// GetPercentilesByChallengeID returns map of level to percentiles of players who have achieved it for a challenge
 func (cc *ChallengesClient) GetPercentilesByChallengeID(challengeID int64) (Percentiles, error) {
 	logger := cc.logger().WithField("method", "GetPercentilesByChallengeID")
 	var percentiles Percentiles
@@ -70,6 +78,7 @@ func (cc *ChallengesClient) GetPercentilesByChallengeID(challengeID int64) (Perc
 	return percentiles, nil
 }
 
+// GetPlayerDataByPUUID returns player information with list of all progressed challenges
 func (cc *ChallengesClient) GetPlayerDataByPUUID(uuid string) (*PlayerInfo, error) {
 	logger := cc.logger().WithField("method", "GetPlayerDataByPUUID")
 	var playerData *PlayerInfo

@@ -772,6 +772,7 @@ type ProviderRegistrationParameters struct {
 	Region string `json:"region"`
 }
 
+// ChallengeConfigInfo represents basic challenge configuration information
 type ChallengeConfigInfo struct {
 	ID             int64                        `json:"id"`
 	LocalizedNames map[string]map[string]string `json:"localizedNames"`
@@ -783,6 +784,7 @@ type ChallengeConfigInfo struct {
 	Thresholds     map[string]float64           `json:"thresholds"`
 }
 
+// ChallengePoints contains the settings of a previously created tournament
 type ChallengePoints struct {
 	Level      string  `json:"level"`
 	Current    float32 `json:"current"`
@@ -790,6 +792,7 @@ type ChallengePoints struct {
 	Percentile float32 `json:"percentile"`
 }
 
+// ChallengeInfo represents each challenge info for a player
 type ChallengeInfo struct {
 	ChallengeId  int32   `json:"challengeid"`
 	Percentile   float32 `json:"percentile"`
@@ -798,12 +801,14 @@ type ChallengeInfo struct {
 	AchievedTime int64   `json:"achievedtime"`
 }
 
+// PlayerClientPreferences holds player preferences
 type PlayerClientPreferences struct {
 	BannerAccent string  `json:"banneraccent"`
 	Title        string  `json:"title"`
 	ChallengeId  []int32 `json:"challengeids"`
 }
 
+// PlayerInfo contains player information with list of all progressed challenges
 type PlayerInfo struct {
 	TotalPoints    *ChallengePoints           `json:"totalpoints"`
 	CategoryPoints map[string]ChallengePoints `json:"categorypoints"`
@@ -811,6 +816,7 @@ type PlayerInfo struct {
 	Preferences    *PlayerClientPreferences   `json:"preferences"`
 }
 
+// ApexPlayerInfo holds information of top players for each level
 type ApexPlayerInfo struct {
 	PuuId    string  `json:"puuid"`
 	Value    float64 `json:"value"`

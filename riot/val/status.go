@@ -5,10 +5,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// StatusClient provides methods for the status endpoints of the VALORANT API.
 type StatusClient struct {
 	c *internal.Client
 }
 
+// GetPlatformData returns information about platform including maintenances and incidents
 func (cc *StatusClient) GetPlatformData() (*PlatformData, error) {
 	logger := cc.logger().WithField("method", "GetPlatformData")
 	var platformData *PlatformData

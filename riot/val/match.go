@@ -6,10 +6,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// MatchClient provides methods for the match endpoints of the VALORANT API.
 type MatchClient struct {
 	c *internal.Client
 }
 
+// GetMatchById returns information about a match using match id
 func (cc *MatchClient) GetMatchById(matchID string) (*Match, error) {
 	logger := cc.logger().WithField("method", "GetMatchById")
 	url := endpointMatchByID
@@ -22,6 +24,7 @@ func (cc *MatchClient) GetMatchById(matchID string) (*Match, error) {
 	return match, nil
 }
 
+// GetMatchListByPUUID returns match history as a list using player UUID
 func (cc *MatchClient) GetMatchListByPUUID(puuid string) (*MatchList, error) {
 	logger := cc.logger().WithField("method", "GetMatchListByPUUID")
 	url := endpointMatchListByPUUID
@@ -34,6 +37,7 @@ func (cc *MatchClient) GetMatchListByPUUID(puuid string) (*MatchList, error) {
 	return matchList, nil
 }
 
+// GetRecentMatchesByQueue returns last match IDs for live regions and e-sports routing
 func (cc *MatchClient) GetRecentMatchesByQueue(queue string) (*RecentMatches, error) {
 	logger := cc.logger().WithField("method", "GetRecentMatchesByQueue")
 	url := endpointRecentMatchesByQueue

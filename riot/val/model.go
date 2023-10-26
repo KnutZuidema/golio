@@ -7,7 +7,7 @@ type Act struct {
 	IsActive bool   `json:"isActive"`
 }
 
-// ContentItem LocalizedNames is excluded because it is not sent when locale is set in request
+// ContentItem represents an individual content in ContentInfo
 type ContentItem struct {
 	Name      string `json:"name"`
 	ID        string `json:"id"`
@@ -15,6 +15,7 @@ type ContentItem struct {
 	AssetPath string `json:"assetPath"`
 }
 
+// ContentInfo represents all contents currently available in the game
 type ContentInfo struct {
 	Version      string         `json:"version"`
 	Characters   []*ContentItem `json:"characters"`
@@ -33,11 +34,13 @@ type ContentInfo struct {
 	Acts         []*Act         `json:"acts"`
 }
 
+// Content represents titles and translations fields of Update and Status
 type Content struct {
 	Locale  string `json:"locale"`
 	Content string `json:"content"`
 }
 
+// Update holds data of current software updates for the platforms
 type Update struct {
 	ID               int32      `json:"id"`
 	Author           string     `json:"author"`
@@ -48,6 +51,7 @@ type Update struct {
 	UpdatedAt        string     `json:"updated_at"`
 }
 
+// Status represents current maintenance and incidents
 type Status struct {
 	ID                int32      `json:"id"`
 	MaintenanceStatus string     `json:"maintenance_status"`
@@ -60,6 +64,7 @@ type Status struct {
 	Platforms         []string   `json:"platforms"`
 }
 
+// PlatformData represents VALORANT status for given platform
 type PlatformData struct {
 	ID           string    `json:"id"`
 	Name         string    `json:"name"`
@@ -68,6 +73,7 @@ type PlatformData struct {
 	Incidents    []*Status `json:"incidents"`
 }
 
+// Player holds data of individual players in a leaderboard
 type Player struct {
 	PuuID           string `json:"puuid"`
 	GameName        string `json:"gameName"`
@@ -77,6 +83,7 @@ type Player struct {
 	NumberOfWins    int64  `json:"numberOfWins"`
 }
 
+// Leaderboard represents a leaderboard
 type Leaderboard struct {
 	Shard        string    `json:"shard"`
 	ActID        string    `json:"actId"`
@@ -84,6 +91,7 @@ type Leaderboard struct {
 	Players      []*Player `json:"players"`
 }
 
+// Match represents a match with related data including players, match info and teams
 type Match struct {
 	MatchInfo    MatchInfo     `json:"matchInfo"`
 	Players      []MatchPlayer `json:"players"`
@@ -92,6 +100,7 @@ type Match struct {
 	RoundResults []RoundResult `json:"roundResults"`
 }
 
+// MatchInfo contains the data for a specific match
 type MatchInfo struct {
 	MatchID            string `json:"matchId"`
 	MapID              string `json:"mapId"`
@@ -106,6 +115,7 @@ type MatchInfo struct {
 	SeasonID           string `json:"seasonId"`
 }
 
+// MatchPlayer holds data of a player participating a match
 type MatchPlayer struct {
 	PuuID           string      `json:"puuid"`
 	GameName        string      `json:"gameName"`
@@ -119,6 +129,7 @@ type MatchPlayer struct {
 	PlayerTitle     string      `json:"playerTitle"`
 }
 
+// PlayerStats stats of a player in a match
 type PlayerStats struct {
 	Score          int          `json:"score"`
 	RoundsPlayed   int          `json:"roundsPlayed"`
@@ -129,6 +140,7 @@ type PlayerStats struct {
 	AbilityCasts   AbilityCasts `json:"abilityCasts"`
 }
 
+// AbilityCasts number of casts of abilities for a player in a match
 type AbilityCasts struct {
 	GrenadeCasts  int `json:"grenadeCasts"`
 	Ability1Casts int `json:"ability1Casts"`
@@ -136,11 +148,13 @@ type AbilityCasts struct {
 	UltimateCasts int `json:"ultimateCasts"`
 }
 
+// Coach holds coach id and team id
 type Coach struct {
 	PUUID  string `json:"puuid"`
 	TeamID string `json:"teamId"`
 }
 
+// Team contains statistics of a team in a match
 type Team struct {
 	TeamID       string `json:"teamId"`
 	Won          bool   `json:"won"`
@@ -149,17 +163,20 @@ type Team struct {
 	NumPoints    int    `json:"numPoints"`
 }
 
+// PlayerLocations represents player location for planting and defusing
 type PlayerLocations struct {
 	PUUID       string   `json:"puuid"`
 	ViewRadians float32  `json:"viewRadians"`
 	Location    Location `json:"location"`
 }
 
+// Location represents the location for PlayerLocations
 type Location struct {
 	X int `json:"x"`
 	Y int `json:"y"`
 }
 
+// RoundResult holds result data of a round
 type RoundResult struct {
 	RoundNum              int                `json:"roundNum"`
 	RoundResult           string             `json:"roundResult"`
@@ -178,6 +195,7 @@ type RoundResult struct {
 	RoundResultCode       string             `json:"roundResultCode"`
 }
 
+// PlayerRoundStats holds player stats by round
 type PlayerRoundStats struct {
 	PUUID   string   `json:"puuid"`
 	Kills   []Kill   `json:"kills"`
@@ -187,6 +205,7 @@ type PlayerRoundStats struct {
 	Ability Ability  `json:"ability"`
 }
 
+// Kill contains information of kills e.g. killer, victim, finishing damage
 type Kill struct {
 	TimeSinceGameStartMillis  int               `json:"timeSinceGameStartMillis"`
 	TimeSinceRoundStartMillis int               `json:"timeSinceRoundStartMillis"`
@@ -198,12 +217,14 @@ type Kill struct {
 	FinishingDamage           FinishingDamage   `json:"finishingDamage"`
 }
 
+// FinishingDamage contains information of the finishing damage
 type FinishingDamage struct {
 	DamageType          string `json:"damageType"`
 	DamageItem          string `json:"damageItem"`
 	IsSecondaryFireMode bool   `json:"isSecondaryFireMode"`
 }
 
+// Damage contains information of a damage
 type Damage struct {
 	Receiver            string `json:"receiver"`
 	Damage              bool   `json:"damage"`
@@ -213,6 +234,7 @@ type Damage struct {
 	Headshots           bool   `json:"headshots"`
 }
 
+// Economy holds economy information including spent credits
 type Economy struct {
 	LoadOutValue int    `json:"loadoutValue"`
 	Weapon       string `json:"weapon"`
@@ -221,6 +243,7 @@ type Economy struct {
 	Spent        int    `json:"spent"`
 }
 
+// Ability holds ability effects of a player in a round
 type Ability struct {
 	GrenadeEffects  string `json:"grenadeEffects"`
 	Ability1Effects string `json:"ability1Effects"`
@@ -228,17 +251,20 @@ type Ability struct {
 	UltimateEffects string `json:"ultimateEffects"`
 }
 
+// MatchList represent match history of a player
 type MatchList struct {
-	PUUID           string           `json:"puuid"`
-	Ability1Effects []MatchListEntry `json:"history"`
+	PUUID   string           `json:"puuid"`
+	History []MatchListEntry `json:"history"`
 }
 
+// MatchListEntry holds information regarding each match
 type MatchListEntry struct {
 	MatchId             string `json:"matchId"`
 	GameStartTimeMillis int64  `json:"gameStartTimeMillis"`
 	QueueId             string `json:"queueId"`
 }
 
+// RecentMatches represents last matches for live regions and e-sports routing
 type RecentMatches struct {
 	CurrentTime int64    `json:"currentTime"`
 	MatchIDs    []string `json:"matchIds"`

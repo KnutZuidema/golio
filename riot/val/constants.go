@@ -51,8 +51,10 @@ var (
 	}
 )
 
+// Locale string value for language
 type Locale string
 
+// All possible values of Locale
 const (
 	LocaleUnitedArabEmirates Locale = "ar-AE"
 	LocaleGermany            Locale = "de-DE"

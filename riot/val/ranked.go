@@ -6,10 +6,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// RankedClient provides methods for the ranked endpoints of the VALORANT API.
 type RankedClient struct {
 	c *internal.Client
 }
 
+// GetLeaderboardByActId returns leaderboard for the competitive queue by act ID
 func (cc *RankedClient) GetLeaderboardByActId(actId string, startIndex int32, size int32) (*Leaderboard, error) {
 	logger := cc.logger().WithField("method", "GetLeaderboardByActId")
 	var leaderboard *Leaderboard
