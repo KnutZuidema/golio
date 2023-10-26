@@ -72,12 +72,13 @@ type tier string
 
 // All possible Tiers
 const (
-	TierIron        tier = "IRON"
-	TierBronze           = "BRONZE"
-	TierSilver           = "SILVER"
-	TierGold             = "GOLD"
-	TierPlatinum         = "PLATINUM"
-	TierDiamond          = "DIAMOND"
+	TierIron     tier = "IRON"
+	TierBronze        = "BRONZE"
+	TierSilver        = "SILVER"
+	TierGold          = "GOLD"
+	TierPlatinum      = "PLATINUM"
+	TierEmerald       = "EMERALD"
+	TierDiamond       = "DIAMOND"
 	TierMaster           = "MASTER"
 	TierGrandMaster      = "GRANDMASTER"
 	TierChallenger       = "CHALLENGER"
@@ -108,6 +109,7 @@ var (
 		TierSilver,
 		TierGold,
 		TierPlatinum,
+		TierEmerald,
 		TierDiamond,
 	}
 

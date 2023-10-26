@@ -19,7 +19,7 @@ import (
 	"net/http"
 
 	"github.com/KnutZuidema/golio"
-    "github.com/KnutZuidema/golio/api"
+	"github.com/KnutZuidema/golio/api"
 	log "github.com/sirupsen/logrus"
 )
 
