@@ -47,14 +47,14 @@ func TestChallengesClient_GetPercentiles(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    map[string]map[string]float64
+		want    PercentilesByChallenges
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: map[string]map[string]float64{},
-			doer: mock.NewJSONMockDoer(map[string]map[string]float64{}, 200),
+			want: PercentilesByChallenges{},
+			doer: mock.NewJSONMockDoer(PercentilesByChallenges{}, 200),
 		},
 		{
 			name:    "not found",
@@ -140,14 +140,14 @@ func TestChallengesClient_GetPercentilesWithChallengeId(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    map[string]float64
+		want    Percentiles
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: map[string]float64{},
-			doer: mock.NewJSONMockDoer(map[string]float64{}, 200),
+			want: Percentiles{},
+			doer: mock.NewJSONMockDoer(Percentiles{}, 200),
 		},
 		{
 			name:    "not found",
