@@ -1,7 +1,7 @@
 [![Documentation](https://godoc.org/github.com/KnutZuidema/golio?status.svg)](https://godoc.org/github.com/KnutZuidema/golio)
 ![CI](https://github.com/KnutZuidema/golio/workflows/CI/badge.svg?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/KnutZuidema/golio)](https://goreportcard.com/report/github.com/KnutZuidema/golio)
-[![codecov](https://codecov.io/gh/yigithanbalci/golio/branch/master/graph/badge.svg)](https://codecov.io/gh/yigithanbalci/golio)
+[![codecov](https://codecov.io/gh/KnutZuidema/golio/branch/master/graph/badge.svg)](https://codecov.io/gh/KnutZuidema/golio)
 
 # Golio
 
