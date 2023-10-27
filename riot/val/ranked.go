@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	log "github.com/sirupsen/logrus"
+
 	"github.com/yigithanbalci/golio/internal"
 )
 
@@ -12,9 +13,9 @@ type RankedClient struct {
 	c *internal.Client
 }
 
-// GetLeaderboardByActId returns leaderboard for the competitive queue by act ID
-func (cc *RankedClient) GetLeaderboardByActId(actId string, startIndex int32, size int32) (*Leaderboard, error) {
-	logger := cc.logger().WithField("method", "GetLeaderboardByActId")
+// GetLeaderboardByActID returns leaderboard for the competitive queue by act ID
+func (cc *RankedClient) GetLeaderboardByActID(actID string, startIndex, size int32) (*Leaderboard, error) {
+	logger := cc.logger().WithField("method", "GetLeaderboardByActID")
 	var leaderboard *Leaderboard
 	if startIndex < 0 {
 		startIndex = 0
@@ -23,7 +24,7 @@ func (cc *RankedClient) GetLeaderboardByActId(actId string, startIndex int32, si
 		size = 200
 	}
 	if err := cc.c.GetInto(
-		fmt.Sprintf(endpointGetLeaderboardByActID+"?size=%d&startIndex=%d", actId, size, startIndex), &leaderboard,
+		fmt.Sprintf(endpointGetLeaderboardByActID+"?size=%d&startIndex=%d", actID, size, startIndex), &leaderboard,
 	); err != nil {
 		logger.Debug(err)
 		fmt.Println(err)
