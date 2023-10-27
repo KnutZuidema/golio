@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/yigithanbalci/golio/branch/master/graph/badge.svg)](https://codecov.io/gh/yigithanbalci/golio)
 
 # Golio
-
+ 
 Golio is a wrapper for the Riot API and the Data Dragon service.
 It is written purely in Go and provides idiomatic access to all
 API endpoints.
