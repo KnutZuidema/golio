@@ -3,8 +3,8 @@ package val
 import (
 	"fmt"
 
-	"github.com/KnutZuidema/golio/internal"
 	log "github.com/sirupsen/logrus"
+	"github.com/yigithanbalci/golio/internal"
 )
 
 // ContentClient provides methods for the content endpoints of the VALORANT API.

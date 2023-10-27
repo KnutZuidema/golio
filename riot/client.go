@@ -9,6 +9,7 @@ import (
 	"github.com/yigithanbalci/golio/internal"
 	"github.com/yigithanbalci/golio/riot/lol"
 	"github.com/yigithanbalci/golio/riot/lor"
+	"github.com/yigithanbalci/golio/riot/val"
 )
 
 // Client provides access to all Riot API endpoints

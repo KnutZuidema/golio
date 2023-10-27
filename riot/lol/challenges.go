@@ -3,8 +3,8 @@ package lol
 import (
 	"fmt"
 
-	"github.com/KnutZuidema/golio/internal"
 	log "github.com/sirupsen/logrus"
+	"github.com/yigithanbalci/golio/internal"
 )
 
 // ChallengesClient provides methods for the challenges endpoints of the League of Legends API.

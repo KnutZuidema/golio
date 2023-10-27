@@ -3,8 +3,8 @@ package val
 import (
 	"fmt"
 
-	"github.com/KnutZuidema/golio/internal"
 	log "github.com/sirupsen/logrus"
+	"github.com/yigithanbalci/golio/internal"
 )
 
 // MatchClient provides methods for the match endpoints of the VALORANT API.

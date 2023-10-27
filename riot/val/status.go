@@ -1,8 +1,8 @@
 package val
 
 import (
-	"github.com/KnutZuidema/golio/internal"
 	log "github.com/sirupsen/logrus"
+	"github.com/yigithanbalci/golio/internal"
 )
 
 // StatusClient provides methods for the status endpoints of the VALORANT API.
