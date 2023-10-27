@@ -2,6 +2,7 @@ package lol
 
 import (
 	"fmt"
+
 	"github.com/KnutZuidema/golio/internal"
 	log "github.com/sirupsen/logrus"
 )
@@ -43,7 +44,9 @@ func (cc *ChallengesClient) GetPercentiles() (PercentilesByChallenges, error) {
 func (cc *ChallengesClient) GetConfigByChallengeID(challengeID int64) (*ChallengeConfigInfo, error) {
 	logger := cc.logger().WithField("method", "GetConfigByChallengeID")
 	var challengeConfig *ChallengeConfigInfo
-	if err := cc.c.GetInto(fmt.Sprintf(endpointChallengesConfigByChallengeID, challengeID), &challengeConfig); err != nil {
+	if err := cc.c.GetInto(
+		fmt.Sprintf(endpointChallengesConfigByChallengeID, challengeID), &challengeConfig,
+	); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -51,7 +54,9 @@ func (cc *ChallengesClient) GetConfigByChallengeID(challengeID int64) (*Challeng
 }
 
 // GetLeaderBoardByChallengeIDAndLevel returns top players for each level; level must be MASTER, GRANDMASTER or CHALLENGER
-func (cc *ChallengesClient) GetLeaderBoardByChallengeIDAndLevel(challengeID int64, tier tier, limit int32) ([]*ApexPlayerInfo, error) {
+func (cc *ChallengesClient) GetLeaderBoardByChallengeIDAndLevel(
+	challengeID int64, tier tier, limit int32,
+) ([]*ApexPlayerInfo, error) {
 	logger := cc.logger().WithField("method", "GetLeaderBoardByChallengeIDAndLevel")
 	var apexPlayerInfo []*ApexPlayerInfo
 	if tier == "" {
@@ -60,7 +65,9 @@ func (cc *ChallengesClient) GetLeaderBoardByChallengeIDAndLevel(challengeID int6
 	if limit <= 0 {
 		limit = 50
 	}
-	if err := cc.c.GetInto(fmt.Sprintf(endpointChallengesLeaderboardsByChallengeIDAndLevel, challengeID, tier, limit), &apexPlayerInfo); err != nil {
+	if err := cc.c.GetInto(
+		fmt.Sprintf(endpointChallengesLeaderboardsByChallengeIDAndLevel, challengeID, tier, limit), &apexPlayerInfo,
+	); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
@@ -71,7 +78,9 @@ func (cc *ChallengesClient) GetLeaderBoardByChallengeIDAndLevel(challengeID int6
 func (cc *ChallengesClient) GetPercentilesByChallengeID(challengeID int64) (Percentiles, error) {
 	logger := cc.logger().WithField("method", "GetPercentilesByChallengeID")
 	var percentiles Percentiles
-	if err := cc.c.GetInto(fmt.Sprintf(endpointChallengesPercentilesByChallengeID, challengeID), &percentiles); err != nil {
+	if err := cc.c.GetInto(
+		fmt.Sprintf(endpointChallengesPercentilesByChallengeID, challengeID), &percentiles,
+	); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}

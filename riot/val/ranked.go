@@ -2,6 +2,7 @@ package val
 
 import (
 	"fmt"
+
 	"github.com/KnutZuidema/golio/internal"
 	log "github.com/sirupsen/logrus"
 )
@@ -21,7 +22,9 @@ func (cc *RankedClient) GetLeaderboardByActId(actId string, startIndex int32, si
 	if size < 1 {
 		size = 200
 	}
-	if err := cc.c.GetInto(fmt.Sprintf(endpointGetLeaderboardByActId+"?size=%d&startIndex=%d", actId, size, startIndex), &leaderboard); err != nil {
+	if err := cc.c.GetInto(
+		fmt.Sprintf(endpointGetLeaderboardByActID+"?size=%d&startIndex=%d", actId, size, startIndex), &leaderboard,
+	); err != nil {
 		logger.Debug(err)
 		fmt.Println(err)
 		return nil, err

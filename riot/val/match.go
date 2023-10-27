@@ -2,6 +2,7 @@ package val
 
 import (
 	"fmt"
+
 	"github.com/KnutZuidema/golio/internal"
 	log "github.com/sirupsen/logrus"
 )
@@ -11,9 +12,9 @@ type MatchClient struct {
 	c *internal.Client
 }
 
-// GetMatchById returns information about a match using match id
-func (cc *MatchClient) GetMatchById(matchID string) (*Match, error) {
-	logger := cc.logger().WithField("method", "GetMatchById")
+// GetMatchByID returns information about a match using match id
+func (cc *MatchClient) GetMatchByID(matchID string) (*Match, error) {
+	logger := cc.logger().WithField("method", "GetMatchByID")
 	url := endpointMatchByID
 	var match *Match
 	if err := cc.c.GetInto(fmt.Sprintf(url, matchID), &match); err != nil {

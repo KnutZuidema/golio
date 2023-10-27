@@ -259,9 +259,9 @@ type MatchList struct {
 
 // MatchListEntry holds information regarding each match
 type MatchListEntry struct {
-	MatchId             string `json:"matchId"`
+	MatchID             string `json:"matchId"`
 	GameStartTimeMillis int64  `json:"gameStartTimeMillis"`
-	QueueId             string `json:"queueId"`
+	QueueID             string `json:"queueId"`
 }
 
 // RecentMatches represents last matches for live regions and e-sports routing

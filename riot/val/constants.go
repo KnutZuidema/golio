@@ -9,7 +9,7 @@ const (
 	endpointStatusBase            = endpointBase + "/status/v1"
 	endpointGetPlatformData       = endpointStatusBase + "/platform-data"
 	endpointRankedBase            = endpointBase + "/ranked/v1"
-	endpointGetLeaderboardByActId = endpointRankedBase + "/leaderboards/by-act/%s"
+	endpointGetLeaderboardByActID = endpointRankedBase + "/leaderboards/by-act/%s"
 	endpointMatchBase             = endpointBase + "/match/v1"
 	endpointMatchByID             = endpointMatchBase + "/matches/%s"
 	endpointMatchListByPUUID      = endpointMatchBase + "/matchlists/by-puuid/%s"

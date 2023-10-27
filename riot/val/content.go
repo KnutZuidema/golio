@@ -2,6 +2,7 @@ package val
 
 import (
 	"fmt"
+
 	"github.com/KnutZuidema/golio/internal"
 	log "github.com/sirupsen/logrus"
 )

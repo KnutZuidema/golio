@@ -794,7 +794,7 @@ type ChallengePoints struct {
 
 // ChallengeInfo represents each challenge info for a player
 type ChallengeInfo struct {
-	ChallengeId  int32   `json:"challengeid"`
+	ChallengeID  int32   `json:"challengeid"`
 	Percentile   float32 `json:"percentile"`
 	Level        string  `json:"level"`
 	Value        float32 `json:"value"`
@@ -805,7 +805,7 @@ type ChallengeInfo struct {
 type PlayerClientPreferences struct {
 	BannerAccent string  `json:"banneraccent"`
 	Title        string  `json:"title"`
-	ChallengeId  []int32 `json:"challengeids"`
+	ChallengeID  []int32 `json:"challengeids"`
 }
 
 // PlayerInfo contains player information with list of all progressed challenges
@@ -818,7 +818,7 @@ type PlayerInfo struct {
 
 // ApexPlayerInfo holds information of top players for each level
 type ApexPlayerInfo struct {
-	PuuId    string  `json:"puuid"`
+	PuuID    string  `json:"puuid"`
 	Value    float64 `json:"value"`
 	Position int32   `json:"position"`
 }

@@ -3,8 +3,9 @@ package lol
 const (
 	endpointBase                                        = "/lol"
 	endpointMasteryBase                                 = endpointBase + "/champion-mastery/v4"
-	endpointGetChampionMasteries                        = endpointMasteryBase + "/champion-masteries/by-summoner/%s"
-	endpointGetChampionMastery                          = endpointMasteryBase + "/champion-masteries/by-summoner/%s/by-champion/%s"
+	endpointMasteriesBase                               = endpointMasteryBase + "/champion-masteries"
+	endpointGetChampionMasteries                        = endpointMasteriesBase + "/by-summoner/%s"
+	endpointGetChampionMastery                          = endpointMasteriesBase + "/by-summoner/%s/by-champion/%s"
 	endpointGetChampionMasteryTotalScore                = endpointMasteryBase + "/scores/by-summoner/%s"
 	endpointChallengesBase                              = endpointBase + "/challenges/v1"
 	endpointChallengesBaseChallenges                    = endpointChallengesBase + "/challenges"
@@ -72,13 +73,13 @@ type tier string
 
 // All possible Tiers
 const (
-	TierIron     tier = "IRON"
-	TierBronze        = "BRONZE"
-	TierSilver        = "SILVER"
-	TierGold          = "GOLD"
-	TierPlatinum      = "PLATINUM"
-	TierEmerald       = "EMERALD"
-	TierDiamond       = "DIAMOND"
+	TierIron        tier = "IRON"
+	TierBronze           = "BRONZE"
+	TierSilver           = "SILVER"
+	TierGold             = "GOLD"
+	TierPlatinum         = "PLATINUM"
+	TierEmerald          = "EMERALD"
+	TierDiamond          = "DIAMOND"
 	TierMaster           = "MASTER"
 	TierGrandMaster      = "GRANDMASTER"
 	TierChallenger       = "CHALLENGER"

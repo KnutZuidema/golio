@@ -2,14 +2,15 @@ package val
 
 import (
 	"fmt"
+	"net/http"
+	"testing"
+
 	"github.com/KnutZuidema/golio/api"
 	"github.com/KnutZuidema/golio/internal"
 	"github.com/KnutZuidema/golio/internal/mock"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"net/http"
-	"testing"
 )
 
 func TestChallengesClient_GetConfigWithChallengeId(t *testing.T) {
