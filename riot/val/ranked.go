@@ -14,7 +14,7 @@ type RankedClient struct {
 }
 
 // GetLeaderboardByActId returns leaderboard for the competitive queue by act ID
-func (cc *RankedClient) GetLeaderboardByActId(actId string, startIndex int32, size int32) (*Leaderboard, error) {
+func (cc *RankedClient) GetLeaderboardByActId(actId string, startIndex, size int32) (*Leaderboard, error) {
 	logger := cc.logger().WithField("method", "GetLeaderboardByActId")
 	var leaderboard *Leaderboard
 	if startIndex < 0 {
