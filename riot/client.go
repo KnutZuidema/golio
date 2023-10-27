@@ -9,6 +9,7 @@ import (
 	"github.com/yigithanbalci/golio/internal"
 	"github.com/yigithanbalci/golio/riot/lol"
 	"github.com/yigithanbalci/golio/riot/lor"
+	"github.com/yigithanbalci/golio/riot/val"
 )
 
 // Client provides access to all Riot API endpoints
@@ -34,6 +35,7 @@ type Client struct {
 
 	LoL *lol.Client
 	LoR *lor.Client
+	Val *val.Client
 }
 
 // NewClient returns a new api client for the Riot API
@@ -42,6 +44,7 @@ func NewClient(region api.Region, apiKey string, client internal.Doer, logger lo
 	c := &Client{
 		LoL: lol.NewClient(baseClient),
 		LoR: lor.NewClient(baseClient),
+		Val: val.NewClient(baseClient),
 	}
 
 	// TODO: deprecated, remove in a future release
