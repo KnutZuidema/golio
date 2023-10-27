@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	log "github.com/sirupsen/logrus"
+
 	"github.com/yigithanbalci/golio/internal"
 )
 

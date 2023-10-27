@@ -8,6 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
 	"github.com/yigithanbalci/golio/api"
 	"github.com/yigithanbalci/golio/internal"
 	"github.com/yigithanbalci/golio/internal/mock"
