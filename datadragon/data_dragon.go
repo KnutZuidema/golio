@@ -25,6 +25,7 @@ const (
 
 var (
 	regionToRealmRegion = map[api.Region]string{
+		api.RegionBrasil:            "br",
 		api.RegionEuropeWest:        "euw",
 		api.RegionEuropeNorthEast:   "eun",
 		api.RegionJapan:             "jp",
@@ -34,9 +35,13 @@ var (
 		api.RegionNorthAmerica:      "na",
 		api.RegionOceania:           "oce",
 		api.RegionPBE:               "pbe",
+		api.RegionPhilippines:       "ph",
 		api.RegionRussia:            "ru",
+		api.RegionSingapore:         "sg",
+		api.RegionThailand:          "th",
 		api.RegionTurkey:            "tr",
-		api.RegionBrasil:            "br",
+		api.RegionTaiwan:            "tw",
+		api.RegionVietnam:           "vn",
 	}
 )
 
