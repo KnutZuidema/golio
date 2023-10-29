@@ -5,7 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/yigithanbalci/golio/internal"
+	"github.com/KnutZuidema/golio/internal"
 )
 
 // MatchClient provides methods for the match endpoints of the VALORANT API.

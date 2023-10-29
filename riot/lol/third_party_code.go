@@ -5,7 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/yigithanbalci/golio/internal"
+	"github.com/KnutZuidema/golio/internal"
 )
 
 // ThirdPartyCodeClient provides methods for the third party code endpoints of the
@@ -16,9 +16,11 @@ type ThirdPartyCodeClient struct {
 
 // Get returns the third party code for the given summoner id
 func (t *ThirdPartyCodeClient) Get(summonerID string) (string, error) {
-	logger := t.logger().WithFields(log.Fields{
-		"method": "Get",
-	})
+	logger := t.logger().WithFields(
+		log.Fields{
+			"method": "Get",
+		},
+	)
 	var code string
 	if err := t.c.GetInto(fmt.Sprintf(endpointGetThirdPartyCode, summonerID), &code); err != nil {
 		logger.Debug(err)

@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/yigithanbalci/golio/datadragon"
-	"github.com/yigithanbalci/golio/static"
+	"github.com/KnutZuidema/golio/datadragon"
+	"github.com/KnutZuidema/golio/static"
 )
 
 // ChampionInfo contains information about the free champion rotation
@@ -81,9 +81,11 @@ func (l *LeagueList) GetRank(i int) *LeagueItem {
 	if l.sortedEntries == nil || len(l.sortedEntries) != len(l.Entries) {
 		l.sortedEntries = make([]*LeagueItem, len(l.Entries))
 		copy(l.sortedEntries, l.Entries)
-		sort.Slice(l.sortedEntries, func(i, j int) bool {
-			return l.sortedEntries[i].LeaguePoints > l.sortedEntries[j].LeaguePoints
-		})
+		sort.Slice(
+			l.sortedEntries, func(i, j int) bool {
+				return l.sortedEntries[i].LeaguePoints > l.sortedEntries[j].LeaguePoints
+			},
+		)
 	}
 	return l.sortedEntries[i]
 }

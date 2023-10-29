@@ -1,6 +1,6 @@
 package lor
 
-import "github.com/yigithanbalci/golio/internal"
+import "github.com/KnutZuidema/golio/internal"
 
 // Client pools methods for the Legends of Runeterra API.
 type Client struct {

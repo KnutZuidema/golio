@@ -9,8 +9,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/yigithanbalci/golio/api"
-	"github.com/yigithanbalci/golio/internal/mock"
+	"github.com/KnutZuidema/golio/api"
+	"github.com/KnutZuidema/golio/internal/mock"
 )
 
 func TestClient_DoRequest(t *testing.T) {
@@ -59,9 +59,11 @@ func TestClient_DoRequest(t *testing.T) {
 			args: args{
 				method: "GET",
 			},
-			doer: mock.NewHeaderMockDoer(http.StatusTooManyRequests, http.Header{
-				"Retry-After": []string{"abc"},
-			}),
+			doer: mock.NewHeaderMockDoer(
+				http.StatusTooManyRequests, http.Header{
+					"Retry-After": []string{"abc"},
+				},
+			),
 			wantErr: true,
 		},
 		{
@@ -88,11 +90,13 @@ func TestClient_DoRequest(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := NewClient(api.RegionEuropeNorthEast, "", tt.doer, logrus.StandardLogger())
-			_, err := c.DoRequest(tt.args.method, tt.args.endpoint, tt.args.body)
-			assert.Equal(t, err != nil, tt.wantErr)
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				c := NewClient(api.RegionEuropeNorthEast, "", tt.doer, logrus.StandardLogger())
+				_, err := c.DoRequest(tt.args.method, tt.args.endpoint, tt.args.body)
+				assert.Equal(t, err != nil, tt.wantErr)
+			},
+		)
 	}
 }
 
@@ -125,11 +129,13 @@ func TestClient_GetInto(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := NewClient(api.RegionOceania, "API_KEY", tt.doer, logrus.StandardLogger())
-			err := c.GetInto("endpoint", tt.target)
-			assert.Equal(t, tt.wantErr, err != nil)
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				c := NewClient(api.RegionOceania, "API_KEY", tt.doer, logrus.StandardLogger())
+				err := c.GetInto("endpoint", tt.target)
+				assert.Equal(t, tt.wantErr, err != nil)
+			},
+		)
 	}
 }
 
@@ -162,11 +168,13 @@ func TestClient_PostInto(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := NewClient(api.RegionOceania, "API_KEY", tt.doer, logrus.StandardLogger())
-			err := c.PostInto("endpoint", struct{}{}, tt.target)
-			assert.Equal(t, tt.wantErr, err != nil)
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				c := NewClient(api.RegionOceania, "API_KEY", tt.doer, logrus.StandardLogger())
+				err := c.PostInto("endpoint", struct{}{}, tt.target)
+				assert.Equal(t, tt.wantErr, err != nil)
+			},
+		)
 	}
 }
 
@@ -194,11 +202,13 @@ func TestClient_Post(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := NewClient(api.RegionOceania, "API_KEY", tt.doer, logrus.StandardLogger())
-			_, err := c.Post("endpoint", tt.target)
-			assert.Equal(t, tt.wantErr, err != nil)
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				c := NewClient(api.RegionOceania, "API_KEY", tt.doer, logrus.StandardLogger())
+				_, err := c.Post("endpoint", tt.target)
+				assert.Equal(t, tt.wantErr, err != nil)
+			},
+		)
 	}
 }
 
@@ -226,11 +236,13 @@ func TestClient_Put(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := NewClient(api.RegionOceania, "API_KEY", tt.doer, logrus.StandardLogger())
-			err := c.Put("endpoint", tt.target)
-			assert.Equal(t, tt.wantErr, err != nil)
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				c := NewClient(api.RegionOceania, "API_KEY", tt.doer, logrus.StandardLogger())
+				err := c.Put("endpoint", tt.target)
+				assert.Equal(t, tt.wantErr, err != nil)
+			},
+		)
 	}
 }
 
