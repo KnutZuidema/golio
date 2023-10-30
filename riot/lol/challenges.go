@@ -67,7 +67,7 @@ func (cc *ChallengesClient) GetLeaderBoardByChallengeIDAndLevel(
 		limit = 50
 	}
 	if err := cc.c.GetInto(
-		fmt.Sprintf(endpointChallengesLeaderboardsByLevel, challengeID, tier, limit), &apexPlayerInfo,
+		fmt.Sprintf(endpointChallengesLeaderboards, challengeID, tier, limit), &apexPlayerInfo,
 	); err != nil {
 		logger.Debug(err)
 		return nil, err

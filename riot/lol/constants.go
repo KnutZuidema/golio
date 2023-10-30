@@ -12,7 +12,7 @@ const (
 	endpointChallengesConfig                   = endpointChallengesBaseChallenges + "/config"
 	endpointChallengesPercentiles              = endpointChallengesBaseChallenges + "/percentiles"
 	endpointChallengesConfigByChallengeID      = endpointChallengesBaseChallenges + "/%d/config"
-	endpointChallengesLeaderboardsByLevel      = endpointChallengesBaseChallenges + "/%d/leaderboards/by-level/%s?limit=%d"
+	endpointChallengesLeaderboards             = endpointChallengesBaseChallenges + "/%d/leaderboards/by-level/%s?limit=%d"
 	endpointChallengesPercentilesByChallengeID = endpointChallengesBaseChallenges + "/%d/percentiles"
 	endpointChallengesPlayerDataByPUUID        = endpointChallengesBase + "/player-data/%s"
 	endpointPlatformBase                       = endpointBase + "/platform/v3"
