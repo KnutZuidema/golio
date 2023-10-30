@@ -54,7 +54,7 @@ func (cc *ChallengesClient) GetConfigByChallengeID(challengeID int64) (*Challeng
 	return challengeConfig, nil
 }
 
-// GetLeaderBoardByChallengeIDAndLevel returns top players for each level; level must be MASTER, GRANDMASTER or CHALLENGER
+// GetLeaderBoardByChallengeIDAndLevel returns top players for each level
 func (cc *ChallengesClient) GetLeaderBoardByChallengeIDAndLevel(
 	challengeID int64, tier tier, limit int32,
 ) ([]*ApexPlayerInfo, error) {
@@ -67,7 +67,7 @@ func (cc *ChallengesClient) GetLeaderBoardByChallengeIDAndLevel(
 		limit = 50
 	}
 	if err := cc.c.GetInto(
-		fmt.Sprintf(endpointChallengesLeaderboardsByChallengeIDAndLevel, challengeID, tier, limit), &apexPlayerInfo,
+		fmt.Sprintf(endpointChallengesLeaderboardsByLevel, challengeID, tier, limit), &apexPlayerInfo,
 	); err != nil {
 		logger.Debug(err)
 		return nil, err
