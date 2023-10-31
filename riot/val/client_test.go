@@ -1,11 +1,12 @@
 package val
 
 import (
+	"testing"
+
 	"github.com/KnutZuidema/golio/api"
 	"github.com/KnutZuidema/golio/internal"
 	"github.com/KnutZuidema/golio/internal/mock"
 	"github.com/sirupsen/logrus"
-	"testing"
 )
 
 func TestNewClient(t *testing.T) {
