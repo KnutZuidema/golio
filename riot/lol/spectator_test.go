@@ -34,14 +34,16 @@ func TestSpectatorClient_ListFeatured(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&SpectatorClient{c: client}).ListFeatured()
-			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
-			if tt.wantErr == nil {
-				assert.Equal(t, got, tt.want)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+				got, err := (&SpectatorClient{c: client}).ListFeatured()
+				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
+				if tt.wantErr == nil {
+					assert.Equal(t, got, tt.want)
+				}
+			},
+		)
 	}
 }
 
@@ -65,13 +67,15 @@ func TestSpectatorClient_GetCurrent(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&SpectatorClient{c: client}).GetCurrent("id")
-			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
-			if tt.wantErr == nil {
-				assert.Equal(t, got, tt.want)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+				got, err := (&SpectatorClient{c: client}).GetCurrent("id")
+				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
+				if tt.wantErr == nil {
+					assert.Equal(t, got, tt.want)
+				}
+			},
+		)
 	}
 }

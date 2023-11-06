@@ -16,9 +16,11 @@ type ThirdPartyCodeClient struct {
 
 // Get returns the third party code for the given summoner id
 func (t *ThirdPartyCodeClient) Get(summonerID string) (string, error) {
-	logger := t.logger().WithFields(log.Fields{
-		"method": "Get",
-	})
+	logger := t.logger().WithFields(
+		log.Fields{
+			"method": "Get",
+		},
+	)
 	var code string
 	if err := t.c.GetInto(fmt.Sprintf(endpointGetThirdPartyCode, summonerID), &code); err != nil {
 		logger.Debug(err)

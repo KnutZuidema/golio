@@ -41,17 +41,19 @@ func TestClient_GetSeasons(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := NewClient(tt.doer, log.StandardLogger())
-			got, err := c.GetSeasons()
-			assert.Equal(t, tt.wantErr, err)
-			if tt.wantErr == nil {
-				assert.Equal(t, tt.want, got)
+		t.Run(
+			tt.name, func(t *testing.T) {
+				c := NewClient(tt.doer, log.StandardLogger())
 				got, err := c.GetSeasons()
-				assert.Nil(t, err)
-				assert.Equal(t, tt.want, got)
-			}
-		})
+				assert.Equal(t, tt.wantErr, err)
+				if tt.wantErr == nil {
+					assert.Equal(t, tt.want, got)
+					got, err := c.GetSeasons()
+					assert.Nil(t, err)
+					assert.Equal(t, tt.want, got)
+				}
+			},
+		)
 	}
 }
 
@@ -83,17 +85,19 @@ func TestClient_GetQueues(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := NewClient(tt.doer, log.StandardLogger())
-			got, err := c.GetQueues()
-			assert.Equal(t, tt.wantErr, err)
-			if tt.wantErr == nil {
-				assert.Equal(t, tt.want, got)
+		t.Run(
+			tt.name, func(t *testing.T) {
+				c := NewClient(tt.doer, log.StandardLogger())
 				got, err := c.GetQueues()
-				assert.Nil(t, err)
-				assert.Equal(t, tt.want, got)
-			}
-		})
+				assert.Equal(t, tt.wantErr, err)
+				if tt.wantErr == nil {
+					assert.Equal(t, tt.want, got)
+					got, err := c.GetQueues()
+					assert.Nil(t, err)
+					assert.Equal(t, tt.want, got)
+				}
+			},
+		)
 	}
 }
 
@@ -125,17 +129,19 @@ func TestClient_GetMaps(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := NewClient(tt.doer, log.StandardLogger())
-			got, err := c.GetMaps()
-			assert.Equal(t, tt.wantErr, err)
-			if tt.wantErr == nil {
-				assert.Equal(t, tt.want, got)
+		t.Run(
+			tt.name, func(t *testing.T) {
+				c := NewClient(tt.doer, log.StandardLogger())
 				got, err := c.GetMaps()
-				assert.Nil(t, err)
-				assert.Equal(t, tt.want, got)
-			}
-		})
+				assert.Equal(t, tt.wantErr, err)
+				if tt.wantErr == nil {
+					assert.Equal(t, tt.want, got)
+					got, err := c.GetMaps()
+					assert.Nil(t, err)
+					assert.Equal(t, tt.want, got)
+				}
+			},
+		)
 	}
 }
 
@@ -167,17 +173,19 @@ func TestClient_GetGameModes(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := NewClient(tt.doer, log.StandardLogger())
-			got, err := c.GetGameModes()
-			assert.Equal(t, tt.wantErr, err)
-			if tt.wantErr == nil {
-				assert.Equal(t, tt.want, got)
+		t.Run(
+			tt.name, func(t *testing.T) {
+				c := NewClient(tt.doer, log.StandardLogger())
 				got, err := c.GetGameModes()
-				assert.Nil(t, err)
-				assert.Equal(t, tt.want, got)
-			}
-		})
+				assert.Equal(t, tt.wantErr, err)
+				if tt.wantErr == nil {
+					assert.Equal(t, tt.want, got)
+					got, err := c.GetGameModes()
+					assert.Nil(t, err)
+					assert.Equal(t, tt.want, got)
+				}
+			},
+		)
 	}
 }
 
@@ -209,17 +217,19 @@ func TestClient_GetGameTypes(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := NewClient(tt.doer, log.StandardLogger())
-			got, err := c.GetGameTypes()
-			assert.Equal(t, tt.wantErr, err)
-			if tt.wantErr == nil {
-				assert.Equal(t, tt.want, got)
+		t.Run(
+			tt.name, func(t *testing.T) {
+				c := NewClient(tt.doer, log.StandardLogger())
 				got, err := c.GetGameTypes()
-				assert.Nil(t, err)
-				assert.Equal(t, tt.want, got)
-			}
-		})
+				assert.Equal(t, tt.wantErr, err)
+				if tt.wantErr == nil {
+					assert.Equal(t, tt.want, got)
+					got, err := c.GetGameTypes()
+					assert.Nil(t, err)
+					assert.Equal(t, tt.want, got)
+				}
+			},
+		)
 	}
 }
 
@@ -253,12 +263,14 @@ func TestClient_GetGameMode(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			client := NewClient(test.doer, log.StandardLogger())
-			got, err := client.GetGameMode(test.id)
-			assert.Equal(t, test.wantErr, err)
-			assert.Equal(t, test.want, got)
-		})
+		t.Run(
+			test.name, func(t *testing.T) {
+				client := NewClient(test.doer, log.StandardLogger())
+				got, err := client.GetGameMode(test.id)
+				assert.Equal(t, test.wantErr, err)
+				assert.Equal(t, test.want, got)
+			},
+		)
 	}
 }
 
@@ -292,12 +304,14 @@ func TestClient_GetGameType(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			client := NewClient(test.doer, log.StandardLogger())
-			got, err := client.GetGameType(test.id)
-			assert.Equal(t, test.wantErr, err)
-			assert.Equal(t, test.want, got)
-		})
+		t.Run(
+			test.name, func(t *testing.T) {
+				client := NewClient(test.doer, log.StandardLogger())
+				got, err := client.GetGameType(test.id)
+				assert.Equal(t, test.wantErr, err)
+				assert.Equal(t, test.want, got)
+			},
+		)
 	}
 }
 
@@ -331,12 +345,14 @@ func TestClient_GetMap(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			client := NewClient(test.doer, log.StandardLogger())
-			got, err := client.GetMap(test.id)
-			assert.Equal(t, test.wantErr, err)
-			assert.Equal(t, test.want, got)
-		})
+		t.Run(
+			test.name, func(t *testing.T) {
+				client := NewClient(test.doer, log.StandardLogger())
+				got, err := client.GetMap(test.id)
+				assert.Equal(t, test.wantErr, err)
+				assert.Equal(t, test.want, got)
+			},
+		)
 	}
 }
 
@@ -370,12 +386,14 @@ func TestClient_GetQueue(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			client := NewClient(test.doer, log.StandardLogger())
-			got, err := client.GetQueue(test.id)
-			assert.Equal(t, test.wantErr, err)
-			assert.Equal(t, test.want, got)
-		})
+		t.Run(
+			test.name, func(t *testing.T) {
+				client := NewClient(test.doer, log.StandardLogger())
+				got, err := client.GetQueue(test.id)
+				assert.Equal(t, test.wantErr, err)
+				assert.Equal(t, test.want, got)
+			},
+		)
 	}
 }
 
@@ -409,12 +427,14 @@ func TestClient_GetSeason(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			client := NewClient(test.doer, log.StandardLogger())
-			got, err := client.GetSeason(test.id)
-			assert.Equal(t, test.wantErr, err)
-			assert.Equal(t, test.want, got)
-		})
+		t.Run(
+			test.name, func(t *testing.T) {
+				client := NewClient(test.doer, log.StandardLogger())
+				got, err := client.GetSeason(test.id)
+				assert.Equal(t, test.wantErr, err)
+				assert.Equal(t, test.want, got)
+			},
+		)
 	}
 }
 
@@ -443,11 +463,13 @@ func TestClient_getInto(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := NewClient(tt.doer, log.StandardLogger())
-			err := c.getInto("endpoint", tt.target)
-			assert.Equal(t, tt.wantErr, err != nil)
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				c := NewClient(tt.doer, log.StandardLogger())
+				err := c.getInto("endpoint", tt.target)
+				assert.Equal(t, tt.wantErr, err != nil)
+			},
+		)
 	}
 }
 

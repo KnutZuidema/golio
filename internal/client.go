@@ -41,10 +41,12 @@ func NewClient(region api.Region, key string, client Doer, logger log.FieldLogge
 
 // GetInto processes a GET request and saves the response body into the given target.
 func (c *Client) GetInto(endpoint string, target interface{}) error {
-	logger := c.Logger().WithFields(log.Fields{
-		"method":   "GetInto",
-		"endpoint": endpoint,
-	})
+	logger := c.Logger().WithFields(
+		log.Fields{
+			"method":   "GetInto",
+			"endpoint": endpoint,
+		},
+	)
 	response, err := c.Get(endpoint)
 	if err != nil {
 		logger.Debug(err)
@@ -59,10 +61,12 @@ func (c *Client) GetInto(endpoint string, target interface{}) error {
 
 // PostInto processes a POST request and saves the response body into the given target.
 func (c *Client) PostInto(endpoint string, body, target interface{}) error {
-	logger := c.Logger().WithFields(log.Fields{
-		"method":   "PostInto",
-		"endpoint": endpoint,
-	})
+	logger := c.Logger().WithFields(
+		log.Fields{
+			"method":   "PostInto",
+			"endpoint": endpoint,
+		},
+	)
 	response, err := c.Post(endpoint, body)
 	if err != nil {
 		logger.Debug(err)
@@ -77,10 +81,12 @@ func (c *Client) PostInto(endpoint string, body, target interface{}) error {
 
 // Put processes a PUT request.
 func (c *Client) Put(endpoint string, body interface{}) error {
-	logger := c.Logger().WithFields(log.Fields{
-		"method":   "Put",
-		"endpoint": endpoint,
-	})
+	logger := c.Logger().WithFields(
+		log.Fields{
+			"method":   "Put",
+			"endpoint": endpoint,
+		},
+	)
 	buf := &bytes.Buffer{}
 	if err := json.NewEncoder(buf).Encode(body); err != nil {
 		logger.Debug(err)
@@ -97,10 +103,12 @@ func (c *Client) Get(endpoint string) (*http.Response, error) {
 
 // Post processes a POST request.
 func (c *Client) Post(endpoint string, body interface{}) (*http.Response, error) {
-	logger := c.Logger().WithFields(log.Fields{
-		"method":   "Post",
-		"endpoint": endpoint,
-	})
+	logger := c.Logger().WithFields(
+		log.Fields{
+			"method":   "Post",
+			"endpoint": endpoint,
+		},
+	)
 	buf := &bytes.Buffer{}
 	if err := json.NewEncoder(buf).Encode(body); err != nil {
 		logger.Debug(err)
@@ -112,10 +120,12 @@ func (c *Client) Post(endpoint string, body interface{}) (*http.Response, error)
 // DoRequest processes a http.Request and returns the response.
 // Rate-Limiting and retrying is handled via the corresponding response headers.
 func (c *Client) DoRequest(method, endpoint string, body io.Reader) (*http.Response, error) {
-	logger := c.Logger().WithFields(log.Fields{
-		"method":   "DoRequest",
-		"endpoint": endpoint,
-	})
+	logger := c.Logger().WithFields(
+		log.Fields{
+			"method":   "DoRequest",
+			"endpoint": endpoint,
+		},
+	)
 	request, err := c.NewRequest(method, endpoint, body)
 	if err != nil {
 		logger.Debug(err)
@@ -162,10 +172,12 @@ func (c *Client) DoRequest(method, endpoint string, body io.Reader) (*http.Respo
 
 // NewRequest returns a new http.Request with necessary headers et.
 func (c *Client) NewRequest(method, endpoint string, body io.Reader) (*http.Request, error) {
-	logger := c.Logger().WithFields(log.Fields{
-		"method":   "NewRequest",
-		"endpoint": endpoint,
-	})
+	logger := c.Logger().WithFields(
+		log.Fields{
+			"method":   "NewRequest",
+			"endpoint": endpoint,
+		},
+	)
 	request, err := http.NewRequest(method, fmt.Sprintf(apiURLFormat, scheme, c.Region, baseURL, endpoint), body)
 	if err != nil {
 		logger.Debug(err)

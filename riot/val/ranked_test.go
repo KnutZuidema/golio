@@ -1,4 +1,4 @@
-package lol
+package val
 
 import (
 	"fmt"
@@ -14,18 +14,18 @@ import (
 	"github.com/KnutZuidema/golio/internal/mock"
 )
 
-func TestThirdPartyCodeClient_Get(t *testing.T) {
+func TestChallengesClient_GetLeaderboardByActId(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    string
+		want    *Leaderboard
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: "code",
-			doer: mock.NewJSONMockDoer("code", 200),
+			want: &Leaderboard{},
+			doer: mock.NewJSONMockDoer(Leaderboard{}, 200),
 		},
 		{
 			name:    "not found",
@@ -37,7 +37,7 @@ func TestThirdPartyCodeClient_Get(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-				got, err := (&ThirdPartyCodeClient{c: client}).Get("id")
+				got, err := (&RankedClient{c: client}).GetLeaderboardByActID("actId", -1, 0)
 				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 				if tt.wantErr == nil {
 					assert.Equal(t, got, tt.want)

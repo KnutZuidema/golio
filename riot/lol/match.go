@@ -63,7 +63,8 @@ func (m *MatchClient) Get(id string) (*Match, error) {
 
 // List returns  a list of match ids by puuid
 func (m *MatchClient) List(puuid string, start, count int, options ...*MatchListOptions) (
-	[]string, error) {
+	[]string, error,
+) {
 	logger := m.logger().WithField("method", "List")
 	c := *m.c                                          // copy client
 	c.Region = api.Region(api.RegionToRoute[c.Region]) // Match v5 uses a route instead of a region

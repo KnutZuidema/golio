@@ -14,18 +14,18 @@ import (
 	"github.com/KnutZuidema/golio/internal/mock"
 )
 
-func TestLeagueClient_GetChallenger(t *testing.T) {
+func TestChallengesClient_GetConfig(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *LeagueList
+		want    []*ChallengeConfigInfo
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &LeagueList{},
-			doer: mock.NewJSONMockDoer(LeagueList{}, 200),
+			want: []*ChallengeConfigInfo{{}},
+			doer: mock.NewJSONMockDoer([]ChallengeConfigInfo{{}}, 200),
 		},
 		{
 			name:    "not found",
@@ -37,7 +37,7 @@ func TestLeagueClient_GetChallenger(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-				got, err := (&LeagueClient{c: client}).GetChallenger(QueueRankedSolo)
+				got, err := (&ChallengesClient{c: client}).GetConfig()
 				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 				if tt.wantErr == nil {
 					assert.Equal(t, got, tt.want)
@@ -47,18 +47,18 @@ func TestLeagueClient_GetChallenger(t *testing.T) {
 	}
 }
 
-func TestLeagueClient_GetGrandmaster(t *testing.T) {
+func TestChallengesClient_GetPercentiles(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *LeagueList
+		want    PercentilesByChallenges
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &LeagueList{},
-			doer: mock.NewJSONMockDoer(LeagueList{}, 200),
+			want: PercentilesByChallenges{},
+			doer: mock.NewJSONMockDoer(PercentilesByChallenges{}, 200),
 		},
 		{
 			name:    "not found",
@@ -70,7 +70,7 @@ func TestLeagueClient_GetGrandmaster(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-				got, err := (&LeagueClient{c: client}).GetGrandmaster(QueueRankedSolo)
+				got, err := (&ChallengesClient{c: client}).GetPercentiles()
 				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 				if tt.wantErr == nil {
 					assert.Equal(t, got, tt.want)
@@ -80,18 +80,18 @@ func TestLeagueClient_GetGrandmaster(t *testing.T) {
 	}
 }
 
-func TestLeagueClient_GetMaster(t *testing.T) {
+func TestChallengesClient_GetConfigWithChallengeId(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *LeagueList
+		want    *ChallengeConfigInfo
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &LeagueList{},
-			doer: mock.NewJSONMockDoer(LeagueList{}, 200),
+			want: &ChallengeConfigInfo{},
+			doer: mock.NewJSONMockDoer(ChallengeConfigInfo{}, 200),
 		},
 		{
 			name:    "not found",
@@ -103,7 +103,7 @@ func TestLeagueClient_GetMaster(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-				got, err := (&LeagueClient{c: client}).GetMaster(QueueRankedSolo)
+				got, err := (&ChallengesClient{c: client}).GetConfigByChallengeID(1)
 				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 				if tt.wantErr == nil {
 					assert.Equal(t, got, tt.want)
@@ -113,18 +113,18 @@ func TestLeagueClient_GetMaster(t *testing.T) {
 	}
 }
 
-func TestLeagueClient_ListPlayers(t *testing.T) {
+func TestChallengesClient_GetLeaderBoardByChallengeIdAndLevel(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    []*LeagueItem
+		want    []*ApexPlayerInfo
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: []*LeagueItem{},
-			doer: mock.NewJSONMockDoer([]*LeagueItem{}, 200),
+			want: []*ApexPlayerInfo{{}},
+			doer: mock.NewJSONMockDoer([]ApexPlayerInfo{{}}, 200),
 		},
 		{
 			name:    "not found",
@@ -136,7 +136,7 @@ func TestLeagueClient_ListPlayers(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-				got, err := (&LeagueClient{c: client}).ListPlayers(QueueRankedSolo, TierGold, DivisionOne)
+				got, err := (&ChallengesClient{c: client}).GetLeaderBoardByChallengeIDAndLevel(203102, "", 0)
 				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 				if tt.wantErr == nil {
 					assert.Equal(t, got, tt.want)
@@ -146,18 +146,18 @@ func TestLeagueClient_ListPlayers(t *testing.T) {
 	}
 }
 
-func TestLeagueClient_ListBySummoner(t *testing.T) {
+func TestChallengesClient_GetPercentilesWithChallengeId(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    []*LeagueItem
+		want    Percentiles
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: []*LeagueItem{},
-			doer: mock.NewJSONMockDoer([]*LeagueItem{}, 200),
+			want: Percentiles{},
+			doer: mock.NewJSONMockDoer(Percentiles{}, 200),
 		},
 		{
 			name:    "not found",
@@ -169,7 +169,7 @@ func TestLeagueClient_ListBySummoner(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-				got, err := (&LeagueClient{c: client}).ListBySummoner("id")
+				got, err := (&ChallengesClient{c: client}).GetPercentilesByChallengeID(1)
 				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 				if tt.wantErr == nil {
 					assert.Equal(t, got, tt.want)
@@ -179,18 +179,18 @@ func TestLeagueClient_ListBySummoner(t *testing.T) {
 	}
 }
 
-func TestLeagueClient_Get(t *testing.T) {
+func TestChallengesClient_GetPlayerDataWithPUUID(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *LeagueList
+		want    *PlayerInfo
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &LeagueList{},
-			doer: mock.NewJSONMockDoer(LeagueList{}, 200),
+			want: &PlayerInfo{},
+			doer: mock.NewJSONMockDoer(PlayerInfo{}, 200),
 		},
 		{
 			name:    "not found",
@@ -202,7 +202,7 @@ func TestLeagueClient_Get(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-				got, err := (&LeagueClient{c: client}).Get("id")
+				got, err := (&ChallengesClient{c: client}).GetPlayerDataByPUUID("1")
 				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 				if tt.wantErr == nil {
 					assert.Equal(t, got, tt.want)

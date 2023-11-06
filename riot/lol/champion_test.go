@@ -34,13 +34,15 @@ func TestChampionClient_GetFreeRotation(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-			got, err := (&ChampionClient{c: client}).GetFreeRotation()
-			require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
-			if tt.wantErr == nil {
-				assert.Equal(t, got, tt.want)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+				got, err := (&ChampionClient{c: client}).GetFreeRotation()
+				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
+				if tt.wantErr == nil {
+					assert.Equal(t, got, tt.want)
+				}
+			},
+		)
 	}
 }

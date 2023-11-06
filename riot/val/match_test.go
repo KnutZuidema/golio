@@ -1,4 +1,4 @@
-package lol
+package val
 
 import (
 	"fmt"
@@ -14,18 +14,18 @@ import (
 	"github.com/KnutZuidema/golio/internal/mock"
 )
 
-func TestChampionMasteryClient_List(t *testing.T) {
+func TestChallengesClient_GetMatchById(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    []*ChampionMastery
+		want    *Match
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: []*ChampionMastery{},
-			doer: mock.NewJSONMockDoer([]*ChampionMastery{}, 200),
+			want: &Match{},
+			doer: mock.NewJSONMockDoer(Match{}, 200),
 		},
 		{
 			name:    "not found",
@@ -37,7 +37,7 @@ func TestChampionMasteryClient_List(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-				got, err := (&ChampionMasteryClient{c: client}).List("id")
+				got, err := (&MatchClient{c: client}).GetMatchByID("match-id")
 				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 				if tt.wantErr == nil {
 					assert.Equal(t, got, tt.want)
@@ -47,18 +47,18 @@ func TestChampionMasteryClient_List(t *testing.T) {
 	}
 }
 
-func TestChampionMasteryClient_Get(t *testing.T) {
+func TestChallengesClient_GetMatchListByPUUID(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    *ChampionMastery
+		want    *MatchList
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: &ChampionMastery{},
-			doer: mock.NewJSONMockDoer(&ChampionMastery{}, 200),
+			want: &MatchList{},
+			doer: mock.NewJSONMockDoer(MatchList{}, 200),
 		},
 		{
 			name:    "not found",
@@ -70,7 +70,7 @@ func TestChampionMasteryClient_Get(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-				got, err := (&ChampionMasteryClient{c: client}).Get("id", "id")
+				got, err := (&MatchClient{c: client}).GetMatchListByPUUID("puuid")
 				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 				if tt.wantErr == nil {
 					assert.Equal(t, got, tt.want)
@@ -80,18 +80,18 @@ func TestChampionMasteryClient_Get(t *testing.T) {
 	}
 }
 
-func TestChampionMasteryClient_GetTotal(t *testing.T) {
+func TestChallengesClient_GetRecentMatchesByQueue(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		want    int
+		want    *RecentMatches
 		doer    internal.Doer
 		wantErr error
 	}{
 		{
 			name: "get response",
-			want: 1,
-			doer: mock.NewJSONMockDoer(1, 200),
+			want: &RecentMatches{},
+			doer: mock.NewJSONMockDoer(RecentMatches{}, 200),
 		},
 		{
 			name:    "not found",
@@ -103,7 +103,7 @@ func TestChampionMasteryClient_GetTotal(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-				got, err := (&ChampionMasteryClient{c: client}).GetTotal("id")
+				got, err := (&MatchClient{c: client}).GetRecentMatchesByQueue("queue")
 				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 				if tt.wantErr == nil {
 					assert.Equal(t, got, tt.want)
