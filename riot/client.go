@@ -7,6 +7,7 @@ import (
 
 	"github.com/KnutZuidema/golio/api"
 	"github.com/KnutZuidema/golio/internal"
+	"github.com/KnutZuidema/golio/riot/account"
 	"github.com/KnutZuidema/golio/riot/lol"
 	"github.com/KnutZuidema/golio/riot/lor"
 	"github.com/KnutZuidema/golio/riot/val"
@@ -32,7 +33,8 @@ type Client struct {
 	ThirdPartyCode *lol.ThirdPartyCodeClient
 	// Deprecated: Use Client.LoL.Tournament instead. Will be removed in a future release.
 	Tournament *lol.TournamentClient
-
+	
+	Account *account.Client
 	LoL *lol.Client
 	LoR *lor.Client
 	Val *val.Client
@@ -42,6 +44,7 @@ type Client struct {
 func NewClient(region api.Region, apiKey string, client internal.Doer, logger log.FieldLogger) *Client {
 	baseClient := internal.NewClient(region, apiKey, client, logger)
 	c := &Client{
+		Account: account.NewClient(baseClient),
 		LoL: lol.NewClient(baseClient),
 		LoR: lor.NewClient(baseClient),
 		Val: val.NewClient(baseClient),
