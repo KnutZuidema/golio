@@ -3,20 +3,23 @@ package account
 import (
 	"fmt"
 
-	"github.com/KnutZuidema/golio/internal"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/KnutZuidema/golio/internal"
 )
 
-type AccountClient struct {
+// AccountClient provides methods for the account endpoints of the League of Legends API.
+type AccountClient struct { //nolint:golint
 	c *internal.Client
 }
 
-func (ac *AccountClient) GetByPuuid(puuid string) (*Account, error) {
+// GetByPUUID returns the account matching the PUUID
+func (ac *AccountClient) GetByPUUID(puuid string) (*Account, error) {
 	logger := ac.logger().WithField("method", "GetByPuuid")
 	var account Account
 
 	if err := ac.c.GetInto(
-		fmt.Sprintf(endpointGetByPuuid, puuid),
+		fmt.Sprintf(endpointGetByPUUID, puuid),
 		&account,
 	); err != nil {
 		logger.Debug(err)
@@ -25,12 +28,13 @@ func (ac *AccountClient) GetByPuuid(puuid string) (*Account, error) {
 	return &account, nil
 }
 
-func (ac *AccountClient) GetByRiotId(gameName, tagLine string) (*Account, error) {
+// GetByRiotID returns the account matching the riot id
+func (ac *AccountClient) GetByRiotID(gameName, tagLine string) (*Account, error) {
 	logger := ac.logger().WithField("method", "GetByPuuid")
 	var account Account
 
 	if err := ac.c.GetInto(
-		fmt.Sprintf(endpointGetByRiotId, gameName, tagLine),
+		fmt.Sprintf(endpointGetByRiotID, gameName, tagLine),
 		&account,
 	); err != nil {
 		logger.Debug(err)

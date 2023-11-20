@@ -4,6 +4,6 @@ const (
 	endpointBase         = "/riot"
 	endpointAccountBase  = endpointBase + "/account/v1"
 	endpointAccountsBase = endpointAccountBase + "/accounts"
-	endpointGetByPuuid   = endpointAccountsBase + "/by-puuid/%s"
-	endpointGetByRiotId  = endpointAccountBase + "/by-riot-id/%s/%s"
+	endpointGetByPUUID   = endpointAccountsBase + "/by-puuid/%s"
+	endpointGetByRiotID  = endpointAccountBase + "/by-riot-id/%s/%s"
 )
