@@ -25,6 +25,20 @@ func (ac *AccountClient) GetByPuuid(puuid string) (*Account, error) {
 	return &account, nil
 }
 
+func (ac *AccountClient) GetByRiotId(gameName, tagLine string) (*Account, error) {
+	logger := ac.logger().WithField("method", "GetByPuuid")
+	var account Account
+
+	if err := ac.c.GetInto(
+		fmt.Sprintf(endpointGetByRiotId, gameName, tagLine),
+		&account,
+	); err != nil {
+		logger.Debug(err)
+		return nil, err
+	}
+	return &account, nil
+}
+
 func (ac *AccountClient) logger() log.FieldLogger {
 	return ac.c.Logger().WithField("category", "account")
 }

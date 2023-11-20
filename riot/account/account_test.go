@@ -46,3 +46,36 @@ func TestAccountClient_GetByPuuid(t *testing.T) {
 		)
 	}
 }
+
+func TestAccountClient_GetByRiotId(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		want    *Account
+		doer    internal.Doer
+		wantErr error
+	}{
+		{
+			name: "get response",
+			want: &Account{},
+			doer: mock.NewJSONMockDoer(Account{}, 200),
+		},
+		{
+			name:    "not found",
+			wantErr: api.ErrNotFound,
+			doer:    mock.NewStatusMockDoer(http.StatusNotFound),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(
+			tt.name, func(t *testing.T) {
+				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
+				got, err := (&AccountClient{c: client}).GetByRiotId("", "")
+				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
+				if tt.wantErr == nil {
+					assert.Equal(t, got, tt.want)
+				}
+			},
+		)
+	}
+}
