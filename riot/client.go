@@ -33,11 +33,11 @@ type Client struct {
 	ThirdPartyCode *lol.ThirdPartyCodeClient
 	// Deprecated: Use Client.LoL.Tournament instead. Will be removed in a future release.
 	Tournament *lol.TournamentClient
-	
+
 	Account *account.Client
-	LoL *lol.Client
-	LoR *lor.Client
-	Val *val.Client
+	LoL     *lol.Client
+	LoR     *lor.Client
+	Val     *val.Client
 }
 
 // NewClient returns a new api client for the Riot API
@@ -45,9 +45,9 @@ func NewClient(region api.Region, apiKey string, client internal.Doer, logger lo
 	baseClient := internal.NewClient(region, apiKey, client, logger)
 	c := &Client{
 		Account: account.NewClient(baseClient),
-		LoL: lol.NewClient(baseClient),
-		LoR: lor.NewClient(baseClient),
-		Val: val.NewClient(baseClient),
+		LoL:     lol.NewClient(baseClient),
+		LoR:     lor.NewClient(baseClient),
+		Val:     val.NewClient(baseClient),
 	}
 
 	// TODO: deprecated, remove in a future release
