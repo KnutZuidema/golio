@@ -22,17 +22,19 @@ func (b *ResponseBody) Read(p []byte) (n int, err error) {
 	if b.closed {
 		return 0, ErrBodyClosed
 	}
-	if b.lastPos < len(b.Content) && len(b.Content) <= b.lastPos+len(p) {
-		copy(p, b.Content[b.lastPos:])
-		read := len(b.Content) - b.lastPos
-		b.lastPos += read
-		return read, io.EOF
-	} else if b.lastPos >= len(b.Content) {
+	if b.lastPos == len(b.Content)-1 {
 		return 0, io.EOF
 	}
-	copy(p, b.Content[b.lastPos:b.lastPos+len(p)])
-	b.lastPos += len(p)
-	return len(p), nil
+	nextPos := b.lastPos + len(p)
+	var err error
+	if nextPos >= len(b.Content) {
+		nextPos = len(b.Content) - 1
+		err = io.EOF
+	}
+	copy(p, b.Content[b.lastPos:nextPos])
+	read := nextPos - b.lastPos
+	b.lastPos = nextPos
+	return read, err
 }
 
 // Close closes the response body. After closing the response body it cannot be read from
