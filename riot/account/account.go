@@ -2,6 +2,7 @@ package account
 
 import (
 	"fmt"
+	"github.com/KnutZuidema/golio/api"
 
 	log "github.com/sirupsen/logrus"
 
@@ -17,8 +18,10 @@ type AccountClient struct { //nolint:golint
 func (ac *AccountClient) GetByPUUID(puuid string) (*Account, error) {
 	logger := ac.logger().WithField("method", "GetByPuuid")
 	var account Account
+	c := *ac.c
+	c.Region = api.Region(api.RegionToRoute[c.Region])
 
-	if err := ac.c.GetInto(
+	if err := c.GetInto(
 		fmt.Sprintf(endpointGetByPUUID, puuid),
 		&account,
 	); err != nil {
@@ -32,8 +35,10 @@ func (ac *AccountClient) GetByPUUID(puuid string) (*Account, error) {
 func (ac *AccountClient) GetByRiotID(gameName, tagLine string) (*Account, error) {
 	logger := ac.logger().WithField("method", "GetByPuuid")
 	var account Account
+	c := *ac.c
+	c.Region = api.Region(api.RegionToRoute[c.Region])
 
-	if err := ac.c.GetInto(
+	if err := c.GetInto(
 		fmt.Sprintf(endpointGetByRiotID, gameName, tagLine),
 		&account,
 	); err != nil {
