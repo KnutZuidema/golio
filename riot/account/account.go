@@ -16,7 +16,7 @@ type AccountClient struct { //nolint:golint
 
 // GetByPUUID returns the account matching the PUUID
 func (ac *AccountClient) GetByPUUID(puuid string) (*Account, error) {
-	logger := ac.logger().WithField("method", "GetByPuuid")
+	logger := ac.logger().WithField("method", "GetByPUUID")
 	var account Account
 	c := *ac.c
 	c.Region = api.Region(api.RegionToRoute[c.Region])
@@ -33,7 +33,7 @@ func (ac *AccountClient) GetByPUUID(puuid string) (*Account, error) {
 
 // GetByRiotID returns the account matching the riot id
 func (ac *AccountClient) GetByRiotID(gameName, tagLine string) (*Account, error) {
-	logger := ac.logger().WithField("method", "GetByPuuid")
+	logger := ac.logger().WithField("method", "GetByRiotID")
 	var account Account
 	c := *ac.c
 	c.Region = api.Region(api.RegionToRoute[c.Region])
