@@ -301,6 +301,7 @@ type Participant struct {
 	ProfileIcon                    int               `json:"profileIcon"`
 	PUUID                          string            `json:"puuid"`
 	QuadraKills                    int               `json:"quadraKills"`
+	RiotIDGameName                 string            `json:"riotIdGameName"`
 	RiotIDName                     string            `json:"riotIdName"`
 	RiotIDTagline                  string            `json:"riotIdTagline"`
 	Role                           string            `json:"role"`
