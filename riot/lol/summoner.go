@@ -14,6 +14,8 @@ type SummonerClient struct {
 }
 
 // GetByName returns the summoner with the given summoner name
+//
+// Deprecated: Riot has marked this endpoint as deprecated and it will be eventually removed in the future.
 func (s *SummonerClient) GetByName(name string) (*Summoner, error) {
 	return s.getBy(identificationName, name, s.logger().WithField("method", "GetByName"))
 }
