@@ -37,7 +37,7 @@ func TestAccountClient_GetByPUUID(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-				got, err := (&AccountClient{c: client}).GetByPUUID("")
+				got, err := (&Client{c: client}).GetByPUUID("")
 				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 				if tt.wantErr == nil {
 					assert.Equal(t, got, tt.want)
@@ -70,7 +70,7 @@ func TestAccountClient_GetByRiotID(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-				got, err := (&AccountClient{c: client}).GetByRiotID("", "")
+				got, err := (&Client{c: client}).GetByRiotID("", "")
 				require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
 				if tt.wantErr == nil {
 					assert.Equal(t, got, tt.want)
