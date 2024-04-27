@@ -130,7 +130,7 @@ func (c *Client) GetChampionByID(id string) (ChampionDataExtended, error) {
 	}
 	for _, champion := range champions {
 		if champion.Key == id {
-			return c.GetChampion(champion.Name)
+			return c.GetChampion(champion.ID)
 		}
 	}
 	return ChampionDataExtended{}, api.ErrNotFound
