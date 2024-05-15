@@ -14,10 +14,10 @@ type SpectatorClient struct {
 }
 
 // GetCurrent returns a currently running game for a summoner
-func (s *SpectatorClient) GetCurrent(summonerID string) (*GameInfo, error) {
+func (s *SpectatorClient) GetCurrent(puuid string) (*GameInfo, error) {
 	logger := s.logger().WithField("method", "GetCurrent")
 	var games GameInfo
-	if err := s.c.GetInto(fmt.Sprintf(endpointGetCurrentGame, summonerID), &games); err != nil {
+	if err := s.c.GetInto(fmt.Sprintf(endpointGetCurrentGame, puuid), &games); err != nil {
 		logger.Debug(err)
 		return nil, err
 	}
