@@ -596,7 +596,6 @@ type Observer struct {
 type CurrentGameParticipant struct {
 	ProfileIconID            int                        `json:"profileIconId"`
 	ChampionID               int                        `json:"championId"`
-	SummonerName             string                     `json:"summonerName"`
 	GameCustomizationObjects []*GameCustomizationObject `json:"gameCustomizationObjects"`
 	Bot                      bool                       `json:"bot"`
 	Perks                    *Perks                     `json:"perks"`
@@ -688,7 +687,6 @@ type StatusTranslation struct {
 // Summoner represents a summoner with several related IDs
 type Summoner struct {
 	ProfileIconID int    `json:"profileIconId"`
-	Name          string `json:"name"`
 	PUUID         string `json:"puuid"`
 	SummonerLevel int    `json:"summonerLevel"`
 	RevisionDate  int    `json:"revisionDate"`
