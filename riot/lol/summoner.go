@@ -13,11 +13,6 @@ type SummonerClient struct {
 	c *internal.Client
 }
 
-// GetByName returns the summoner with the given summoner name
-func (s *SummonerClient) GetByName(name string) (*Summoner, error) {
-	return s.getBy(identificationName, name, s.logger().WithField("method", "GetByName"))
-}
-
 // GetByAccountID returns the summoner with the given account ID
 func (s *SummonerClient) GetByAccountID(id string) (*Summoner, error) {
 	return s.getBy(identificationAccountID, id, s.logger().WithField("method", "GetByAccountID"))
