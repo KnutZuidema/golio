@@ -35,7 +35,7 @@ const (
 	endpointSummonerBase                       = endpointBase + "/summoner/v4"
 	endpointGetSummonerBySummonerID            = endpointSummonerBase + "/summoners/%s"
 	endpointGetSummonerBy                      = endpointSummonerBase + "/summoners/by-%s/%s"
-	endpointSpectatorBase                      = endpointBase + "/spectator/v4"
+	endpointSpectatorBase                      = endpointBase + "/spectator/v5"
 	endpointGetCurrentGame                     = endpointSpectatorBase + "/active-games/by-summoner/%s"
 	endpointGetFeaturedGames                   = endpointSpectatorBase + "/featured-games"
 	endpointTournamentStubBase                 = endpointBase + "/tournament-stub/v4"

@@ -604,6 +604,7 @@ type CurrentGameParticipant struct {
 	Spell1ID                 int                        `json:"spell1Id"`
 	TeamID                   int                        `json:"teamId"`
 	SummonerID               string                     `json:"summonerId"`
+	PUUID                    string                     `json:"puuid"`
 }
 
 // GetChampion returns the champion played by this participant
