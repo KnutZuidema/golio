@@ -62,16 +62,16 @@ func TestChampionInfo_GetChampionsForNewPlayers(t *testing.T) {
 			name: "valid",
 			doer: dataDragonResponseDoer(
 				map[string]datadragon.ChampionData{
-					"champion1": {Key: "1", Name: "champion1"},
-					"champion2": {Key: "2", Name: "champion2"},
+					"1": {Key: "1", ID: "1", Name: "champion1"},
+					"2": {Key: "2", ID: "2", Name: "champion2"},
 				},
 			),
 			model: ChampionInfo{
 				FreeChampionIDsForNewPlayers: []int{1, 2},
 			},
 			want: []datadragon.ChampionDataExtended{
-				{ChampionData: datadragon.ChampionData{Name: "champion1", Key: "1"}},
-				{ChampionData: datadragon.ChampionData{Name: "champion2", Key: "2"}},
+				{ChampionData: datadragon.ChampionData{ID: "1", Name: "champion1", Key: "1"}},
+				{ChampionData: datadragon.ChampionData{ID: "2", Name: "champion2", Key: "2"}},
 			},
 		},
 		{
@@ -111,16 +111,16 @@ func TestChampionInfo_GetChampions(t *testing.T) {
 			name: "valid",
 			doer: dataDragonResponseDoer(
 				map[string]datadragon.ChampionData{
-					"champion1": {Key: "1", Name: "champion1"},
-					"champion2": {Key: "2", Name: "champion2"},
+					"1": {Key: "1", ID: "1", Name: "champion1"},
+					"2": {Key: "2", ID: "2", Name: "champion2"},
 				},
 			),
 			model: ChampionInfo{
 				FreeChampionIDs: []int{1, 2},
 			},
 			want: []datadragon.ChampionDataExtended{
-				{ChampionData: datadragon.ChampionData{Name: "champion1", Key: "1"}},
-				{ChampionData: datadragon.ChampionData{Name: "champion2", Key: "2"}},
+				{ChampionData: datadragon.ChampionData{ID: "1", Name: "champion1", Key: "1"}},
+				{ChampionData: datadragon.ChampionData{ID: "2", Name: "champion2", Key: "2"}},
 			},
 		},
 		{
@@ -188,11 +188,13 @@ func TestChampionMastery_GetChampion(t *testing.T) {
 			name: "valid",
 			doer: dataDragonResponseDoer(
 				map[string]datadragon.ChampionData{
-					"champion": {Name: "champion", Key: "1"},
+					"1": {Key: "1", ID: "1", Name: "champion"},
 				},
 			),
 			model: ChampionMastery{ChampionID: 1},
-			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", Key: "1"}},
+			want: datadragon.ChampionDataExtended{
+				ChampionData: datadragon.ChampionData{ID: "1", Name: "champion", Key: "1"},
+			},
 		},
 	}
 	for _, test := range tests {
@@ -420,11 +422,13 @@ func TestTeamBan_GetChampion(t *testing.T) {
 			name: "valid",
 			doer: dataDragonResponseDoer(
 				map[string]datadragon.ChampionData{
-					"champion": {Name: "champion", Key: "1"},
+					"1": {Key: "1", ID: "1", Name: "champion"},
 				},
 			),
 			model: TeamBan{ChampionID: 1},
-			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", Key: "1"}},
+			want: datadragon.ChampionDataExtended{
+				ChampionData: datadragon.ChampionData{ID: "1", Name: "champion", Key: "1"},
+			},
 		},
 	}
 	for _, test := range tests {
@@ -452,11 +456,13 @@ func TestParticipant_GetChampion(t *testing.T) {
 			name: "valid",
 			doer: dataDragonResponseDoer(
 				map[string]datadragon.ChampionData{
-					"champion": {Name: "champion", Key: "1"},
+					"1": {Key: "1", ID: "1", Name: "champion"},
 				},
 			),
 			model: Participant{ChampionID: 1},
-			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", Key: "1"}},
+			want: datadragon.ChampionDataExtended{
+				ChampionData: datadragon.ChampionData{ID: "1", Name: "champion", Key: "1"},
+			},
 		},
 	}
 	for _, test := range tests {
@@ -772,11 +778,13 @@ func TestBannedChampion_GetChampion(t *testing.T) {
 			name: "valid",
 			doer: dataDragonResponseDoer(
 				map[string]datadragon.ChampionData{
-					"champion": {Name: "champion", Key: "1"},
+					"1": {Key: "1", ID: "1", Name: "champion"},
 				},
 			),
 			model: BannedChampion{ChampionID: 1},
-			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", Key: "1"}},
+			want: datadragon.ChampionDataExtended{
+				ChampionData: datadragon.ChampionData{ID: "1", Name: "champion", Key: "1"},
+			},
 		},
 	}
 	for _, test := range tests {
@@ -804,11 +812,13 @@ func TestCurrentGameParticipant_GetChampion(t *testing.T) {
 			name: "valid",
 			doer: dataDragonResponseDoer(
 				map[string]datadragon.ChampionData{
-					"champion": {Name: "champion", Key: "1"},
+					"1": {Key: "1", ID: "1", Name: "champion"},
 				},
 			),
 			model: CurrentGameParticipant{ChampionID: 1},
-			want:  datadragon.ChampionDataExtended{ChampionData: datadragon.ChampionData{Name: "champion", Key: "1"}},
+			want: datadragon.ChampionDataExtended{
+				ChampionData: datadragon.ChampionData{ID: "1", Name: "champion", Key: "1"},
+			},
 		},
 	}
 	for _, test := range tests {
