@@ -2,8 +2,10 @@ package mock
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -29,6 +31,35 @@ func NewJSONMockDoer(object interface{}, code int) *Doer {
 			StatusCode: code,
 		},
 		ResponseBody: &body,
+	}
+}
+
+type PathJSONResponse struct {
+	PathSuffix string
+	Object     interface{}
+	Code       int
+}
+
+// NewPathJSONMockDoer constructs a new MockDoer with the json representation of an
+// object as body and the given status code for the given path(s)
+// CAUTION: silently returns an empty response if object is fails json marshaling
+func NewPathJSONMockDoer(pathResponses []PathJSONResponse) *Doer {
+	return &Doer{
+		Custom: func(r *http.Request) (*http.Response, error) {
+			for _, pathResponse := range pathResponses {
+				if strings.HasSuffix(r.URL.Path, pathResponse.PathSuffix) {
+					buffer, _ := json.Marshal(pathResponse.Object)
+					body := ResponseBody{
+						Content: buffer,
+					}
+					return &http.Response{
+						Body:       &body,
+						StatusCode: pathResponse.Code,
+					}, nil
+				}
+			}
+			return nil, errors.New("not found")
+		},
 	}
 }
 

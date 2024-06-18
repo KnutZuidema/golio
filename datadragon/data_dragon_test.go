@@ -78,12 +78,42 @@ func TestClient_GetChampion(t *testing.T) {
 	}{
 		{
 			name: "get response",
-			doer: dataDragonResponseDoer(
-				map[string]ChampionDataExtended{
-					"champion": {},
+			doer: mock.NewPathJSONMockDoer(
+				[]mock.PathJSONResponse{
+					{
+						PathSuffix: "/champion.json",
+						Object: dataDragonResponse{
+							Data: map[string]ChampionData{
+								"champion-id": {
+									ID:   "champion-id",
+									Name: "champion-name",
+								},
+							},
+						},
+						Code: 200,
+					},
+					{
+						PathSuffix: "/champion/champion-id.json",
+						Object: dataDragonResponse{
+							Data: map[string]ChampionDataExtended{
+								"champion-id": {
+									ChampionData: ChampionData{
+										ID:   "champion-id",
+										Name: "champion-name",
+									},
+								},
+							},
+						},
+						Code: 200,
+					},
 				},
 			),
-			want: ChampionDataExtended{},
+			want: ChampionDataExtended{
+				ChampionData: ChampionData{
+					ID:   "champion-id",
+					Name: "champion-name",
+				},
+			},
 		},
 		{
 			name:    "not found",
@@ -108,11 +138,11 @@ func TestClient_GetChampion(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				c := NewClient(tt.doer, api.RegionEuropeWest, log.StandardLogger())
-				got, err := c.GetChampion("champion")
+				got, err := c.GetChampion("champion-name")
 				assert.Equal(t, tt.wantErr, err)
 				if tt.wantErr == nil {
 					assert.Equal(t, tt.want, got)
-					got, err := c.GetChampion("champion")
+					got, err := c.GetChampion("champion-name")
 					assert.Nil(t, err)
 					assert.Equal(t, tt.want, got)
 				}
@@ -380,11 +410,17 @@ func TestClient_GetChampionByID(t *testing.T) {
 			name: "get response",
 			doer: dataDragonResponseDoer(
 				map[string]ChampionData{
-					"champion": {Name: "champion", Key: "id"},
+					"champion-id": {ID: "champion-id", Name: "champion-name", Key: "champion-id"},
 				},
 			),
-			id:   "id",
-			want: ChampionDataExtended{ChampionData: ChampionData{Name: "champion", Key: "id"}},
+			id: "champion-id",
+			want: ChampionDataExtended{
+				ChampionData: ChampionData{
+					ID:   "champion-id",
+					Name: "champion-name",
+					Key:  "champion-id",
+				},
+			},
 		},
 		{
 			name:    "not found",
