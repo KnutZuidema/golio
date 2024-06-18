@@ -703,9 +703,9 @@ type LobbyEventList struct {
 
 // LobbyEvent represents an event that happened in a tournament lobby
 type LobbyEvent struct {
-	EventType  string `json:"eventType"`
-	SummonerID string `json:"summonerId"`
-	Timestamp  string `json:"timestamp"`
+	EventType string `json:"eventType"`
+	PUUID     string `json:"puuid"`
+	Timestamp string `json:"timestamp"`
 }
 
 // Tournament contains the settings of a previously created tournament
@@ -736,12 +736,14 @@ type TournamentCodeParameters struct {
 	// Optional list of encrypted summonerIds in order to validate the players eligible to join the lobby.
 	// NOTE: We currently do not enforce participants at the team level, but rather the aggregate of teamOne and
 	// teamTwo. We may add the ability to enforce at the team level in the future.
-	AllowedSummonerIDs []string `json:"allowedSummonerIds,omitempty"`
+	AllowedParticipants []string `json:"allowedParticipants,omitempty"`
 	// The map type of the game. (Legal values: SUMMONERS_RIFT, TWISTED_TREELINE, HOWLING_ABYSS)
 	MapType string `json:"mapType"`
 	// Optional string that may contain any data in any format, if specified at all. Used to denote any custom
 	// information about the game.
 	Metadata string `json:"metadata"`
+	// Checks if allowed participants are enough to make full teams.
+	EnoughPlayers bool `json:"enoughPlayers"`
 }
 
 // TournamentUpdateParameters parameters needed to update an existing tournament
@@ -752,7 +754,7 @@ type TournamentUpdateParameters struct {
 	PickType string `json:"pickType"`
 	// Optional list of encrypted summonerIds in order to validate the players eligible to join the lobby.
 	// NOTE: Participants are not enforced at the team level, but rather the aggregate of teamOne and teamTwo.
-	AllowedSummonerIDs []string `json:"allowedSummonerIds"`
+	AllowedParticipants []string `json:"allowedParticipants"`
 	// The map type (Legal values: SUMMONERS_RIFT, TWISTED_TREELINE, HOWLING_ABYSS)
 	MapType string `json:"mapType"`
 }
