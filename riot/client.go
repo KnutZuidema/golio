@@ -10,6 +10,7 @@ import (
 	"github.com/KnutZuidema/golio/riot/account"
 	"github.com/KnutZuidema/golio/riot/lol"
 	"github.com/KnutZuidema/golio/riot/lor"
+	"github.com/KnutZuidema/golio/riot/tft"
 	"github.com/KnutZuidema/golio/riot/val"
 )
 
@@ -38,6 +39,7 @@ type Client struct {
 	LoL     *lol.Client
 	LoR     *lor.Client
 	Val     *val.Client
+	TFT     *tft.Client
 }
 
 // NewClient returns a new api client for the Riot API
@@ -48,6 +50,7 @@ func NewClient(region api.Region, apiKey string, client internal.Doer, logger lo
 		LoL:     lol.NewClient(baseClient),
 		LoR:     lor.NewClient(baseClient),
 		Val:     val.NewClient(baseClient),
+		TFT:     tft.NewClient(baseClient),
 	}
 
 	// TODO: deprecated, remove in a future release
