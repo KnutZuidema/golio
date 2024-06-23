@@ -8,6 +8,7 @@ import (
 
 	"github.com/KnutZuidema/golio/api"
 	"github.com/KnutZuidema/golio/internal"
+	"github.com/KnutZuidema/golio/internal/mock"
 )
 
 func TestChampionData_GetExtended(t *testing.T) {
@@ -21,13 +22,38 @@ func TestChampionData_GetExtended(t *testing.T) {
 	tests := []test{
 		{
 			name: "valid",
-			doer: dataDragonResponseDoer(
-				map[string]*ChampionDataExtended{
-					"champion": {ChampionData: ChampionData{Name: "champion"}},
+			doer: mock.NewPathJSONMockDoer(
+				[]mock.PathJSONResponse{
+					{
+						PathSuffix: "/champion.json",
+						Object: dataDragonResponse{
+							Data: map[string]ChampionData{
+								"champion-id": {
+									ID:   "champion-id",
+									Name: "champion-name",
+								},
+							},
+						},
+						Code: 200,
+					},
+					{
+						PathSuffix: "/champion/champion-id.json",
+						Object: dataDragonResponse{
+							Data: map[string]ChampionDataExtended{
+								"champion-id": {
+									ChampionData: ChampionData{
+										ID:   "champion-id",
+										Name: "champion-name",
+									},
+								},
+							},
+						},
+						Code: 200,
+					},
 				},
 			),
-			data: &ChampionData{Name: "champion"},
-			want: ChampionDataExtended{ChampionData: ChampionData{Name: "champion"}},
+			data: &ChampionData{ID: "champion-id", Name: "champion-name"},
+			want: ChampionDataExtended{ChampionData: ChampionData{ID: "champion-id", Name: "champion-name"}},
 		},
 	}
 	for _, test := range tests {
