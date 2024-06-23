@@ -2,29 +2,28 @@ package tft
 
 import (
     "fmt"
-    "net/http"
-    "testing"
-
     "github.com/KnutZuidema/golio/api"
     "github.com/KnutZuidema/golio/internal"
     "github.com/KnutZuidema/golio/internal/mock"
     "github.com/sirupsen/logrus"
     "github.com/stretchr/testify/assert"
     "github.com/stretchr/testify/require"
+    "net/http"
+    "testing"
 )
 
-func TestTFTSpectator_GetActiveGamesByPUUID(t *testing.T) {
+func TestTFTMatch_GetMatchesByPUUID(t *testing.T) {
     t.Parallel()
     tests := []struct {
         name    string
-        want    *CurrentGameInfo
+        want    []string
         doer    internal.Doer
         wantErr error
     }{
         {
             name: "get response",
-            want: &CurrentGameInfo{},
-            doer: mock.NewJSONMockDoer(CurrentGameInfo{}, 200),
+            want: []string{},
+            doer: mock.NewJSONMockDoer([]string{}, 200),
         },
         {
             name:    "not found",
@@ -36,7 +35,7 @@ func TestTFTSpectator_GetActiveGamesByPUUID(t *testing.T) {
         t.Run(
             tt.name, func(t *testing.T) {
                 client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-                got, err := (&SpectatorClient{c: client}).GetActiveGamesByPUUID("puuid")
+                got, err := (&MatchClient{c: client}).GetMatchesByPUUID("puuid")
                 require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
                 if tt.wantErr == nil {
                     assert.Equal(t, got, tt.want)
@@ -46,18 +45,18 @@ func TestTFTSpectator_GetActiveGamesByPUUID(t *testing.T) {
     }
 }
 
-func TestTFTSpectator_GetFeaturedGames(t *testing.T) {
+func TestTFTMatch_GetMatchByMatchID(t *testing.T) {
     t.Parallel()
     tests := []struct {
         name    string
-        want    *FeaturedGames
+        want    *Match
         doer    internal.Doer
         wantErr error
     }{
         {
             name: "get response",
-            want: &FeaturedGames{},
-            doer: mock.NewJSONMockDoer(FeaturedGames{}, 200),
+            want: &Match{},
+            doer: mock.NewJSONMockDoer(&Match{}, 200),
         },
         {
             name:    "not found",
@@ -69,7 +68,7 @@ func TestTFTSpectator_GetFeaturedGames(t *testing.T) {
         t.Run(
             tt.name, func(t *testing.T) {
                 client := internal.NewClient(api.RegionEuropeWest, "API_KEY", tt.doer, logrus.StandardLogger())
-                got, err := (&SpectatorClient{c: client}).GetFeaturedGames()
+                got, err := (&MatchClient{c: client}).GetMatchByMatchID("1234")
                 require.Equal(t, err, tt.wantErr, fmt.Sprintf("want err %v, got %v", tt.wantErr, err))
                 if tt.wantErr == nil {
                     assert.Equal(t, got, tt.want)

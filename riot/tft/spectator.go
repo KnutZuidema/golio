@@ -7,10 +7,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// SpectatorClient provides methods for spectator endpoints of the League of Legends TFT API.
 type SpectatorClient struct {
 	c *internal.Client
 }
 
+// GetActiveGamesByPUUID returns current game information for the given puuid.
 func (sc *SpectatorClient) GetActiveGamesByPUUID(puuid string) (*CurrentGameInfo, error) {
 	logger := sc.logger().WithField("method", "GetActiveGamesByPUUID")
 	url := fmt.Sprintf(endpointSpectatorActiveGamedByPUUID, puuid)
@@ -22,6 +24,7 @@ func (sc *SpectatorClient) GetActiveGamesByPUUID(puuid string) (*CurrentGameInfo
 	return &currentGameInfo, nil
 }
 
+// GetFeaturedGames returns a list of featured games
 func (sc *SpectatorClient) GetFeaturedGames() (*FeaturedGames, error) {
 	logger := sc.logger().WithField("method", "GetFeaturedGames")
 	var featuredGames FeaturedGames
@@ -32,6 +35,6 @@ func (sc *SpectatorClient) GetFeaturedGames() (*FeaturedGames, error) {
 	return &featuredGames, nil
 }
 
-func (l *SpectatorClient) logger() log.FieldLogger {
-	return l.c.Logger().WithField("category", "spectator")
+func (sc *SpectatorClient) logger() log.FieldLogger {
+	return sc.c.Logger().WithField("category", "spectator")
 }
