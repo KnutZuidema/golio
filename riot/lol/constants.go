@@ -57,9 +57,9 @@ type identification string
 
 const (
 	identificationName       identification = "name"
-	identificationAccountID                 = "account"
-	identificationPUUID                     = "puuid"
-	identificationSummonerID                = "summonerID"
+	identificationAccountID  identification = "account"
+	identificationPUUID      identification = "puuid"
+	identificationSummonerID identification = "summonerID"
 )
 
 type queue string
@@ -67,8 +67,8 @@ type queue string
 // All possible queues
 const (
 	QueueRankedSolo            queue = "RANKED_SOLO_5x5"
-	QueueRankedFlex                  = "RANKED_FLEX_SR"
-	QueueRankedTwistedTreeline       = "RANKED_FLEX_TT"
+	QueueRankedFlex            queue = "RANKED_FLEX_SR"
+	QueueRankedTwistedTreeline queue = "RANKED_FLEX_TT"
 )
 
 type tier string
@@ -76,15 +76,15 @@ type tier string
 // All possible Tiers
 const (
 	TierIron        tier = "IRON"
-	TierBronze           = "BRONZE"
-	TierSilver           = "SILVER"
-	TierGold             = "GOLD"
-	TierPlatinum         = "PLATINUM"
-	TierEmerald          = "EMERALD"
-	TierDiamond          = "DIAMOND"
-	TierMaster           = "MASTER"
-	TierGrandMaster      = "GRANDMASTER"
-	TierChallenger       = "CHALLENGER"
+	TierBronze      tier = "BRONZE"
+	TierSilver      tier = "SILVER"
+	TierGold        tier = "GOLD"
+	TierPlatinum    tier = "PLATINUM"
+	TierEmerald     tier = "EMERALD"
+	TierDiamond     tier = "DIAMOND"
+	TierMaster      tier = "MASTER"
+	TierGrandMaster tier = "GRANDMASTER"
+	TierChallenger  tier = "CHALLENGER"
 )
 
 type division string
@@ -92,9 +92,9 @@ type division string
 // All possible divisions
 const (
 	DivisionOne   division = "I"
-	DivisionTwo            = "II"
-	DivisionThree          = "III"
-	DivisionFour           = "IV"
+	DivisionTwo   division = "II"
+	DivisionThree division = "III"
+	DivisionFour  division = "IV"
 )
 
 var (

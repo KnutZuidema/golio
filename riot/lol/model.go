@@ -484,18 +484,18 @@ type MatchEventType string
 // All legal value for match event types
 const (
 	MatchEventTypeChampionKill     MatchEventType = "CHAMPION_KILL"
-	MatchEventTypeWardPlaced                      = "WARD_PLACED"
-	MatchEventTypeWardKill                        = "WARD_KILL"
-	MatchEventTypeBuildingKill                    = "BUILDING_KILL"
-	MatchEventTypeEliteMonsterKill                = "ELITE_MONSTER_KILL"
-	MatchEventTypeItemPurchased                   = "ITEM_PURCHASED"
-	MatchEventTypeItemSold                        = "ITEM_SOLD"
-	MatchEventTypeItemDestroyed                   = "ITEM_DESTROYED"
-	MatchEventTypeItemUndo                        = "ITEM_UNDO"
-	MatchEventTypeSkillLevelUp                    = "SKILL_LEVEL_UP"
-	MatchEventTypeAscendedEvent                   = "ASCENDED_EVENT"
-	MatchEventTypeCapturePoint                    = "CAPTURE_POINT"
-	MatchEventTypePoroKingSummon                  = "PORO_KING_SUMMON"
+	MatchEventTypeWardPlaced       MatchEventType = "WARD_PLACED"
+	MatchEventTypeWardKill         MatchEventType = "WARD_KILL"
+	MatchEventTypeBuildingKill     MatchEventType = "BUILDING_KILL"
+	MatchEventTypeEliteMonsterKill MatchEventType = "ELITE_MONSTER_KILL"
+	MatchEventTypeItemPurchased    MatchEventType = "ITEM_PURCHASED"
+	MatchEventTypeItemSold         MatchEventType = "ITEM_SOLD"
+	MatchEventTypeItemDestroyed    MatchEventType = "ITEM_DESTROYED"
+	MatchEventTypeItemUndo         MatchEventType = "ITEM_UNDO"
+	MatchEventTypeSkillLevelUp     MatchEventType = "SKILL_LEVEL_UP"
+	MatchEventTypeAscendedEvent    MatchEventType = "ASCENDED_EVENT"
+	MatchEventTypeCapturePoint     MatchEventType = "CAPTURE_POINT"
+	MatchEventTypePoroKingSummon   MatchEventType = "PORO_KING_SUMMON"
 )
 
 var (
@@ -596,7 +596,6 @@ type Observer struct {
 type CurrentGameParticipant struct {
 	ProfileIconID            int                        `json:"profileIconId"`
 	ChampionID               int                        `json:"championId"`
-	SummonerName             string                     `json:"summonerName"`
 	GameCustomizationObjects []*GameCustomizationObject `json:"gameCustomizationObjects"`
 	Bot                      bool                       `json:"bot"`
 	Perks                    *Perks                     `json:"perks"`
@@ -688,7 +687,6 @@ type StatusTranslation struct {
 // Summoner represents a summoner with several related IDs
 type Summoner struct {
 	ProfileIconID int    `json:"profileIconId"`
-	Name          string `json:"name"`
 	PUUID         string `json:"puuid"`
 	SummonerLevel int    `json:"summonerLevel"`
 	RevisionDate  int    `json:"revisionDate"`
