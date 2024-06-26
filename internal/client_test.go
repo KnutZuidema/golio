@@ -93,7 +93,7 @@ func TestClient_DoRequest(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				c := NewClient(api.RegionEuropeNorthEast, "", tt.doer, logrus.StandardLogger())
-				_, err := c.DoRequest(tt.args.method, tt.args.endpoint, tt.args.body)
+				_, err := c.DoRequest(tt.args.method, tt.args.endpoint, tt.args.body, nil)
 				assert.Equal(t, err != nil, tt.wantErr)
 			},
 		)
