@@ -5,6 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/KnutZuidema/golio/api"
 	"github.com/KnutZuidema/golio/internal"
 )
 
@@ -23,6 +24,7 @@ func (t *TournamentClient) CreateCodes(id, count int, params *TournamentCodePara
 			"stub":   stub,
 		},
 	)
+	t.c.Region = api.Region(api.RegionToRoute[t.c.Region])
 	endpoint := endpointCreateTournamentCodes
 	if stub {
 		endpoint = endpointCreateStubTournamentCodes
@@ -44,6 +46,7 @@ func (t *TournamentClient) ListLobbyEvents(code string, useStub bool) (*LobbyEve
 			"stub":   useStub,
 		},
 	)
+	t.c.Region = api.Region(api.RegionToRoute[t.c.Region])
 	endpoint := endpointGetLobbyEvents
 	if useStub {
 		endpoint = endpointGetStubLobbyEvents
@@ -66,6 +69,7 @@ func (t *TournamentClient) CreateProvider(parameters *ProviderRegistrationParame
 			"stub":   useStub,
 		},
 	)
+	t.c.Region = api.Region(api.RegionToRoute[t.c.Region])
 	endpoint := endpointCreateTournamentProvider
 	if useStub {
 		endpoint = endpointCreateStubTournamentProvider
@@ -88,6 +92,7 @@ func (t *TournamentClient) Create(parameters *TournamentRegistrationParameters, 
 			"stub":   useStub,
 		},
 	)
+	t.c.Region = api.Region(api.RegionToRoute[t.c.Region])
 	endpoint := endpointCreateTournament
 	if useStub {
 		endpoint = endpointCreateStubTournament
@@ -122,6 +127,7 @@ func (t *TournamentClient) Update(code string, parameters TournamentUpdateParame
 			"method": "Update",
 		},
 	)
+	t.c.Region = api.Region(api.RegionToRoute[t.c.Region])
 	if err := t.c.Put(fmt.Sprintf(endpointUpdateTournament, code), parameters); err != nil {
 		logger.Debug(err)
 		return err
