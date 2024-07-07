@@ -142,7 +142,7 @@ func (c *Client) GetChampionByID(id string) (ChampionDataExtended, error) {
 	return champion, nil
 }
 
-// GetChampion returns information about the champion with the given name
+// GetChampion returns information about the champion with the given key
 func (c *Client) GetChampionByKey(key string) (ChampionDataExtended, error) {
 	champions, err := c.GetChampions()
 	if err != nil {
