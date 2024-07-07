@@ -143,6 +143,20 @@ func (c *Client) GetChampionByID(id string) (ChampionDataExtended, error) {
 }
 
 // GetChampion returns information about the champion with the given name
+func (c *Client) GetChampionByKey(key string) (ChampionDataExtended, error) {
+	champions, err := c.GetChampions()
+	if err != nil {
+		return ChampionDataExtended{}, err
+	}
+	for _, champion := range champions {
+		if champion.Key == key {
+			return c.GetChampionByID(champion.ID)
+		}
+	}
+	return ChampionDataExtended{}, api.ErrNotFound
+}
+
+// GetChampion returns information about the champion with the given name
 func (c *Client) GetChampion(name string) (ChampionDataExtended, error) {
 	champions, err := c.GetChampions()
 	if err != nil {
