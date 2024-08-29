@@ -67,7 +67,7 @@ var (
 		RegionLatinAmericaNorth: RouteAmericas,
 		RegionLatinAmericaSouth: RouteAmericas,
 		RegionNorthAmerica:      RouteAmericas,
-		RegionOceania:           RouteAmericas,
+		RegionOceania:           RouteSEA,
 		RegionPhilippines:       RouteSEA,
 		RegionRussia:            RouteEurope,
 		RegionSingapore:         RouteSEA,
