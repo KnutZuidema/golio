@@ -608,7 +608,7 @@ type CurrentGameParticipant struct {
 
 // GetChampion returns the champion played by this participant
 func (p *CurrentGameParticipant) GetChampion(client *datadragon.Client) (datadragon.ChampionDataExtended, error) {
-	return client.GetChampionByID(strconv.Itoa(p.ChampionID))
+	return client.GetChampionByKey(strconv.Itoa(p.ChampionID))
 }
 
 // GetSpell1 returns the first summoner spell of this participant
