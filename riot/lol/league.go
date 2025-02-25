@@ -57,6 +57,17 @@ func (l *LeagueClient) ListBySummoner(summonerID string) ([]*LeagueItem, error) 
 	return leagues, nil
 }
 
+// ListByPuuid returns all leagues a summoner with the given puuid is in
+func (l *LeagueClient) ListByPuuid(puuid string) ([]*LeagueItem, error) {
+	logger := l.logger().WithField("method", "ListByPuuid")
+	var leagues []*LeagueItem
+	if err := l.c.GetInto(fmt.Sprintf(endpointGetLeaguesByPuuid, puuid), &leagues); err != nil {
+		logger.Debug(err)
+		return nil, err
+	}
+	return leagues, nil
+}
+
 // ListPlayers returns all players with a league specified by its queue, tier and division
 func (l *LeagueClient) ListPlayers(queue queue, tier tier, division division) ([]*LeagueItem, error) {
 	logger := l.logger().WithField("method", "ListPlayers")

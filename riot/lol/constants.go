@@ -23,6 +23,7 @@ const (
 	endpointGetGrandmasterLeague               = endpointLeagueBase + "/grandmasterleagues/by-queue/%s"
 	endpointGetMasterLeague                    = endpointLeagueBase + "/masterleagues/by-queue/%s"
 	endpointGetLeaguesBySummoner               = endpointLeagueBase + "/entries/by-summoner/%s"
+	endpointGetLeaguesByPuuid                  = endpointLeagueBase + "/entries/by-puuid/%s"
 	endpointGetLeagues                         = endpointLeagueBase + "/entries/%s/%s/%s"
 	endpointGetLeague                          = endpointLeagueBase + "/leagues/%s"
 	endpointStatusBase                         = endpointBase + "/status/v3"

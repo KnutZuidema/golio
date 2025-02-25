@@ -104,6 +104,7 @@ type LeagueItem struct {
 	Tier         string      `json:"tier"`
 	Rank         string      `json:"rank"`
 	SummonerID   string      `json:"summonerId"`
+	PUUID        string      `json:"puuid"`
 	LeaguePoints int         `json:"leaguePoints"`
 }
 
