@@ -179,8 +179,6 @@ func TestLeagueClient_ListBySummoner(t *testing.T) {
 	}
 }
 
-
-
 func TestLeagueClient_ListByPuuid(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
