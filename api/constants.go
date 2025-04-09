@@ -12,16 +12,21 @@ const (
 	RegionKorea             Region = "kr"
 	RegionLatinAmericaNorth Region = "la1"
 	RegionLatinAmericaSouth Region = "la2"
+	RegionMiddleEast        Region = "me1"
 	RegionNorthAmerica      Region = "na1"
 	RegionOceania           Region = "oc1"
 	RegionPBE               Region = "pbe1"
-	RegionPhilippines       Region = "ph2"
-	RegionRussia            Region = "ru"
-	RegionSingapore         Region = "sg2"
-	RegionThailand          Region = "th2"
-	RegionTurkey            Region = "tr1"
-	RegionTaiwan            Region = "tw2"
-	RegionVietnam           Region = "vn2"
+	// Deprecated: Use api.RegionSouthEastAsia instead. PH2 got merged into the SEA server on 8th of Jan, 2025.
+	RegionPhilippines Region = "sg2" // PH2 got merged into SG2 on Jan. 8th, 2025. Replaced for backwards compatability.
+	RegionRussia      Region = "ru"
+	// Deprecated: Use api.RegionSouthEastAsia instead. SG2 is now called SEA
+	RegionSingapore     Region = "sg2" // SG2 is now called SEA while still running on SG2.
+	RegionSouthEastAsia Region = "sg2"
+	// Deprecated: Use api.RegionSouthEastAsia instead. TH2 got merged into the SEA server on 8th of Jan, 2025.
+	RegionThailand Region = "sg2" // TH2 got merged into SG2 on Jan. 8th, 2025. Replaced for backwards compatability.
+	RegionTurkey   Region = "tr1"
+	RegionTaiwan   Region = "tw2"
+	RegionVietnam  Region = "vn2"
 )
 
 // Route represents a server region's route
@@ -46,12 +51,11 @@ var (
 		RegionLatinAmericaNorth,
 		RegionLatinAmericaSouth,
 		RegionNorthAmerica,
+		RegionMiddleEast,
 		RegionOceania,
 		RegionPBE,
-		RegionPhilippines,
 		RegionRussia,
-		RegionSingapore,
-		RegionThailand,
+		RegionSouthEastAsia,
 		RegionTurkey,
 		RegionTaiwan,
 		RegionVietnam,
@@ -66,12 +70,11 @@ var (
 		RegionKorea:             RouteAsia,
 		RegionLatinAmericaNorth: RouteAmericas,
 		RegionLatinAmericaSouth: RouteAmericas,
+		RegionMiddleEast:        RouteEurope,
 		RegionNorthAmerica:      RouteAmericas,
 		RegionOceania:           RouteSEA,
-		RegionPhilippines:       RouteSEA,
 		RegionRussia:            RouteEurope,
-		RegionSingapore:         RouteSEA,
-		RegionThailand:          RouteSEA,
+		RegionSouthEastAsia:     RouteSEA,
 		RegionTurkey:            RouteEurope,
 		RegionTaiwan:            RouteSEA,
 		RegionVietnam:           RouteSEA,
