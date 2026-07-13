@@ -39,6 +39,18 @@ func (lc *LeagueClient) GetEntriesBySummoner(summonerID string) ([]*LeagueEntry,
 	return out, nil
 }
 
+// GetEntriesByPUUID returns league entries for a given summoner ID
+func (lc *LeagueClient) GetEntriesByPUUID(puuid string) ([]*LeagueEntry, error) {
+	logger := lc.logger().WithField("method", "GetEntriesByPUUID")
+	url := fmt.Sprintf(endpointLeagueEntriesByPUUID, puuid)
+	var out []*LeagueEntry
+	if err := lc.c.GetInto(url, &out); err != nil {
+		logger.Debug(err)
+		return nil, err
+	}
+	return out, nil
+}
+
 // GetEntries returns all the league entries
 func (lc *LeagueClient) GetEntries(tier tier, division division) ([]*LeagueEntry, error) {
 	logger := lc.logger().WithField("method", "GetEntries")

@@ -10,6 +10,7 @@ const (
 	endpointLeagueBase                = endpointBase + "/league/v1"
 	endpointLeagueChallenger          = endpointLeagueBase + "/challenger?queue=%s"
 	endpointLeagueEntriesBySummoner   = endpointLeagueBase + "/entries/by-summoner/%s"
+	endpointLeagueEntriesByPUUID      = endpointLeagueBase + "/by-puuid/%s"
 	endpointLeagueEntries             = endpointLeagueBase + "/entries/%s/%s"
 	endpointLeagueGrandMaster         = endpointLeagueBase + "/grandmaster?queue=%s"
 	endpointLeagueLeagues             = endpointLeagueBase + "/leagues/%s"
